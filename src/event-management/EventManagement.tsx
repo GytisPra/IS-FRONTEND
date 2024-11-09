@@ -3,14 +3,13 @@ import Tabs from "@mui/material/Tabs";
 import Tab from "@mui/material/Tab";
 import Box from "@mui/material/Box";
 import CreateEvent from "./CreateEvent";
+import EventsList from "../organizers";
 
 interface TabPanelProps {
   children?: React.ReactNode;
   index: number;
   value: number;
 }
-
-// eslint-disable-next-line @typescript-eslint/no-require-imports
 
 function CustomTabPanel(props: TabPanelProps) {
   const { children, value, index, ...other } = props;
@@ -58,10 +57,7 @@ export default function EventManagement() {
         <CreateEvent />
       </CustomTabPanel>
       <CustomTabPanel value={value} index={1}>
-        Item Two
-      </CustomTabPanel>
-      <CustomTabPanel value={value} index={2}>
-        Item Three
+        <EventsList />
       </CustomTabPanel>
     </Box>
   );

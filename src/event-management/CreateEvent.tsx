@@ -8,18 +8,24 @@ import {
 import { LocalizationProvider } from "@mui/x-date-pickers/LocalizationProvider";
 import { AdapterDayjs } from "@mui/x-date-pickers/AdapterDayjs";
 import { DateTimePicker } from "@mui/x-date-pickers";
-import { useEffect, useState } from "react";
+import { useState } from "react";
+import CreatingTicket from "../ticket-buying/CreatingTicket";
 
 export default function CreateEvent() {
-  const [htmlContent, setHtmlContent] = useState("");
+  const [isChecked, setIsChecked] = useState<boolean>(false);
+  const [enableTicketCreation, setEnableTicketCreation] =
+    useState<boolean>(false);
 
-  useEffect(() => {
-    fetch("./LocationPicker.html")
-      .then((response) => response.text())
-      .then((data) => setHtmlContent(data));
-  }, []);
+  const handleCheckboxChange = (event: React.ChangeEvent<HTMLInputElement>) => {
+    const checked = event.target.checked;
+    setIsChecked(checked);
 
-  console.log(htmlContent);
+    if (isChecked) {
+      setEnableTicketCreation(true);
+    } else {
+      setEnableTicketCreation(false);
+    }
+  };
 
   return (
     <>
@@ -49,9 +55,12 @@ export default function CreateEvent() {
               variant="standard"
             />
             <FormControlLabel
-              control={<Checkbox defaultChecked />}
+              control={<Checkbox onChange={handleCheckboxChange} />}
               label="Mokamas"
             />
+            <div className={`${enableTicketCreation ? "" : "hidden"}`}>
+              <CreatingTicket />
+            </div>
           </div>
           <div>
             <iframe
