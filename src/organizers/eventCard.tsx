@@ -74,8 +74,8 @@ interface EventCardProps {
 
 const EventCard: React.FC<EventCardProps> = ({
   eventId,
-  onAcceptVolunteer,
-  onDeclineVolunteer,
+  //   onAcceptVolunteer,
+  //   onDeclineVolunteer,
 }) => {
   const [event, setEvent] = useState<Event | null>(null);
   const [searchTerm, setSearchTerm] = useState("");

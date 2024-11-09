@@ -2,7 +2,6 @@ import { createBrowserRouter } from "react-router-dom";
 import "./index.css";
 import Home from "./home/home";
 import EventManagement from "./event-management/EventManagement";
-import CreatingTicket from "./ticket-buying/CreatingTicket";
 import OrganiserPage from "./organizers";
 import UserTickets from "./ticket-buying/UserTickets";
 import UserPage from "./User-subsystem/UserPage";
