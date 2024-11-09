@@ -23,7 +23,7 @@ function CustomTabPanel(props: TabPanelProps) {
       {...other}
     >
       {value === index && (
-        <Box className="flex h-[93vh] flex-col" sx={{ p: 3 }}>
+        <Box className="flex h-[70vh] flex-col" sx={{ p: 3 }}>
           {children}
         </Box>
       )}
@@ -46,7 +46,7 @@ export default function EventManagement() {
   };
 
   return (
-    <Box sx={{ width: "100%", height: "100vh" }}>
+    <Box sx={{ width: "100%", height: "100%" }}>
       <Box sx={{ borderBottom: 1, borderColor: "divider" }}>
         <Tabs
           value={value}
