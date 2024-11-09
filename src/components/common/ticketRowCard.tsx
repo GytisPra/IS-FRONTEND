@@ -22,7 +22,7 @@ interface EventRowCardProps {
   onClick?: () => void;
 }
 
-const EventRowCard: React.FC<EventRowCardProps> = ({
+const TicketRowCard: React.FC<EventRowCardProps> = ({
   event,
   height,
   button,
@@ -46,7 +46,7 @@ const EventRowCard: React.FC<EventRowCardProps> = ({
         </Grid>
         <Grid item xs={3}>
           <Typography variant="body1" color="text.secondary">
-            {event.attendees.length} Dalyviai
+            Kainaaaa
           </Typography>
         </Grid>
       </Grid>
@@ -71,4 +71,4 @@ const EventRowCard: React.FC<EventRowCardProps> = ({
   );
 };
 
-export default EventRowCard;
+export default TicketRowCard;

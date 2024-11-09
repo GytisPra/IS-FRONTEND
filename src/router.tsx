@@ -3,6 +3,10 @@ import "./index.css";
 import Home from "./home/home";
 import EventManagement from "./event-management/EventManagement";
 import OrganiserPage from "./organizers";
+import UserTickets from "./ticket-buying/UserTickets";
+import UserPage from "./User-subsystem/UserPage";
+import ProfileUpdatePage from "./User-subsystem/Profile";
+import UserEvents from "./User-subsystem/UserEvents";
 import VolunteerEventDetail from "./volunteers/VolunteerApply";
 import MyApplications from "./volunteers/MyApplications";
 export const router = createBrowserRouter([
@@ -25,5 +29,21 @@ export const router = createBrowserRouter([
   {
     path: "/my-applications",
     element: <MyApplications/>
-  }
+  },
+  {
+    path: "/tickets",
+    element: <UserTickets />,
+  },
+  {
+    path: "/user",
+    element: <UserPage />,
+  },
+  {
+    path: "/update-profile",
+    element: <ProfileUpdatePage />,
+  },
+  {
+    path: "/my-events",
+    element: <UserEvents />,
+  },
 ]);

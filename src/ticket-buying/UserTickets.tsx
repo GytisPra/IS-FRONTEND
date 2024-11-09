@@ -1,8 +1,12 @@
 import * as React from "react";
 import Box from "@mui/material/Box";
-import { Container } from "@mui/material";
-import EventCard from "./eventCard";
-import EventRowCard from "../components/common/eventRowCard";
+import InputLabel from "@mui/material/InputLabel";
+import MenuItem from "@mui/material/MenuItem";
+import FormControl from "@mui/material/FormControl";
+import Select, { SelectChangeEvent } from "@mui/material/Select";
+import { Button, Container } from "@mui/material";
+import TicketRowCard from "../components/common/ticketRowCard";
+import TicketCard from "./ticketCard";
 
 export interface IVolunteer {
   id: number;
@@ -23,8 +27,8 @@ export interface IEvent {
 const eventsFromBE: IEvent[] = [
   {
     id: 1,
-    name: "Renginys 1",
-    description: "Aprašymas 1",
+    name: "Bilietas 1",
+    description: "Galiojantis",
     startTime: new Date(),
     attendees: ["Dalyvis 1", "Dalyvis 2"],
     volunteers: [],
@@ -37,8 +41,8 @@ const eventsFromBE: IEvent[] = [
   },
   {
     id: 2,
-    name: "Renginys 2",
-    description: "Aprašymas 2",
+    name: "Bilietas 2",
+    description: "Galiojantis",
     startTime: new Date(),
     attendees: ["Dalyvis 1", "Dalyvis 2"],
     volunteers: [],
@@ -51,8 +55,8 @@ const eventsFromBE: IEvent[] = [
   },
   {
     id: 3,
-    name: "Renginys 3",
-    description: "Aprašymas 3",
+    name: "Bilietas 3",
+    description: "Pasibaigęs",
     startTime: new Date(),
     attendees: ["Dalyvis 1", "Dalyvis 2"],
     volunteers: [],
@@ -65,7 +69,7 @@ const eventsFromBE: IEvent[] = [
   },
 ];
 
-export default function BasicSelect() {
+export default function UserTickets() {
   const [selectedEvent, setSelectedEvent] = React.useState<number | null>(null);
   const containerRef = React.useRef<HTMLDivElement>(null);
 
@@ -93,24 +97,28 @@ export default function BasicSelect() {
     };
   }, []);
 
+  const handleChange = (event: SelectChangeEvent) => {
+    setSelectedEvent(Number(event.target.value));
+  };
+
   return (
     <Container ref={containerRef}>
       <Box sx={{ minWidth: 120, margin: "50px" }}>
         {eventsFromBE.map((event) => (
           <div key={event.id}>
-            <EventRowCard
+            <TicketRowCard
               event={event}
               height={150}
               onClick={() => handleEventClick(event.id)}
             />
             {selectedEvent === event.id && (
-              <EventCard
+              <TicketCard
                 eventId={selectedEvent}
                 onAcceptVolunteer={(volunteerId) => {
-                  console.log(volunteerId);
+                  // Handle accept volunteer logic here
                 }}
                 onDeclineVolunteer={(volunteerId) => {
-                  console.log(volunteerId);
+                  // Handle decline volunteer logic here
                 }}
               />
             )}
