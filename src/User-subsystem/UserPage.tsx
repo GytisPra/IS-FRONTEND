@@ -48,6 +48,7 @@ const UserPage: React.FC = () => {
                 {/* Header */}
                 <Typography variant="h4" component="h1" gutterBottom sx={{ fontWeight: 'bold', color: 'text.primary', textAlign: 'center' }}>
                     Čia yra naudotojo puslapis
+                </Typography>
 
                 {/* Event Search Section */}
                 <Box sx={{ width: '100%', textAlign: 'center' }}>
