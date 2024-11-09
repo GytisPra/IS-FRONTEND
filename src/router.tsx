@@ -3,6 +3,7 @@ import "./index.css";
 import Home from "./home/home";
 import EventManagement from "./event-management/EventManagement";
 import CreatingTicket from "./ticket-buying/CreatingTicket";
+import OrganiserPage from "./organizers";
 
 export const router = createBrowserRouter([
   {
@@ -16,5 +17,9 @@ export const router = createBrowserRouter([
   {
     path: "/creating-ticket",
     element: <CreatingTicket />,
+  },
+  {
+    path: "/organiser",
+    element: <OrganiserPage />,
   },
 ]);
