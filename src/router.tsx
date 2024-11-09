@@ -16,10 +16,6 @@ export const router = createBrowserRouter([
     element: <EventManagement />,
   },
   {
-    path: "/creating-ticket",
-    element: <CreatingTicket />,
-  },
-  {
     path: "/organiser",
     element: <OrganiserPage />,
   },
