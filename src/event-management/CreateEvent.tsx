@@ -61,11 +61,11 @@ export default function CreateEvent() {
             </div>
           </div>
           <div>
-            {/* <iframe
+            <iframe
               className=" h-[35rem] w-[40rem]"
               src="/LocationPicker.html"
               title="Embedded HTML"
-            ></iframe> */}
+            ></iframe>
           </div>
         </div>
       </Box>
