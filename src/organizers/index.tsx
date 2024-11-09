@@ -5,7 +5,7 @@ import MenuItem from '@mui/material/MenuItem';
 import FormControl from '@mui/material/FormControl';
 import Select, { SelectChangeEvent } from '@mui/material/Select';
 import { Button, Container } from '@mui/material';
-import EventCard from './EventCard'; // Make sure to import the EventCard component
+import EventCard from './eventCard'; 
 import EventRowCard from '../components/common/eventRowCard';
 
 export interface IVolunteer {
@@ -72,12 +72,8 @@ const eventsFromBE : IEvent[] = [
     },
 ]
 
-export default function BasicSelect() {
+export const OrganiserPage = () => {
   const [selectedEvent, setSelectedEvent] = React.useState<number | null>(null);
-
-  const handleChange = (event: SelectChangeEvent) => {
-    setSelectedEvent(Number(event.target.value));
-  };
 
   return (
     <Container>
@@ -88,33 +84,13 @@ export default function BasicSelect() {
             {selectedEvent === event.id && (
               <EventCard
                 eventId={selectedEvent}
-                onAcceptVolunteer={(volunteerId) => {
-                  // Handle accept volunteer logic here
-                }}
-                onDeclineVolunteer={(volunteerId) => {
-                  // Handle decline volunteer logic here
-                }}
               />
             )}
           </div>
         ))}
-        <FormControl fullWidth>
-          <InputLabel id="demo-simple-select-label">Renginys</InputLabel>
-          <Select
-            labelId="demo-simple-select-label"
-            id="demo-simple-select"
-            value={selectedEvent ? selectedEvent.toString() : ''}
-            label="Event"
-            onChange={handleChange}
-          >
-            {eventsFromBE.map(event => (
-              <MenuItem key={event.id} value={event.id}>
-                {event.name}
-              </MenuItem>
-            ))}
-          </Select>
-        </FormControl>
       </Box>
     </Container>
   );
 }
+
+export default OrganiserPage;
