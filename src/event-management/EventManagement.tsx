@@ -22,7 +22,11 @@ function CustomTabPanel(props: TabPanelProps) {
       aria-labelledby={`simple-tab-${index}`}
       {...other}
     >
-      {value === index && <Box sx={{ p: 3 }}>{children}</Box>}
+      {value === index && (
+        <Box className="flex h-[93vh] flex-col" sx={{ p: 3 }}>
+          {children}
+        </Box>
+      )}
     </div>
   );
 }
@@ -42,7 +46,7 @@ export default function EventManagement() {
   };
 
   return (
-    <Box sx={{ width: "100%" }}>
+    <Box sx={{ width: "100%", height: "100vh" }}>
       <Box sx={{ borderBottom: 1, borderColor: "divider" }}>
         <Tabs
           value={value}

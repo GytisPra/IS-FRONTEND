@@ -12,15 +12,13 @@ import { useState } from "react";
 import CreatingTicket from "../ticket-buying/CreatingTicket";
 
 export default function CreateEvent() {
-  const [isChecked, setIsChecked] = useState<boolean>(false);
   const [enableTicketCreation, setEnableTicketCreation] =
     useState<boolean>(false);
 
   const handleCheckboxChange = (event: React.ChangeEvent<HTMLInputElement>) => {
     const checked = event.target.checked;
-    setIsChecked(checked);
 
-    if (isChecked) {
+    if (checked) {
       setEnableTicketCreation(true);
     } else {
       setEnableTicketCreation(false);
@@ -30,8 +28,8 @@ export default function CreateEvent() {
   return (
     <>
       <Box
-        className="flex w-full flex-col h-min  items-center"
-        sx={{ flexGrow: 0 }}
+        className="flex w-full flex-col items-center"
+        sx={{ flexGrow: 0, height: "100%" }}
       >
         <div className="flex space-x-10">
           <div className="max-w-[32rem] flex justify-center flex-col space-y-4">
@@ -63,11 +61,11 @@ export default function CreateEvent() {
             </div>
           </div>
           <div>
-            <iframe
+            {/* <iframe
               className=" h-[35rem] w-[40rem]"
               src="/LocationPicker.html"
               title="Embedded HTML"
-            ></iframe>
+            ></iframe> */}
           </div>
         </div>
       </Box>

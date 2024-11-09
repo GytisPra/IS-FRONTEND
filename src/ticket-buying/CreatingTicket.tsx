@@ -4,33 +4,28 @@ import TextField from "@mui/material/TextField";
 import { useState } from "react";
 
 const CreatingTicket = () => {
-  const [VIPIsChecked, setVIPIsChecked] = useState<boolean>(false);
   const [enableVIPTickets, setEnableVIPTickets] = useState<boolean>(false);
+  const [enableStandartTickets, setEnableStandartTickets] =
+    useState<boolean>(false);
 
   const handleVIPCheckboxChange = (
     event: React.ChangeEvent<HTMLInputElement>
   ) => {
     const checked = event.target.checked;
-    setVIPIsChecked(checked);
 
-    if (VIPIsChecked) {
+    if (checked) {
       setEnableVIPTickets(true);
     } else {
       setEnableVIPTickets(false);
     }
   };
 
-  const [standartIsChecked, setStandartIsChecked] = useState<boolean>(false);
-  const [enableStandartTickets, setEnableStandartTickets] =
-    useState<boolean>(false);
-
   const handleStandartCheckboxChange = (
     event: React.ChangeEvent<HTMLInputElement>
   ) => {
     const checked = event.target.checked;
-    setStandartIsChecked(checked);
 
-    if (standartIsChecked) {
+    if (checked) {
       setEnableStandartTickets(true);
     } else {
       setEnableStandartTickets(false);
@@ -53,13 +48,13 @@ const CreatingTicket = () => {
           id="ticket-count-VIP"
           label="Bilietų kiekis"
           variant="standard"
-          disabled={enableVIPTickets}
+          disabled={!enableVIPTickets}
         />
         <TextField
           id="ticket-price-VIP"
           label="Bilieto kaina"
           variant="standard"
-          disabled={enableVIPTickets}
+          disabled={!enableVIPTickets}
         />
       </div>
       <div className="flex w-full items-center space-x-4 justify-between">
@@ -72,13 +67,13 @@ const CreatingTicket = () => {
           id="ticket-count"
           label="Bilietų kiekis"
           variant="standard"
-          disabled={enableStandartTickets}
+          disabled={!enableStandartTickets}
         />
         <TextField
           id="ticket-price"
           label="Bilieto kaina"
           variant="standard"
-          disabled={enableStandartTickets}
+          disabled={!enableStandartTickets}
         />
       </div>
     </Box>
