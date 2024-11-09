@@ -20,7 +20,7 @@ import {
     DialogContentText,
     DialogTitle,
 } from '@mui/material';
-import clsx from 'clsx'; // Naudojamas klasėms sujungti, jei reikia
+// import clsx from 'clsx'; // Naudojamas klasėms sujungti, jei reikia
 
 // Apibrėžkite TypeScript sąsają (interface) savo aplikacijoms
 interface Application {
@@ -138,9 +138,9 @@ const MyApplications: React.FC = () => {
                                 <TableCell>{app.id}</TableCell>
                                 <TableCell>{app.eventName}</TableCell>
                                 <TableCell>{app.submissionDate}</TableCell>
-                                <TableCell className={clsx(getStatusColor(app.status), 'font-medium')}>
+                                {/* <TableCell className={clsx(getStatusColor(app.status), 'font-medium')}>
                                     {app.status}
-                                </TableCell>
+                                </TableCell> */}
                                 <TableCell>
                                     {app.status === 'Pateikta' && (
                                         <Button
