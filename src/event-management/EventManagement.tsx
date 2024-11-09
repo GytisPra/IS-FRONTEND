@@ -2,12 +2,15 @@ import * as React from "react";
 import Tabs from "@mui/material/Tabs";
 import Tab from "@mui/material/Tab";
 import Box from "@mui/material/Box";
+import CreateEvent from "./CreateEvent";
 
 interface TabPanelProps {
   children?: React.ReactNode;
   index: number;
   value: number;
 }
+
+// eslint-disable-next-line @typescript-eslint/no-require-imports
 
 function CustomTabPanel(props: TabPanelProps) {
   const { children, value, index, ...other } = props;
@@ -32,10 +35,10 @@ function a11yProps(index: number) {
   };
 }
 
-export default function BasicTabs() {
+export default function EventManagement() {
   const [value, setValue] = React.useState(0);
 
-  const handleChange = (event: React.SyntheticEvent, newValue: number) => {
+  const handleChange = (_event: React.SyntheticEvent, newValue: number) => {
     setValue(newValue);
   };
 
@@ -47,13 +50,12 @@ export default function BasicTabs() {
           onChange={handleChange}
           aria-label="basic tabs example"
         >
-          <Tab label="Item One" {...a11yProps(0)} />
-          <Tab label="Item Two" {...a11yProps(1)} />
-          <Tab label="Item Three" {...a11yProps(2)} />
+          <Tab label="Sukurti" {...a11yProps(0)} />
+          <Tab label="Peržiūrėti visus" {...a11yProps(1)} />
         </Tabs>
       </Box>
       <CustomTabPanel value={value} index={0}>
-        Item One
+        <CreateEvent />
       </CustomTabPanel>
       <CustomTabPanel value={value} index={1}>
         Item Two
