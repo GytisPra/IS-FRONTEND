@@ -5,7 +5,7 @@ import MenuItem from '@mui/material/MenuItem';
 import FormControl from '@mui/material/FormControl';
 import Select, { SelectChangeEvent } from '@mui/material/Select';
 import { Button, Container } from '@mui/material';
-import EventCard from './EventCard'; // Make sure to import the EventCard component
+import EventCard from './eventCard'; // Make sure to import the EventCard component
 import EventRowCard from '../components/common/eventRowCard';
 
 export interface IVolunteer {
