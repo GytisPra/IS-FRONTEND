@@ -61,22 +61,22 @@ export default function CreateEvent() {
             </div>
           </div>
           <div>
-            <iframe
+            {/* <iframe
               className=" h-[35rem] w-[40rem]"
               src="/LocationPicker.html"
               title="Embedded HTML"
-            ></iframe>
+            ></iframe> */}
           </div>
         </div>
+        <Button
+          className="w-full"
+          color="success"
+          variant="contained"
+          disableElevation
+        >
+          Sukurti
+        </Button>
       </Box>
-      <Button
-        className="top-0 fixed bottom-0 left-0 w-full bg-gray-800 text-white"
-        color="success"
-        variant="contained"
-        disableElevation
-      >
-        Sukurti
-      </Button>
     </>
   );
 }

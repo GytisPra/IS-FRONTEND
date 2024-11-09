@@ -1,10 +1,6 @@
 import * as React from "react";
 import Box from "@mui/material/Box";
-import InputLabel from "@mui/material/InputLabel";
-import MenuItem from "@mui/material/MenuItem";
-import FormControl from "@mui/material/FormControl";
-import Select, { SelectChangeEvent } from "@mui/material/Select";
-import { Button, Container } from "@mui/material";
+import { Container } from "@mui/material";
 import TicketRowCard from "../components/common/ticketRowCard";
 import TicketCard from "./ticketCard";
 
@@ -96,11 +92,6 @@ export default function UserTickets() {
       document.removeEventListener("mousedown", handleClickOutside);
     };
   }, []);
-
-  const handleChange = (event: SelectChangeEvent) => {
-    setSelectedEvent(Number(event.target.value));
-  };
-
   return (
     <Container ref={containerRef}>
       <Box sx={{ minWidth: 120, margin: "50px" }}>
@@ -112,15 +103,7 @@ export default function UserTickets() {
               onClick={() => handleEventClick(event.id)}
             />
             {selectedEvent === event.id && (
-              <TicketCard
-                eventId={selectedEvent}
-                onAcceptVolunteer={(volunteerId) => {
-                  // Handle accept volunteer logic here
-                }}
-                onDeclineVolunteer={(volunteerId) => {
-                  // Handle decline volunteer logic here
-                }}
-              />
+              <TicketCard eventId={selectedEvent} />
             )}
           </div>
         ))}

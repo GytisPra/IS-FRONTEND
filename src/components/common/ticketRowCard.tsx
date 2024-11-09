@@ -46,7 +46,7 @@ const TicketRowCard: React.FC<EventRowCardProps> = ({
         </Grid>
         <Grid item xs={3}>
           <Typography variant="body1" color="text.secondary">
-            Kainaaaa
+            Kaina
           </Typography>
         </Grid>
       </Grid>

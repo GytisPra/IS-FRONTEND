@@ -49,7 +49,7 @@ const EventRowCard: React.FC<EventRowCardProps> = ({ event, height, button, onCl
     );
   
     return (
-      <Card sx={{ height, border: '1px solid blue', marginBottom: 3 }}>
+      <Card sx={{ height, border: '1px solid blue', marginTop: 3 }}>
         {button ? (
           content
         ) : (

@@ -93,7 +93,7 @@ export default function MainComponent() {
                         />
                         {/* Conditional Rendering Based on Selected Event */}
                         {selectedEventId === event.id && (
-                            <VolunteerEventDetail
+                            <VolunteerEventDetail 
                                 event={event} // Pass the entire event object
                                 onApply={handleApply}
                             />
@@ -101,23 +101,7 @@ export default function MainComponent() {
                     </div>
                 ))}
 
-                {/* Optional: Event Selector Dropdown */}
-                <FormControl fullWidth sx={{ marginTop: 4 }}>
-                    <InputLabel id="event-select-label">Renginys</InputLabel>
-                    <Select
-                        labelId="event-select-label"
-                        id="event-select"
-                        value={selectedEventId ? selectedEventId.toString() : ''}
-                        label="Renginys"
-                        onChange={(e) => setSelectedEventId(Number(e.target.value))}
-                    >
-                        {eventsFromBE.map(event => (
-                            <MenuItem key={event.id} value={event.id}>
-                                {event.name}
-                            </MenuItem>
-                        ))}
-                    </Select>
-                </FormControl>
+                
             </Box>
 
             {/* Snackbar for User Feedback */}

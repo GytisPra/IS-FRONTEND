@@ -1,14 +1,5 @@
 import React, { useState, useEffect } from "react";
-import {
-  Card,
-  CardContent,
-  Typography,
-  TextField,
-  Button,
-  List,
-  ListItem,
-  ListItemText,
-} from "@mui/material";
+import { Card, CardContent, Typography } from "@mui/material";
 
 export interface Volunteer {
   id: number;
@@ -68,17 +59,10 @@ const getEventById = async (eventId: number): Promise<Event> => {
 
 interface EventCardProps {
   eventId: number;
-  onAcceptVolunteer: (volunteerId: number) => void;
-  onDeclineVolunteer: (volunteerId: number) => void;
 }
 
-const EventCard: React.FC<EventCardProps> = ({
-  eventId,
-  onAcceptVolunteer,
-  onDeclineVolunteer,
-}) => {
+const EventCard: React.FC<EventCardProps> = ({ eventId }) => {
   const [event, setEvent] = useState<Event | null>(null);
-  const [searchTerm, setSearchTerm] = useState("");
 
   useEffect(() => {
     const fetchEvent = async () => {
@@ -89,27 +73,9 @@ const EventCard: React.FC<EventCardProps> = ({
     fetchEvent();
   }, [eventId]);
 
-  const handleSearchChange = (event: React.ChangeEvent<HTMLInputElement>) => {
-    setSearchTerm(event.target.value);
-  };
-
   if (!event) {
     return <div>Loading...</div>;
   }
-
-  const filteredVolunteers = event.volunteerRequests.filter((volunteer) =>
-    volunteer.name.toLowerCase().includes(searchTerm.toLowerCase())
-  );
-
-  const handleAcceptVolunteer = (volunteer: { id: number; name: string }) => {
-    setEvent({
-      ...event,
-      volunteers: [...event.volunteers, volunteer],
-      volunteerRequests: event.volunteerRequests.filter(
-        (v) => v.id !== volunteer.id
-      ),
-    });
-  };
 
   return (
     <Card>

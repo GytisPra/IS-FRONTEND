@@ -104,15 +104,7 @@ export default function BasicSelect() {
               onClick={() => handleEventClick(event.id)}
             />
             {selectedEvent === event.id && (
-              <EventCard
-                eventId={selectedEvent}
-                onAcceptVolunteer={(volunteerId) => {
-                  console.log(volunteerId);
-                }}
-                onDeclineVolunteer={(volunteerId) => {
-                  console.log(volunteerId);
-                }}
-              />
+              <EventCard eventId={selectedEvent} />
             )}
           </div>
         ))}

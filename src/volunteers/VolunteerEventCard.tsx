@@ -15,7 +15,7 @@ const VolunteerEventDetail: React.FC<VolunteerEventDetailProps> = ({ event, onAp
     };
 
     return (
-        <Card sx={{ marginTop: 2, padding: 2, border: '1px solid green' }}>
+        <Card  sx={{ marginBottom: 2, padding: 2, border: '1px solid green' }}>
             <CardContent>
                 <Typography variant="h5" component="div">
                     {event.name}
