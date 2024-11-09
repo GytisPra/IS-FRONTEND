@@ -4,6 +4,7 @@ import Home from "./home/home";
 import EventManagement from "./event-management/EventManagement";
 import CreatingTicket from "./ticket-buying/CreatingTicket";
 import OrganiserPage from "./organizers";
+import UserTickets from "./ticket-buying/UserTickets";
 
 export const router = createBrowserRouter([
   {
@@ -21,5 +22,9 @@ export const router = createBrowserRouter([
   {
     path: "/organiser",
     element: <OrganiserPage />,
+  },
+  {
+    path: "/tickets",
+    element: <UserTickets />,
   },
 ]);

@@ -26,7 +26,7 @@ export interface Event {
 const eventsFromBE = [
   {
     id: 1,
-    name: "Renginys 1",
+    name: "Bilietas 1",
     attendees: ["Dalyvis 1", "Dalyvis 2"],
     volunteers: [],
     volunteerRequests: [
@@ -38,7 +38,7 @@ const eventsFromBE = [
   },
   {
     id: 2,
-    name: "Renginys 2",
+    name: "Bilietas 2",
     attendees: ["Dalyvis 1", "Dalyvis 2"],
     volunteers: [
       { id: 1, name: "Savanoris 1" },
@@ -51,7 +51,7 @@ const eventsFromBE = [
   },
   {
     id: 3,
-    name: "Renginys 3",
+    name: "Bilietas 3",
     attendees: ["Dalyvis 1", "Dalyvis 2"],
     volunteers: [
       { id: 1, name: "Savanoris 1" },
@@ -117,48 +117,21 @@ const EventCard: React.FC<EventCardProps> = ({
         <Typography variant="h5" component="div">
           {event.name}
         </Typography>
-        <Typography
-          variant="body1"
-          color="text.secondary"
-          sx={{ marginBottom: 5 }}
-        >
-          {event.attendees.length} Dalyviai
+        <Typography variant="body1" sx={{ marginTop: 5 }}>
+          Bilieto ID
         </Typography>
-        <Typography variant="h6" component="div">
-          {event.attendees.length} Priimti savanoriai
+        <Typography variant="body1" sx={{ marginTop: 2 }}>
+          Renginio data
         </Typography>
-        <List>
-          {event.volunteers.map((volunteer) => (
-            <ListItem key={volunteer.id}>
-              <ListItemText primary={volunteer.name} />
-            </ListItem>
-          ))}
-        </List>
-        <TextField
-          label="Ieškoti savanorių"
-          variant="outlined"
-          fullWidth
-          margin="normal"
-          value={searchTerm}
-          onChange={handleSearchChange}
-        />
-        <List>
-          {filteredVolunteers.map((volunteer) => (
-            <ListItem key={volunteer.id} sx={{ gap: 5 }}>
-              <ListItemText primary={volunteer.name} />
-              <Button
-                variant="contained"
-                color="success"
-                onClick={() => handleAcceptVolunteer(volunteer)}
-              >
-                Priimti
-              </Button>
-              <Button variant="contained" color="error">
-                Nepriimti
-              </Button>
-            </ListItem>
-          ))}
-        </List>
+        <Typography variant="body1" sx={{ marginTop: 2 }}>
+          Renginio data
+        </Typography>
+        <Typography variant="body1" sx={{ marginTop: 2 }}>
+          Renginio vieta
+        </Typography>
+        <Typography variant="body1" sx={{ marginTop: 2 }}>
+          Bilieto tipas
+        </Typography>
       </CardContent>
     </Card>
   );
