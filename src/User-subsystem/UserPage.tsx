@@ -1,9 +1,57 @@
-import React from 'react';
+import React, { useState } from 'react';
+import { Box, Typography, Button, TextField, Container, Card, CardContent, List, ListItem, ListItemText, Collapse } from '@mui/material';
 import { useNavigate } from 'react-router-dom';
-import { Box, Typography, Button, TextField, Container } from '@mui/material';
+
+interface Event {
+    id: number;
+    name: string;
+    attendees: string[];
+    description: string;
+    details: string; // Additional details for each event
+}
+
+// Hardcoded list of events
+const eventsFromBE: Event[] = [
+    {
+        id: 1,
+        name: 'Renginys 1',
+        attendees: ['Dalyvis 1', 'Dalyvis 2'],
+        description: 'Aprašymas 1',
+        details: 'Additional details about Renginys 1. This can include location, time, agenda, etc.',
+    },
+    {
+        id: 2,
+        name: 'Renginys 2',
+        attendees: ['Dalyvis 3', 'Dalyvis 4'],
+        description: 'Aprašymas 2',
+        details: 'Additional details about Renginys 2. This can include location, time, agenda, etc.',
+    },
+    {
+        id: 3,
+        name: 'Renginys 3',
+        attendees: ['Dalyvis 5', 'Dalyvis 6'],
+        description: 'Aprašymas 3',
+        details: 'Additional details about Renginys 3. This can include location, time, agenda, etc.',
+    },
+];
 
 const UserPage: React.FC = () => {
     const navigate = useNavigate();
+    const [searchTerm, setSearchTerm] = useState('');
+    const [expandedEventId, setExpandedEventId] = useState<number | null>(null);
+
+    const handleSearchChange = (event: React.ChangeEvent<HTMLInputElement>) => {
+        setSearchTerm(event.target.value);
+    };
+
+    const handleViewDetailsClick = (eventId: number) => {
+        setExpandedEventId(prevId => (prevId === eventId ? null : eventId)); // Toggle the expanded state
+    };
+
+    // Filter events based on the search term
+    const filteredEvents = eventsFromBE.filter(event =>
+        event.name.toLowerCase().includes(searchTerm.toLowerCase())
+    );
 
     return (
         <Box
@@ -16,6 +64,7 @@ const UserPage: React.FC = () => {
                 height: '100vh',
                 backgroundColor: '#f3f4f6',
                 overflow: 'hidden',
+                padding: 2,
             }}
         >
             {/* Button positioned in the top right corner */}
@@ -32,9 +81,9 @@ const UserPage: React.FC = () => {
                 Peržiūrėti profilį
             </Button>
 
-            {/* Centered Card Content */}
+            {/* Centered Content */}
             <Container
-                maxWidth="sm"
+                maxWidth="md"
                 sx={{
                     display: 'flex',
                     flexDirection: 'column',
@@ -51,7 +100,7 @@ const UserPage: React.FC = () => {
                 </Typography>
 
                 {/* Event Search Section */}
-                <Box sx={{ width: '100%', textAlign: 'center' }}>
+                <Box sx={{ width: '100%', textAlign: 'center', marginBottom: 4 }}>
                     <Typography variant="h6" component="p" color="text.secondary" sx={{ marginBottom: 1 }}>
                         Kokio renginio ieškote?
                     </Typography>
@@ -59,9 +108,51 @@ const UserPage: React.FC = () => {
                         variant="outlined"
                         placeholder="Search for events"
                         fullWidth
+                        value={searchTerm}
+                        onChange={handleSearchChange}
                         sx={{ marginBottom: 2 }}
                     />
                 </Box>
+
+                {/* Event List */}
+                <List sx={{ width: '100%' }}>
+                    {filteredEvents.map(event => (
+                        <Card key={event.id} sx={{ marginBottom: 2 }}>
+                            <CardContent>
+                                <Typography variant="h5" component="div">
+                                    {event.name}
+                                </Typography>
+                                <Typography variant="body2" color="text.secondary">
+                                    {event.description}
+                                </Typography>
+                                <Typography variant="body2" color="text.secondary" sx={{ marginBottom: 2 }}>
+                                    Attendees: {event.attendees.join(', ')}
+                                </Typography>
+                                <Button
+                                    variant="outlined"
+                                    color="primary"
+                                    onClick={() => handleViewDetailsClick(event.id)}
+                                >
+                                    {expandedEventId === event.id ? 'Hide Details' : 'View Details'}
+                                </Button>
+
+                                {/* Collapsible Section */}
+                                <Collapse in={expandedEventId === event.id} timeout="auto" unmountOnExit>
+                                    <Box sx={{ mt: 2, paddingLeft: 2 }}>
+                                        <Typography variant="body2" color="text.secondary">
+                                            {event.details}
+                                        </Typography>
+                                    </Box>
+                                </Collapse>
+                            </CardContent>
+                        </Card>
+                    ))}
+                    {filteredEvents.length === 0 && (
+                        <Typography variant="body1" color="text.secondary" sx={{ textAlign: 'center', mt: 2 }}>
+                            No events found.
+                        </Typography>
+                    )}
+                </List>
             </Container>
         </Box>
     );
