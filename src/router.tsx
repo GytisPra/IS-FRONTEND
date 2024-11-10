@@ -9,6 +9,7 @@ import ProfileUpdatePage from "./User-subsystem/Profile";
 import UserEvents from "./User-subsystem/UserEvents";
 import VolunteerEventDetail from "./volunteers/VolunteerApply";
 import MyApplications from "./volunteers/MyApplications";
+import EditEvent from "./event-management/EditEvent";
 export const router = createBrowserRouter([
   {
     path: "/",
@@ -24,11 +25,11 @@ export const router = createBrowserRouter([
   },
   {
     path: "/volunteer",
-    element: <VolunteerEventDetail />
+    element: <VolunteerEventDetail />,
   },
   {
     path: "/my-applications",
-    element: <MyApplications/>
+    element: <MyApplications />,
   },
   {
     path: "/tickets",
@@ -45,5 +46,9 @@ export const router = createBrowserRouter([
   {
     path: "/my-events",
     element: <UserEvents />,
+  },
+  {
+    path: "/edit-demo",
+    element: <EditEvent />,
   },
 ]);

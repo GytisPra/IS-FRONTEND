@@ -7,7 +7,7 @@ interface ILayoutProps {
 }
 
 export const Layout = ({ children }: ILayoutProps) => (
-  <div className="flex flex-col">
+  <div>
     <Header />
 
     {children}
