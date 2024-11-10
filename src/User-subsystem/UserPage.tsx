@@ -80,20 +80,6 @@ const UserPage: React.FC = () => {
         padding: 2,
       }}
     >
-      {/* Button positioned in the top right corner */}
-      <Button
-        variant="contained"
-        color="primary"
-        onClick={() => navigate("/update-profile")}
-        sx={{
-          position: "absolute",
-          top: 16,
-          right: 16,
-        }}
-      >
-        Peržiūrėti profilį
-      </Button>
-
       {/* Centered Content */}
       <Container
         maxWidth="md"
@@ -133,7 +119,7 @@ const UserPage: React.FC = () => {
           </Typography>
           <TextField
             variant="outlined"
-            placeholder="Search for events"
+            placeholder="Įveskite renginio pavadinimą"
             fullWidth
             value={searchTerm}
             onChange={handleSearchChange}
@@ -157,7 +143,7 @@ const UserPage: React.FC = () => {
                   color="text.secondary"
                   sx={{ marginBottom: 2 }}
                 >
-                  Attendees: {event.attendees.join(", ")}
+                  Dalyviai: {event.attendees.join(", ")}
                 </Typography>
                 <Button
                   variant="outlined"
@@ -190,7 +176,7 @@ const UserPage: React.FC = () => {
               color="text.secondary"
               sx={{ textAlign: "center", mt: 2 }}
             >
-              No events found.
+              Nerasta jokių renginių pagal paiešką
             </Typography>
           )}
         </List>
