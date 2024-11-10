@@ -4,6 +4,7 @@ import Tab from "@mui/material/Tab";
 import Box from "@mui/material/Box";
 import CreateEvent from "./CreateEvent";
 import EventsList from "../organizers";
+import { Container } from "@mui/material";
 
 interface TabPanelProps {
   children?: React.ReactNode;
@@ -46,12 +47,13 @@ export default function EventManagement() {
   };
 
   return (
-    <Box sx={{ width: "100%", height: "100%" }}>
+    <Container>
       <Box sx={{ borderBottom: 1, borderColor: "divider" }}>
         <Tabs
           value={value}
           onChange={handleChange}
           aria-label="basic tabs example"
+          centered
         >
           <Tab label="Sukurti" {...a11yProps(0)} />
           <Tab label="Peržiūrėti visus" {...a11yProps(1)} />
@@ -63,6 +65,6 @@ export default function EventManagement() {
       <CustomTabPanel value={value} index={1}>
         <EventsList />
       </CustomTabPanel>
-    </Box>
+    </Container>
   );
 }

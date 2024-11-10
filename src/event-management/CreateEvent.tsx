@@ -2,6 +2,7 @@ import {
   Box,
   Button,
   Checkbox,
+  Container,
   FormControlLabel,
   TextField,
 } from "@mui/material";
@@ -26,7 +27,7 @@ export default function CreateEvent() {
   };
 
   return (
-    <>
+    <Container>
       <Box
         className="flex w-full flex-col items-center"
         sx={{ flexGrow: 0, height: "100%" }}
@@ -69,7 +70,7 @@ export default function CreateEvent() {
           </div>
         </div>
         <Button
-          className="w-full"
+          fullWidth
           color="success"
           variant="contained"
           disableElevation
@@ -77,6 +78,6 @@ export default function CreateEvent() {
           Sukurti
         </Button>
       </Box>
-    </>
+    </Container>
   );
 }
