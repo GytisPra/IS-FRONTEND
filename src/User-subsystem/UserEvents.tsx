@@ -59,39 +59,6 @@ const UserEvents: React.FC = () => {
         position: "relative",
       }}
     >
-      {/* Sidebar Toggle Button in Top Right */}
-      <IconButton
-        onClick={toggleDrawer(true)}
-        sx={{
-          position: "absolute",
-          top: 16,
-          left: 16,
-          zIndex: 10,
-        }}
-      >
-        <MenuIcon />
-      </IconButton>
-
-      {/* Drawer Sidebar */}
-      <Drawer anchor="left" open={drawerOpen} onClose={toggleDrawer(false)}>
-        <Box
-          sx={{ width: 250 }}
-          role="presentation"
-          onClick={toggleDrawer(false)}
-          onKeyDown={toggleDrawer(false)}
-        >
-          <List>
-            <ListItemButton onClick={() => navigate("/update-profile")}>
-              <ListItemText primary="My Profile" />
-            </ListItemButton>
-            <ListItemButton onClick={() => navigate("/my-events")}>
-              <ListItemText primary="My Events" />
-            </ListItemButton>
-          </List>
-        </Box>
-      </Drawer>
-
-      {/* Events List Centered */}
       <Container
         maxWidth="sm"
         sx={{

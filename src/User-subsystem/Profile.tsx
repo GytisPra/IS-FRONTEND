@@ -1,149 +1,86 @@
-import React, { useState } from "react";
 import {
   Box,
   Button,
   Container,
   TextField,
   Typography,
-  IconButton,
-  Drawer,
-  List,
-  ListItemText,
-  ListItemButton,
 } from "@mui/material";
 
-import { useNavigate } from "react-router-dom";
-import MenuIcon from "@mui/icons-material/Menu";
+export const ProfileUpdatePage = () => (
+  <Box
+    sx={{
+      position: "relative",
+      display: "flex",
+      alignItems: "center",
+      justifyContent: "center",
+      width: "100%",
+      height: "100vh",
+      backgroundColor: "#f3f4f6",
+      overflow: "hidden",
+    }}
+  >
 
-const ProfileUpdatePage: React.FC = () => {
-  const [drawerOpen, setDrawerOpen] = useState(false);
-  const navigate = useNavigate();
-
-  const toggleDrawer = (open: boolean) => () => {
-    setDrawerOpen(open);
-  };
-
-  return (
-    <Box
+    <Container
+      maxWidth="sm"
       sx={{
-        position: "relative",
         display: "flex",
+        flexDirection: "column",
         alignItems: "center",
-        justifyContent: "center",
-        width: "100%",
-        height: "100vh",
-        backgroundColor: "#f3f4f6",
-        overflow: "hidden",
+        backgroundColor: "white",
+        padding: 4,
+        borderRadius: 2,
+        boxShadow: 3,
       }}
     >
-      {/* Sidebar Toggle Button */}
-      <IconButton
-        onClick={toggleDrawer(true)}
+      {/* Header */}
+      <Typography
+        variant="h4"
+        component="h1"
         sx={{
-          position: "absolute",
-          top: 16,
-          left: 16,
-          zIndex: 10,
+          fontWeight: "bold",
+          color: "text.primary",
+          textAlign: "center",
+          mb: 4,
         }}
       >
-        <MenuIcon />
-      </IconButton>
+        Mano profilis
+      </Typography>
 
-      {/* Drawer Sidebar */}
-      <Drawer anchor="left" open={drawerOpen} onClose={toggleDrawer(false)}>
-        <Box
-          sx={{ width: 250 }}
-          role="presentation"
-          onClick={toggleDrawer(false)}
-          onKeyDown={toggleDrawer(false)}
-        >
-          <List>
-            <ListItemButton onClick={() => navigate("/update-profile")}>
-              <ListItemText primary="My Profile" />
-            </ListItemButton>
-            <ListItemButton onClick={() => navigate("/my-events")}>
-              <ListItemText primary="My Events" />
-            </ListItemButton>
-          </List>
-        </Box>
-      </Drawer>
-
-      {/* Go Back Button */}
-      <Button
-        variant="contained"
-        color="primary"
-        onClick={() => navigate("/user")}
-        sx={{
-          position: "absolute",
-          top: 16,
-          right: 16,
-        }}
-      >
-        Grįžti į pagrindinį puslapį
-      </Button>
-
-      <Container
-        maxWidth="sm"
+      {/* User Information Form */}
+      <Box
+        component="form"
         sx={{
           display: "flex",
           flexDirection: "column",
-          alignItems: "center",
-          backgroundColor: "white",
-          padding: 4,
-          borderRadius: 2,
-          boxShadow: 3,
+          gap: 2,
+          width: "100%",
+          mb: 3,
         }}
       >
-        {/* Header */}
-        <Typography
-          variant="h4"
-          component="h1"
-          sx={{
-            fontWeight: "bold",
-            color: "text.primary",
-            textAlign: "center",
-            mb: 4,
-          }}
-        >
-          Mano profilis
-        </Typography>
+        <TextField label="Vardas" defaultValue="Jonas" fullWidth />
+        <TextField label="Slapyvardis" defaultValue="Jonukas" fullWidth />
+        <TextField
+          label="El paštas"
+          defaultValue="jonas@example.com"
+          type="email"
+          fullWidth
+        />
+        <TextField label="Vietovė" defaultValue="Vilnius" fullWidth />
+        <TextField label="Amžius" defaultValue="30" type="number" fullWidth />
+        <TextField
+          label="Telefono numeris"
+          defaultValue="+370 600 12345"
+          type="tel"
+          fullWidth
+        />
+      </Box>
 
-        {/* User Information Form */}
-        <Box
-          component="form"
-          sx={{
-            display: "flex",
-            flexDirection: "column",
-            gap: 2,
-            width: "100%",
-            mb: 3,
-          }}
-        >
-          <TextField label="Vardas" defaultValue="Jonas" fullWidth />
-          <TextField label="Slapyvardis" defaultValue="Jonukas" fullWidth />
-          <TextField
-            label="El paštas"
-            defaultValue="jonas@example.com"
-            type="email"
-            fullWidth
-          />
-          <TextField label="Vietovė" defaultValue="Vilnius" fullWidth />
-          <TextField label="Amžius" defaultValue="30" type="number" fullWidth />
-          <TextField
-            label="Telefono numeris"
-            defaultValue="+370 600 12345"
-            type="tel"
-            fullWidth
-          />
-        </Box>
-
-        {/* Update Button */}
-        <Button variant="contained" color="primary" fullWidth>
-          Išsaugoti pakeitimus
-        </Button>
-      </Container>
-    </Box>
-  );
-};
+      {/* Update Button */}
+      <Button variant="contained" color="primary" fullWidth>
+        Išsaugoti pakeitimus
+      </Button>
+    </Container>
+  </Box>
+);
 
 export default ProfileUpdatePage;
