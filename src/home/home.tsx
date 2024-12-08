@@ -1,4 +1,5 @@
 import { Container, Typography, Box, Grid, Paper } from '@mui/material';
+import { loginWithGoogle, logout, supabase } from '../userService';
 
 const teamMembers = [
   { name: 'Gedmantas', role: "Dev'as | Rekvizitai" },
@@ -33,6 +34,10 @@ const App = () => {
           </Grid>
         ))}
       </Grid>
+      <Box sx={{ textAlign: 'center', my: 4 }}>
+        <button style={{border: '1px solid black', margin: '5px', padding: '10px'}} onClick={loginWithGoogle}>Prisijungti su Google</button>
+        <button style={{border: '1px solid black', padding: '10px'}} onClick={logout}>Atsijungti</button>
+      </Box>
     </Container>
   );
 }
