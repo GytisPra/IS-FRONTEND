@@ -11,6 +11,7 @@ import { useState } from "react";
 import { Drawer, ListItemButton, ListItemText, List } from "@mui/material";
 import MenuIcon from "@mui/icons-material/Menu";
 import theme from "../theme";
+import { logout } from "../userService";
 
 export default function Header() {
   const [anchorEl, setAnchorEl] = useState<null | HTMLElement>(null);
@@ -72,6 +73,9 @@ export default function Header() {
                 </MenuItem>
                 <MenuItem onClick={() => (window.location.href = "/user")}>
                   Renginiai
+                </MenuItem>
+                <MenuItem onClick={logout}>
+                  Atsijungti
                 </MenuItem>
               </Menu>
             </div>
