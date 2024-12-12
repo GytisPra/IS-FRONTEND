@@ -10,6 +10,7 @@ import UserEvents from "./User-subsystem/UserEvents";
 import VolunteerEventDetail from "./volunteers/VolunteerApply";
 import MyApplications from "./volunteers/MyApplications";
 import EditEvent from "./event-management/EditEvent";
+import EventManager from './event-management/EventManager';
 export const router = createBrowserRouter([
   {
     path: "/",
@@ -45,7 +46,7 @@ export const router = createBrowserRouter([
   },
   {
     path: "/my-events",
-    element: <UserEvents />,
+    element: <EventManager  />,
   },
   {
     path: "/edit-demo",
