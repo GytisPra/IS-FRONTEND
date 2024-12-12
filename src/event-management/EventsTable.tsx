@@ -12,9 +12,14 @@ const EventTable = ({ events, onEdit, onDelete }: EventTableProps) => {
     key: string;
     direction: "asc" | "desc";
   } | null>(null);
-  const [filter, setFilter] = useState<{ startDate: string; endDate: string }>({
+  const [filter, setFilter] = useState<{
+    startDate: string;
+    endDate: string;
+    hideNotFree: boolean;
+  }>({
     startDate: "",
     endDate: "",
+    hideNotFree: false,
   });
 
   const handleFilterChange = (e: React.ChangeEvent<HTMLInputElement>) => {
@@ -22,11 +27,18 @@ const EventTable = ({ events, onEdit, onDelete }: EventTableProps) => {
     setFilter((prev) => ({ ...prev, [name]: value }));
   };
 
+  const handlehideNotFree = () => {
+    setFilter((prev) => ({ ...prev, ["hideNotFree"]: !prev.hideNotFree }));
+  };
+
   const filteredEvents = events.filter((event) => {
     const eventDate = new Date(event.date);
     const startDate = filter.startDate ? new Date(filter.startDate) : null;
     const endDate = filter.endDate ? new Date(filter.endDate) : null;
 
+    if (filter.hideNotFree && event.is_free) {
+      return false;
+    }
     if (startDate && eventDate < startDate) {
       return false;
     }
@@ -67,6 +79,21 @@ const EventTable = ({ events, onEdit, onDelete }: EventTableProps) => {
   return (
     <>
       <div className="flex space-x-4 mb-4">
+        <div>
+          <label htmlFor="hideFree" className="block mb-1">
+            Paslėpti mokamus?
+          </label>
+          <button
+            id="hideFree"
+            name="hideFree"
+            className={`w-full py-[0.55rem] ${
+              filter.hideNotFree && "bg-gray-100"
+            } border rounded hover:bg-gray-200`}
+            onClick={handlehideNotFree}
+          >
+            {filter.hideNotFree ? "Ne" : "Taip"}
+          </button>
+        </div>
         <div>
           <label htmlFor="startDate" className="block mb-1">
             Nuo datos
