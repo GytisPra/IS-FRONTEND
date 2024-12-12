@@ -1,16 +1,14 @@
 import { createBrowserRouter } from "react-router-dom";
 import "./index.css";
 import Home from "./home/home";
-import EventManagement from "./event-management/EventManagement";
 import OrganiserPage from "./organizers";
 import UserTickets from "./ticket-buying/UserTickets";
 import UserPage from "./User-subsystem/UserPage";
 import ProfileUpdatePage from "./User-subsystem/Profile";
-import UserEvents from "./User-subsystem/UserEvents";
 import VolunteerEventDetail from "./volunteers/VolunteerApply";
 import MyApplications from "./volunteers/MyApplications";
 import EditEvent from "./event-management/EditEvent";
-import EventManager from './event-management/EventManager';
+import EventManager from "./event-management/EventManager";
 export const router = createBrowserRouter([
   {
     path: "/",
@@ -18,7 +16,7 @@ export const router = createBrowserRouter([
   },
   {
     path: "/event-management",
-    element: <EventManagement />,
+    element: <EventManager />,
   },
   {
     path: "/organiser",
@@ -43,10 +41,6 @@ export const router = createBrowserRouter([
   {
     path: "/update-profile",
     element: <ProfileUpdatePage />,
-  },
-  {
-    path: "/my-events",
-    element: <EventManager  />,
   },
   {
     path: "/edit-demo",
