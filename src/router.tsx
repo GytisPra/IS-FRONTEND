@@ -7,7 +7,6 @@ import UserPage from "./User-subsystem/UserPage";
 import ProfileUpdatePage from "./User-subsystem/Profile";
 import VolunteerEventDetail from "./volunteers/VolunteerApply";
 import MyApplications from "./volunteers/MyApplications";
-import EditEvent from "./event-management/EditEvent";
 import EventManager from "./event-management/EventManager";
 export const router = createBrowserRouter([
   {
@@ -41,9 +40,5 @@ export const router = createBrowserRouter([
   {
     path: "/update-profile",
     element: <ProfileUpdatePage />,
-  },
-  {
-    path: "/edit-demo",
-    element: <EditEvent />,
   },
 ]);
