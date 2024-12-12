@@ -36,7 +36,7 @@ const EventModal: React.FC<EventModalProps> = ({
       <div className="bg-white rounded-lg shadow-lg w-full max-w-3xl mx-4">
         <div className="flex justify-between items-center p-4 border-b">
           <h2 className="text-xl font-semibold">
-            {isEditing ? "Update Event" : "Create New Event"}
+            {isEditing ? "Atnaujinti Renginį" : "Sukurti Naują Renginį"}
           </h2>
           <button
             onClick={onClose}
@@ -225,11 +225,11 @@ const EventModal: React.FC<EventModalProps> = ({
             >
               {modalLoading
                 ? isEditing
-                  ? "Updating..."
-                  : "Creating..."
+                  ? "Atnaujinama..."
+                  : "Kuriama..."
                 : isEditing
-                ? "Update Event"
-                : "Create Event"}
+                ? "Atnaujinti Renginį"
+                : "Sukurti Renginį"}
             </button>
           </div>
         </form>
