@@ -74,9 +74,7 @@ export default function Header() {
                 <MenuItem onClick={() => (window.location.href = "/user")}>
                   Renginiai
                 </MenuItem>
-                <MenuItem onClick={logout}>
-                  Atsijungti
-                </MenuItem>
+                <MenuItem onClick={logout}>Atsijungti</MenuItem>
               </Menu>
             </div>
           </Toolbar>
@@ -108,7 +106,7 @@ export default function Header() {
               { text: "Mano Bilietai", href: "/tickets" },
               { text: "Tapti savanoriu!", href: "/volunteer" },
               { text: "Mano savanorystės", href: "/my-applications" },
-              { text: "Sukūrti Renginį", href: "/event-management" },
+              { text: "Reinginių tvarkyklė", href: "/event-management" },
               { text: "Ieškoti savanorių", href: "/organiser" },
             ].map((item, index) => (
               <ListItemButton
