@@ -1,4 +1,3 @@
-// EventTable.tsx
 import { useState } from "react";
 import { Event } from "./types";
 
@@ -13,8 +12,31 @@ const EventTable = ({ events, onEdit, onDelete }: EventTableProps) => {
     key: string;
     direction: "asc" | "desc";
   } | null>(null);
+  const [filter, setFilter] = useState<{ startDate: string; endDate: string }>({
+    startDate: "",
+    endDate: "",
+  });
 
-  const sortedEvents = [...events];
+  const handleFilterChange = (e: React.ChangeEvent<HTMLInputElement>) => {
+    const { name, value } = e.target;
+    setFilter((prev) => ({ ...prev, [name]: value }));
+  };
+
+  const filteredEvents = events.filter((event) => {
+    const eventDate = new Date(event.date);
+    const startDate = filter.startDate ? new Date(filter.startDate) : null;
+    const endDate = filter.endDate ? new Date(filter.endDate) : null;
+
+    if (startDate && eventDate < startDate) {
+      return false;
+    }
+    if (endDate && eventDate > endDate) {
+      return false;
+    }
+    return true;
+  });
+
+  const sortedEvents = [...filteredEvents];
   if (sortConfig !== null) {
     sortedEvents.sort((a, b) => {
       const aValue = a[sortConfig.key];
@@ -44,6 +66,34 @@ const EventTable = ({ events, onEdit, onDelete }: EventTableProps) => {
 
   return (
     <>
+      <div className="flex space-x-4 mb-4">
+        <div>
+          <label htmlFor="startDate" className="block mb-1">
+            Nuo datos
+          </label>
+          <input
+            type="date"
+            id="startDate"
+            name="startDate"
+            value={filter.startDate}
+            onChange={handleFilterChange}
+            className="w-full p-2 border rounded"
+          />
+        </div>
+        <div>
+          <label htmlFor="endDate" className="block mb-1">
+            Iki datos
+          </label>
+          <input
+            type="date"
+            id="endDate"
+            name="endDate"
+            value={filter.endDate}
+            onChange={handleFilterChange}
+            className="w-full p-2 border rounded"
+          />
+        </div>
+      </div>
       <table className="min-w-full bg-white border">
         <thead>
           <tr>
@@ -135,11 +185,8 @@ const EventTable = ({ events, onEdit, onDelete }: EventTableProps) => {
           ))}
           {sortedEvents.length === 0 && (
             <tr>
-              <td
-                colSpan={9}
-                className="py-2 px-4 border text-center text-gray-200"
-              >
-                No events found.
+              <td colSpan={9} className="py-2 px-4 border text-center">
+                Nerasta renginių.
               </td>
             </tr>
           )}
