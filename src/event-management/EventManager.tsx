@@ -1,6 +1,5 @@
-
-import React, { useState, useEffect, ChangeEvent, FormEvent } from 'react';
-import { supabase } from '../../supabase'; 
+import React, { useState, useEffect, ChangeEvent, FormEvent } from "react";
+import { supabase } from "../../supabase";
 
 interface Event {
   id: number;
@@ -16,7 +15,7 @@ interface Event {
 }
 
 interface Location {
-  id: string; 
+  id: string;
   country: string;
   address: string;
   specified_location: string;
@@ -31,7 +30,8 @@ interface NewEventForm {
   is_free: boolean;
   seats_count: number;
   max_volunteer_count: number;
-  location?: { // manau, kad gali but nullable, nes renginys gali but ir online
+  location?: {
+    // manau, kad gali but nullable, nes renginys gali but ir online
     country?: string;
     address?: string;
     specified_location?: string;
@@ -47,9 +47,9 @@ const EventManager: React.FC = () => {
 
   const [showModal, setShowModal] = useState<boolean>(false);
   const [newEventForm, setNewEventForm] = useState<NewEventForm>({
-    date: '',
-    start_time: '',
-    end_time: '',
+    date: "",
+    start_time: "",
+    end_time: "",
     is_free: false,
     seats_count: 0,
     max_volunteer_count: 0,
@@ -65,9 +65,9 @@ const EventManager: React.FC = () => {
   const fetchEvents = async () => {
     setLoading(true);
     const { data, error } = await supabase
-      .from<Event>('event')
-      .select('*')
-      .order('date', { ascending: true });
+      .from<Event>("event")
+      .select("*")
+      .order("date", { ascending: true });
 
     if (error) {
       setError(error.message);
@@ -86,25 +86,25 @@ const EventManager: React.FC = () => {
   ) => {
     const { name, value, type, checked } = e.target;
 
-    if (name.startsWith('location.')) {
-      const locationField = name.split('.')[1];
+    if (name.startsWith("location.")) {
+      const locationField = name.split(".")[1];
       setNewEventForm((prevForm) => ({
         ...prevForm,
         location: {
           ...(prevForm.location || {
-            country: '',
-            address: '',
-            specified_location: '',
+            country: "",
+            address: "",
+            specified_location: "",
             longitude: 0,
             latitude: 0,
           }),
-          [locationField]: type === 'checkbox' ? checked : value,
+          [locationField]: type === "checkbox" ? checked : value,
         },
       }));
     } else {
       setNewEventForm({
         ...newEventForm,
-        [name]: type === 'checkbox' ? checked : value,
+        [name]: type === "checkbox" ? checked : value,
       });
     }
   };
@@ -117,10 +117,10 @@ const EventManager: React.FC = () => {
 
     try {
       const { data: locationData, error: locationError } = await supabase
-        .from<Location>('event_location')
-        .select('*')
-        .eq('id', event.event_location_id)
-        .single(); 
+        .from<Location>("event_location")
+        .select("*")
+        .eq("id", event.event_location_id)
+        .single();
 
       if (locationError) {
         throw new Error(locationError.message);
@@ -146,7 +146,7 @@ const EventManager: React.FC = () => {
 
       setShowModal(true);
     } catch (err: any) {
-      setModalError(err.message || 'Nepavyko gauti vietovės duomenų.');
+      setModalError(err.message || "Nepavyko gauti vietovės duomenų.");
     } finally {
       setModalLoading(false);
     }
@@ -164,20 +164,21 @@ const EventManager: React.FC = () => {
         if (isEditing && editingEventId !== null) {
           const eventToEdit = events.find((evt) => evt.id === editingEventId);
           if (!eventToEdit) {
-            throw new Error('Renginys nerastas.');
+            throw new Error("Renginys nerastas.");
           }
 
-          const { data: updatedLocationData, error: updateLocationError } = await supabase
-            .from<Location>('event_location')
-            .update({
-              country: newEventForm.location.country,
-              address: newEventForm.location.address,
-              specified_location: newEventForm.location.specified_location,
-              longitude: newEventForm.location.longitude,
-              latitude: newEventForm.location.latitude,
-            })
-            .eq('id', eventToEdit.event_location_id)
-            .select();
+          const { data: updatedLocationData, error: updateLocationError } =
+            await supabase
+              .from<Location>("event_location")
+              .update({
+                country: newEventForm.location.country,
+                address: newEventForm.location.address,
+                specified_location: newEventForm.location.specified_location,
+                longitude: newEventForm.location.longitude,
+                latitude: newEventForm.location.latitude,
+              })
+              .eq("id", eventToEdit.event_location_id)
+              .select();
 
           if (updateLocationError) {
             throw new Error(updateLocationError.message);
@@ -185,13 +186,13 @@ const EventManager: React.FC = () => {
 
           const updatedLocation = updatedLocationData && updatedLocationData[0];
           if (!updatedLocation) {
-            throw new Error('Nepavyko atnaujinti vietovės.');
+            throw new Error("Nepavyko atnaujinti vietovės.");
           }
 
           locationId = updatedLocation.id;
         } else {
           const { data: locationData, error: locationError } = await supabase
-            .from<Location>('event_location')
+            .from<Location>("event_location")
             .insert([
               {
                 country: newEventForm.location.country,
@@ -209,7 +210,7 @@ const EventManager: React.FC = () => {
 
           const newLocation = locationData && locationData[0];
           if (!newLocation) {
-            throw new Error('Nepavyko sukurti vietovės.');
+            throw new Error("Nepavyko sukurti vietovės.");
           }
 
           locationId = newLocation.id;
@@ -218,7 +219,7 @@ const EventManager: React.FC = () => {
 
       if (isEditing && editingEventId !== null) {
         const { data: eventData, error: eventError } = await supabase
-          .from<Event>('event')
+          .from<Event>("event")
           .update({
             date: newEventForm.date,
             start_time: newEventForm.start_time,
@@ -228,7 +229,7 @@ const EventManager: React.FC = () => {
             event_location_id: locationId || undefined,
             max_volunteer_count: newEventForm.max_volunteer_count,
           })
-          .eq('id', editingEventId)
+          .eq("id", editingEventId)
           .select();
 
         if (eventError) {
@@ -237,13 +238,15 @@ const EventManager: React.FC = () => {
 
         const updatedEvent = eventData && eventData[0];
         if (!updatedEvent) {
-          throw new Error('Nepavyko atnaujinti renginio.');
+          throw new Error("Nepavyko atnaujinti renginio.");
         }
 
-        setEvents(events.map((evt) => (evt.id === editingEventId ? updatedEvent : evt)));
+        setEvents(
+          events.map((evt) => (evt.id === editingEventId ? updatedEvent : evt))
+        );
       } else {
         const { data: eventData, error: eventError } = await supabase
-          .from<Event>('event')
+          .from<Event>("event")
           .insert([
             {
               date: newEventForm.date,
@@ -263,16 +266,16 @@ const EventManager: React.FC = () => {
 
         const newEvent = eventData && eventData[0];
         if (!newEvent) {
-          throw new Error('Nepavyko sukurti renginio.');
+          throw new Error("Nepavyko sukurti renginio.");
         }
 
         setEvents([...events, newEvent]);
       }
 
       setNewEventForm({
-        date: '',
-        start_time: '',
-        end_time: '',
+        date: "",
+        start_time: "",
+        end_time: "",
         is_free: false,
         seats_count: 0,
         max_volunteer_count: 0,
@@ -285,14 +288,14 @@ const EventManager: React.FC = () => {
 
       setShowModal(false);
     } catch (err: any) {
-      setModalError(err.message || 'Įvyko klaida.');
+      setModalError(err.message || "Įvyko klaida.");
     } finally {
       setModalLoading(false);
     }
   };
 
   const deleteEvent = async (id: number) => {
-    const { error } = await supabase.from('event').delete().eq('id', id);
+    const { error } = await supabase.from("event").delete().eq("id", id);
 
     if (error) {
       setError(error.message);
@@ -306,9 +309,7 @@ const EventManager: React.FC = () => {
       <h1 className="text-2xl font-bold mb-4">Event Manager</h1>
 
       {error && (
-        <div className="bg-red-100 text-red-700 p-2 mb-4 rounded">
-          {error}
-        </div>
+        <div className="bg-red-100 text-red-700 p-2 mb-4 rounded">{error}</div>
       )}
 
       <button
@@ -317,9 +318,9 @@ const EventManager: React.FC = () => {
           setIsEditing(false);
           setEditingEventId(null);
           setNewEventForm({
-            date: '',
-            start_time: '',
-            end_time: '',
+            date: "",
+            start_time: "",
+            end_time: "",
             is_free: false,
             seats_count: 0,
             max_volunteer_count: 0,
@@ -352,30 +353,34 @@ const EventManager: React.FC = () => {
             {events.map((event) => (
               <tr key={event.id} className="text-center">
                 <td className="py-2 px-4 border">{event.id}</td>
-                <td className="py-2 px-4 border">{event.date}</td>
+                <td className="py-2 px-4 border text-nowrap">{event.date}</td>
                 <td className="py-2 px-4 border">{event.start_time}</td>
                 <td className="py-2 px-4 border">{event.end_time}</td>
                 <td className="py-2 px-4 border">
-                  {event.is_free ? 'Taip' : 'Ne'}
+                  {event.is_free ? "Taip" : "Ne"}
                 </td>
                 <td className="py-2 px-4 border">{event.seats_count}</td>
-                <td className="py-2 px-4 border">{event.event_location_id}</td>
+                <td className="py-2 px-4 border">
+                  {event.event_location_id ?? "Nuotoliniu"}
+                </td>
                 <td className="py-2 px-4 border">
                   {event.max_volunteer_count}
                 </td>
                 <td className="py-2 px-4 border">
-                  <button
-                    onClick={() => editEvent(event)}
-                    className="bg-yellow-500 text-white px-2 py-1 rounded mr-2 hover:bg-yellow-600"
-                  >
-                    Redaguoti
-                  </button>
-                  <button
-                    onClick={() => deleteEvent(event.id)}
-                    className="bg-red-500 text-white px-2 py-1 rounded hover:bg-red-600"
-                  >
-                    Pašalinti
-                  </button>
+                  <div className="flex">
+                    <button
+                      onClick={() => editEvent(event)}
+                      className="bg-yellow-500 text-white px-2 py-1 rounded-l-lg  hover:bg-yellow-600"
+                    >
+                      Redaguoti
+                    </button>
+                    <button
+                      onClick={() => deleteEvent(event.id)}
+                      className="bg-red-500 text-white px-2 py-1 rounded-r-lg hover:bg-red-600"
+                    >
+                      Pašalinti
+                    </button>
+                  </div>
                 </td>
               </tr>
             ))}
@@ -398,16 +403,16 @@ const EventManager: React.FC = () => {
           <div className="bg-white rounded-lg shadow-lg w-full max-w-3xl mx-4">
             <div className="flex justify-between items-center p-4 border-b">
               <h2 className="text-xl font-semibold">
-                {isEditing ? 'Update Event' : 'Create New Event'}
+                {isEditing ? "Update Event" : "Create New Event"}
               </h2>
               <button
                 onClick={() => {
                   setShowModal(false);
                   setModalError(null);
                   setNewEventForm({
-                    date: '',
-                    start_time: '',
-                    end_time: '',
+                    date: "",
+                    start_time: "",
+                    end_time: "",
                     is_free: false,
                     seats_count: 0,
                     max_volunteer_count: 0,
@@ -431,7 +436,9 @@ const EventManager: React.FC = () => {
 
               <div className="grid grid-cols-1 md:grid-cols-2 gap-4">
                 <div className="col-span-1">
-                  <h3 className="text-lg font-semibold mb-2">Renginio detalės</h3>
+                  <h3 className="text-lg font-semibold mb-2">
+                    Renginio detalės
+                  </h3>
                   <div className="mb-4">
                     <label className="block mb-1">Data</label>
                     <input
@@ -513,13 +520,15 @@ const EventManager: React.FC = () => {
 
                 {showLocationFields && (
                   <div className="col-span-1">
-                    <h3 className="text-lg font-semibold mb-2">Vietovės duomenys</h3>
+                    <h3 className="text-lg font-semibold mb-2">
+                      Vietovės duomenys
+                    </h3>
                     <div className="mb-4">
                       <label className="block mb-1">Šalis</label>
                       <input
                         type="text"
                         name="location.country"
-                        value={newEventForm.location?.country || ''}
+                        value={newEventForm.location?.country || ""}
                         onChange={handleChange}
                         className="w-full p-2 border rounded"
                         required
@@ -530,7 +539,7 @@ const EventManager: React.FC = () => {
                       <input
                         type="text"
                         name="location.address"
-                        value={newEventForm.location?.address || ''}
+                        value={newEventForm.location?.address || ""}
                         onChange={handleChange}
                         className="w-full p-2 border rounded"
                         required
@@ -541,7 +550,7 @@ const EventManager: React.FC = () => {
                       <input
                         type="text"
                         name="location.specified_location"
-                        value={newEventForm.location?.specified_location || ''}
+                        value={newEventForm.location?.specified_location || ""}
                         onChange={handleChange}
                         className="w-full p-2 border rounded"
                         required
@@ -553,7 +562,7 @@ const EventManager: React.FC = () => {
                         type="number"
                         step="0.000001"
                         name="location.longitude"
-                        value={newEventForm.location?.longitude || ''}
+                        value={newEventForm.location?.longitude || ""}
                         onChange={handleChange}
                         className="w-full p-2 border rounded"
                         required
@@ -565,7 +574,7 @@ const EventManager: React.FC = () => {
                         type="number"
                         step="0.000001"
                         name="location.latitude"
-                        value={newEventForm.location?.latitude || ''}
+                        value={newEventForm.location?.latitude || ""}
                         onChange={handleChange}
                         className="w-full p-2 border rounded"
                         required
@@ -595,9 +604,9 @@ const EventManager: React.FC = () => {
                     setShowModal(false);
                     setModalError(null);
                     setNewEventForm({
-                      date: '',
-                      start_time: '',
-                      end_time: '',
+                      date: "",
+                      start_time: "",
+                      end_time: "",
                       is_free: false,
                       seats_count: 0,
                       max_volunteer_count: 0,
@@ -614,16 +623,16 @@ const EventManager: React.FC = () => {
                   type="submit"
                   disabled={modalLoading}
                   className={`bg-blue-500 text-white px-4 py-2 rounded hover:bg-blue-600 ${
-                    modalLoading ? 'opacity-50 cursor-not-allowed' : ''
+                    modalLoading ? "opacity-50 cursor-not-allowed" : ""
                   }`}
                 >
                   {modalLoading
                     ? isEditing
-                      ? 'Naujinama...'
-                      : 'Kuriama...'
+                      ? "Naujinama..."
+                      : "Kuriama..."
                     : isEditing
-                    ? 'Atnaujinti Renginį'
-                    : 'Sukurti Renginį'}
+                    ? "Atnaujinti Renginį"
+                    : "Sukurti Renginį"}
                 </button>
               </div>
             </form>
