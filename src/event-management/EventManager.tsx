@@ -191,7 +191,7 @@ const EventManager: React.FC = () => {
 
   return (
     <div className="container mx-auto p-4">
-      <h1 className="text-2xl font-bold mb-4">Event Manager</h1>
+      <h1 className="text-2xl font-bold mb-4">Renginių tvarkyklė</h1>
 
       {error && (
         <div className="bg-red-100 text-red-700 p-2 mb-4 rounded">{error}</div>
