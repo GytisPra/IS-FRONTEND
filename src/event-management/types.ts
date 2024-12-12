@@ -9,6 +9,8 @@ export interface Event {
   seats_count: number;
   event_location_id: string | null;
   max_volunteer_count: number;
+  // eslint-disable-next-line @typescript-eslint/no-explicit-any
+  [key: string]: any;
 }
 
 export interface Location {
