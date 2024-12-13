@@ -1,6 +1,14 @@
 // EventModal.tsx
-import React from "react";
+import React, { ChangeEvent } from "react";
 import { NewEventForm } from "./types";
+import {
+  LocalizationProvider,
+  DateTimePicker,
+  DatePicker,
+} from "@mui/x-date-pickers";
+import { AdapterDayjs } from "@mui/x-date-pickers/AdapterDayjs";
+import dayjs from "dayjs";
+import { TextField } from "@mui/material";
 
 interface EventModalProps {
   isEditing: boolean;
@@ -55,38 +63,120 @@ const EventModal: React.FC<EventModalProps> = ({
 
           <div className="grid grid-cols-1 md:grid-cols-2 gap-4">
             <div className="col-span-1">
-              <h3 className="text-lg font-semibold mb-2">Renginio detalės</h3>
+              <h3 className="text-lg font-semibold mb-2">
+                Renginio informacija
+              </h3>
               <div className="mb-4">
-                <label className="block mb-1">Data</label>
-                <input
-                  type="date"
-                  name="date"
-                  value={newEventForm.date}
-                  onChange={onFieldChange}
+                <TextField
                   className="w-full p-2 border rounded"
+                  name="name"
+                  onChange={onFieldChange}
+                  value={newEventForm.name}
+                  label="Pavadinimas"
                   required
                 />
               </div>
               <div className="mb-4">
-                <label className="block mb-1">Pradžios laikas</label>
-                <input
-                  type="time"
-                  name="start_time"
-                  value={newEventForm.start_time}
-                  onChange={onFieldChange}
+                <LocalizationProvider dateAdapter={AdapterDayjs}>
+                  <DatePicker
+                    className="w-full p-0"
+                    label="Data"
+                    onChange={(value) =>
+                      onFieldChange({
+                        target: {
+                          name: "date",
+                          value,
+                          type: "datetime",
+                        },
+                      } as unknown as ChangeEvent<HTMLInputElement>)
+                    }
+                    value={
+                      newEventForm.date.length > 0
+                        ? dayjs(newEventForm.date)
+                        : null
+                    }
+                    minDate={dayjs()}
+                  />
+                </LocalizationProvider>
+              </div>
+              <div className="flex space-y-4 flex-col mb-4">
+                <LocalizationProvider dateAdapter={AdapterDayjs}>
+                  <DateTimePicker
+                    className="w-full"
+                    label="Pradžia"
+                    onChange={(value) =>
+                      onFieldChange({
+                        target: {
+                          name: "start_time",
+                          value,
+                          type: "datetime",
+                        },
+                      } as unknown as ChangeEvent<HTMLInputElement>)
+                    }
+                    value={
+                      newEventForm.start_time.length > 0
+                        ? dayjs(newEventForm.start_time)
+                        : null
+                    }
+                    ampm={false}
+                    minDateTime={dayjs()}
+                  />
+                  <DateTimePicker
+                    className="w-full p-0"
+                    label="Pabaiga"
+                    onChange={(value) =>
+                      onFieldChange({
+                        target: {
+                          name: "end_time",
+                          value,
+                          type: "datetime",
+                        },
+                      } as unknown as ChangeEvent<HTMLInputElement>)
+                    }
+                    value={
+                      newEventForm.end_time.length > 0
+                        ? dayjs(newEventForm.end_time)
+                        : null
+                    }
+                    ampm={false}
+                    minDateTime={dayjs()}
+                  />
+                </LocalizationProvider>
+              </div>
+              <div className="mb-4">
+                <TextField
                   className="w-full p-2 border rounded"
+                  type="number"
+                  name="seats_count"
+                  onChange={onFieldChange}
+                  value={newEventForm.seats_count}
+                  label="Vietų skaičius"
                   required
+                  slotProps={{
+                    input: {
+                      inputProps: {
+                        step: "1",
+                      },
+                    },
+                  }}
                 />
               </div>
               <div className="mb-4">
-                <label className="block mb-1">Pabaigos laikas</label>
-                <input
-                  type="time"
-                  name="end_time"
-                  value={newEventForm.end_time}
-                  onChange={onFieldChange}
+                <TextField
                   className="w-full p-2 border rounded"
+                  type="number"
+                  name="max_volunteer_count"
+                  onChange={onFieldChange}
+                  value={newEventForm.max_volunteer_count}
+                  label="Max Savanorių"
                   required
+                  slotProps={{
+                    input: {
+                      inputProps: {
+                        step: "1",
+                      },
+                    },
+                  }}
                 />
               </div>
               <div className="mb-4 flex items-center">
@@ -97,31 +187,7 @@ const EventModal: React.FC<EventModalProps> = ({
                   onChange={onFieldChange}
                   className="mr-2"
                 />
-                <label>Is Free</label>
-              </div>
-              <div className="mb-4">
-                <label className="block mb-1">Vietų skaičius</label>
-                <input
-                  type="number"
-                  name="seats_count"
-                  value={newEventForm.seats_count}
-                  onChange={onFieldChange}
-                  className="w-full p-2 border rounded"
-                  min="0"
-                  required
-                />
-              </div>
-              <div className="mb-4">
-                <label className="block mb-1">Max Savanorių</label>
-                <input
-                  type="number"
-                  name="max_volunteer_count"
-                  value={newEventForm.max_volunteer_count}
-                  onChange={onFieldChange}
-                  className="w-full p-2 border rounded"
-                  min="0"
-                  required
-                />
+                <label>Nemokamas</label>
               </div>
 
               {!showLocationFields && (
@@ -141,60 +207,69 @@ const EventModal: React.FC<EventModalProps> = ({
                   Vietovės duomenys
                 </h3>
                 <div className="mb-4">
-                  <label className="block mb-1">Šalis</label>
-                  <input
-                    type="text"
+                  <TextField
+                    className="w-full p-2 border rounded"
                     name="location.country"
+                    onChange={onFieldChange}
                     value={newEventForm.location?.country || ""}
-                    onChange={onFieldChange}
-                    className="w-full p-2 border rounded"
+                    label="Šalis"
                     required
                   />
                 </div>
                 <div className="mb-4">
-                  <label className="block mb-1">Adresas</label>
-                  <input
-                    type="text"
+                  <TextField
+                    className="w-full p-2 border rounded"
                     name="location.address"
+                    onChange={onFieldChange}
                     value={newEventForm.location?.address || ""}
-                    onChange={onFieldChange}
-                    className="w-full p-2 border rounded"
+                    label="Adresas"
                     required
                   />
                 </div>
                 <div className="mb-4">
-                  <label className="block mb-1">Patikslinta vietovė</label>
-                  <input
-                    type="text"
+                  <TextField
+                    className="w-full p-2 border rounded"
                     name="location.specified_location"
+                    onChange={onFieldChange}
                     value={newEventForm.location?.specified_location || ""}
-                    onChange={onFieldChange}
-                    className="w-full p-2 border rounded"
+                    label="Patikslinta vietovė"
                     required
                   />
                 </div>
                 <div className="mb-4">
-                  <label className="block mb-1">Ilguma</label>
-                  <input
+                  <TextField
+                    className="w-full p-2 border rounded"
                     type="number"
-                    step="0.000001"
                     name="location.longitude"
-                    value={newEventForm.location?.longitude || ""}
                     onChange={onFieldChange}
-                    className="w-full p-2 border rounded"
+                    value={newEventForm.location?.longitude || ""}
+                    label="Ilguma"
                     required
+                    slotProps={{
+                      input: {
+                        inputProps: {
+                          step: "0.01",
+                        },
+                      },
+                    }}
                   />
                 </div>
                 <div className="mb-4">
-                  <label className="block mb-1">Platuma</label>
-                  <input
-                    type="number"
-                    step="0.000001"
-                    name="location.latitude"
-                    value={newEventForm.location?.latitude || ""}
-                    onChange={onFieldChange}
+                  <TextField
                     className="w-full p-2 border rounded"
+                    type="number"
+                    name="location.latitude"
+                    onChange={onFieldChange}
+                    value={newEventForm.location?.latitude || ""}
+                    label="Platuma"
                     required
+                    slotProps={{
+                      input: {
+                        inputProps: {
+                          step: "0.01",
+                        },
+                      },
+                    }}
                   />
                 </div>
                 <button
@@ -208,7 +283,7 @@ const EventModal: React.FC<EventModalProps> = ({
             )}
           </div>
 
-          <div className="flex justify-end mt-4">
+          <div className="flex justify-end mt-2">
             <button
               type="button"
               onClick={onClose}
