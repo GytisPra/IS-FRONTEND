@@ -21,14 +21,16 @@ supabase.auth.onAuthStateChange((_, _session) => {
 
 export const loginWithGoogle = async () => {
     const { error } = await supabase.auth.signInWithOAuth({
-        provider: 'google',
+      provider: 'google',
     });
-    
+  
     if (error) {
-        console.error('Error logging in with Google:', error.message);
-        return;
+      console.error('Error during Google Sign-In:', error.message);
+    } else {
+      console.log('Google Sign-In initiated.');
     }
-};
+  };
+  
 
 export const logout = async () => {
     await supabase.auth.signOut();
