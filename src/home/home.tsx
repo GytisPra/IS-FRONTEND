@@ -19,6 +19,7 @@ const App = () => {
     username: '',
     name: '',
     phoneNumber: '',
+    age: '',
   });
   const [signedInEmail, setSignedInEmail] = useState('Not available');
   const [authId, setAuthId] = useState('Not available');
@@ -224,20 +225,20 @@ const App = () => {
           sx={{ mb: 2 }}
         />
         <TextField
-        label="Amžius"
-        fullWidth
-        name="age"
-        value={formData.age}
-        onChange={handleInputChange}
-         error={!/^\d+$/.test(formData.age) || formData.age < 1 || formData.age > 120}
-        helperText={
-          !/^\d+$/.test(formData.age)
-          ? 'Amžius turi būti skaičius.'
-          
-          : ''
-        }
-  sx={{ mb: 2 }}
-/>
+          label="Amžius"
+          fullWidth
+          name="age"
+          value={formData.age}
+          onChange={handleInputChange}
+          error={!/^\d+$/.test(formData.age)} 
+          helperText={
+            !/^\d+$/.test(formData.age)
+            ? 'Amžius turi būti skaičius.' 
+            : ''
+          }
+          sx={{ mb: 2 }}
+        />
+
 
 
         </>
