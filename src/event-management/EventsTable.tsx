@@ -3,6 +3,7 @@ import { Event } from "./types";
 import dayjs from "dayjs";
 import { LocalizationProvider, DatePicker } from "@mui/x-date-pickers";
 import { AdapterDayjs } from "@mui/x-date-pickers/AdapterDayjs";
+import { TextField } from "@mui/material";
 
 interface EventTableProps {
   events: Event[];
@@ -19,10 +20,12 @@ const EventTable = ({ events, onEdit, onDelete }: EventTableProps) => {
     startDate: string;
     endDate: string;
     hideNotFree: boolean;
+    searchQuery: string;
   }>({
     startDate: "",
     endDate: "",
     hideNotFree: false,
+    searchQuery: "",
   });
 
   const handleFilterChange = (name: string, value: string | null) => {
@@ -45,6 +48,12 @@ const EventTable = ({ events, onEdit, onDelete }: EventTableProps) => {
       return false;
     }
     if (endDate && eventDate > endDate) {
+      return false;
+    }
+    if (
+      filter.searchQuery &&
+      !event.name.toLowerCase().includes(filter.searchQuery.toLowerCase())
+    ) {
       return false;
     }
     return true;
@@ -120,6 +129,13 @@ const EventTable = ({ events, onEdit, onDelete }: EventTableProps) => {
               slotProps={{ textField: { id: "endDate" } }}
             />
           </div>
+          <TextField
+            className="pr-2 border rounded"
+            name="searchQuery"
+            label="Ieškoti renginio &#x1F50E;"
+            value={filter.searchQuery}
+            onChange={(e) => handleFilterChange("searchQuery", e.target.value)}
+          />
         </div>
       </LocalizationProvider>
       <table className="min-w-full bg-white border">
