@@ -1,6 +1,8 @@
 import { useState } from "react";
 import { Event } from "./types";
 import dayjs from "dayjs";
+import { LocalizationProvider, DatePicker } from "@mui/x-date-pickers";
+import { AdapterDayjs } from "@mui/x-date-pickers/AdapterDayjs";
 
 interface EventTableProps {
   events: Event[];
@@ -23,17 +25,16 @@ const EventTable = ({ events, onEdit, onDelete }: EventTableProps) => {
     hideNotFree: false,
   });
 
-  const handleFilterChange = (e: React.ChangeEvent<HTMLInputElement>) => {
-    const { name, value } = e.target;
-    setFilter((prev) => ({ ...prev, [name]: value }));
+  const handleFilterChange = (name: string, value: string | null) => {
+    setFilter((prev) => ({ ...prev, [name]: value || "" }));
   };
 
   const handlehideNotFree = () => {
-    setFilter((prev) => ({ ...prev, ["hideNotFree"]: !prev.hideNotFree }));
+    setFilter((prev) => ({ ...prev, hideNotFree: !prev.hideNotFree }));
   };
 
   const filteredEvents = events.filter((event) => {
-    const eventDate = new Date(event.date);
+    const eventDate = new Date(event.start_time);
     const startDate = filter.startDate ? new Date(filter.startDate) : null;
     const endDate = filter.endDate ? new Date(filter.endDate) : null;
 
@@ -79,49 +80,48 @@ const EventTable = ({ events, onEdit, onDelete }: EventTableProps) => {
 
   return (
     <>
-      <div className="flex space-x-4 mb-4">
-        <div>
-          <label htmlFor="hideFree" className="block mb-1">
-            Paslėpti mokamus?
-          </label>
-          <button
-            id="hideFree"
-            name="hideFree"
-            className={`w-full py-[0.55rem] ${
-              filter.hideNotFree && "bg-gray-100"
-            } border rounded hover:bg-gray-200`}
-            onClick={handlehideNotFree}
-          >
-            {filter.hideNotFree ? "Ne" : "Taip"}
-          </button>
+      <LocalizationProvider dateAdapter={AdapterDayjs}>
+        <div className="flex space-x-4 mb-4">
+          <div>
+            <button
+              id="hideFree"
+              name="hideFree"
+              className={`min-w-max px-2 py-[0.95rem] ${
+                filter.hideNotFree && "bg-gray-100"
+              } border rounded hover:bg-gray-200`}
+              onClick={handlehideNotFree}
+            >
+              {filter.hideNotFree ? "Rodyti mokamus" : "Paslėpti mokamus"}
+            </button>
+          </div>
+          <div>
+            <DatePicker
+              label="Nuo datos"
+              value={filter.startDate ? dayjs(filter.startDate) : null}
+              onChange={(date) =>
+                handleFilterChange(
+                  "startDate",
+                  date ? date.format("YYYY-MM-DD") : null
+                )
+              }
+              slotProps={{ textField: { id: "startDate" } }}
+            />
+          </div>
+          <div>
+            <DatePicker
+              label="Iki datos"
+              value={filter.endDate ? dayjs(filter.endDate) : null}
+              onChange={(date) =>
+                handleFilterChange(
+                  "endDate",
+                  date ? date.format("YYYY-MM-DD") : null
+                )
+              }
+              slotProps={{ textField: { id: "endDate" } }}
+            />
+          </div>
         </div>
-        <div>
-          <label htmlFor="startDate" className="block mb-1">
-            Nuo datos
-          </label>
-          <input
-            type="date"
-            id="startDate"
-            name="startDate"
-            value={filter.startDate}
-            onChange={handleFilterChange}
-            className="w-full p-2 border rounded"
-          />
-        </div>
-        <div>
-          <label htmlFor="endDate" className="block mb-1">
-            Iki datos
-          </label>
-          <input
-            type="date"
-            id="endDate"
-            name="endDate"
-            value={filter.endDate}
-            onChange={handleFilterChange}
-            className="w-full p-2 border rounded"
-          />
-        </div>
-      </div>
+      </LocalizationProvider>
       <table className="min-w-full bg-white border">
         <thead>
           <tr>
@@ -189,7 +189,7 @@ const EventTable = ({ events, onEdit, onDelete }: EventTableProps) => {
               <td className="py-2 px-4 border">{event.seats_count}</td>
               <td className="py-2 px-4 border">{event.max_volunteer_count}</td>
               <td className="py-2 px-4 border">
-                <div className="flex">
+                <div className="flex items-center justify-center">
                   <button
                     onClick={() => onEdit(event)}
                     className="bg-yellow-500 text-white px-2 py-1 rounded-l-lg hover:bg-yellow-600"
