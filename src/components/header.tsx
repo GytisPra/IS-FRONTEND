@@ -104,7 +104,7 @@ export default function Header() {
               { text: "Renginių naršyklė", href: "/user" },
               { text: "Ateinantys renginiai", href: "/my-events" },
               { text: "Mano Bilietai", href: "/tickets" },
-              { text: "Tapti savanoriu!", href: "/volunteer" },
+              { text: "Tapti savanoriu!", href: "/volunteers/events" },
               { text: "Mano savanorystės", href: "/my-applications" },
               { text: "Reinginių tvarkyklė", href: "/event-management" },
               { text: "Ieškoti savanorių", href: "/organiser" },

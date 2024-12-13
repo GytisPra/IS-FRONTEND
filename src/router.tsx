@@ -6,8 +6,8 @@ import UserTickets from "./ticket-buying/UserTickets";
 import UserPage from "./User-subsystem/UserPage";
 import ProfileUpdatePage from "./User-subsystem/Profile";
 import VolunteerEventDetail from "./volunteers/VolunteerApply";
-import MyApplications from "./volunteers/MyApplications";
 import EventManager from "./event-management/EventManager";
+import VolunteersPage from "./volunteers/VolunteerPage";
 export const router = createBrowserRouter([
   {
     path: "/",
@@ -22,12 +22,8 @@ export const router = createBrowserRouter([
     element: <OrganiserPage />,
   },
   {
-    path: "/volunteer",
-    element: <VolunteerEventDetail />,
-  },
-  {
-    path: "/my-applications",
-    element: <MyApplications />,
+    path: "/volunteers/events",
+    element: <VolunteersPage />, 
   },
   {
     path: "/tickets",
