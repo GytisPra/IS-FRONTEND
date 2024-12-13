@@ -132,7 +132,7 @@ const EventTable = ({ events, onEdit, onDelete }: EventTableProps) => {
           <TextField
             className="pr-2 border rounded"
             name="searchQuery"
-            label="Ieškoti renginio &#x1F50E;"
+            label="Ieškoti renginio &#x1F50E;&#xFE0E;"
             value={filter.searchQuery}
             onChange={(e) => handleFilterChange("searchQuery", e.target.value)}
           />
