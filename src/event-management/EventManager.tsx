@@ -10,6 +10,8 @@ import {
 import EventModal from "./EventModal";
 import EventTable from "./EventsTable";
 import dayjs from "dayjs";
+import { ToastContainer } from "react-toastify";
+import "react-toastify/dist/ReactToastify.css";
 
 const EventManager: React.FC = () => {
   const [events, setEvents] = useState<Event[]>([]);
@@ -95,6 +97,7 @@ const EventManager: React.FC = () => {
         ...prevForm,
         location: {
           ...(prevForm.location || {
+            city: "",
             country: "",
             address: "",
             specified_location: "",
@@ -145,6 +148,7 @@ const EventManager: React.FC = () => {
         max_volunteer_count: event.max_volunteer_count,
         location: locationData
           ? {
+              city: locationData.city,
               country: locationData.country,
               address: locationData.address,
               specified_location: locationData.specified_location,
@@ -225,6 +229,14 @@ const EventManager: React.FC = () => {
 
   const resetForm = () => {
     setNewEventForm({
+      location: {
+        city: "",
+        country: "",
+        address: "",
+        specified_location: "",
+        longitude: 0,
+        latitude: 0,
+      },
       name: "",
       date: "",
       start_time: "",
@@ -247,20 +259,46 @@ const EventManager: React.FC = () => {
     if (eventId && showLocationFields) {
       const event = events.find((event) => event.id === eventId);
 
-      const { updatedEvents, error } = await deleteEventLocation(
-        event!.event_location_id,
-        events
-      );
+      if (event && event.event_location_id !== null) {
+        const { updatedEvents, error } = await deleteEventLocation(
+          event.event_location_id,
+          events
+        );
 
-      if (error) setError(error);
-      else {
-        setEvents(updatedEvents);
+        if (error) {
+          setError(error);
+        } else {
+          setEvents(updatedEvents);
+        }
       }
     }
+
+    setNewEventForm({
+      ...newEventForm,
+      location: {
+        city: "",
+        country: "",
+        address: "",
+        specified_location: "",
+        longitude: 0,
+        latitude: 0,
+      },
+    });
   };
 
   return (
     <div className="container mx-auto p-4">
+      <ToastContainer
+        position="top-right"
+        autoClose={5000}
+        hideProgressBar={false}
+        newestOnTop={false}
+        closeOnClick
+        rtl={false}
+        pauseOnFocusLoss
+        draggable
+        pauseOnHover
+      />
       <h1 className="text-2xl font-bold mb-4">Renginių tvarkyklė</h1>
 
       {error && (

@@ -4,6 +4,7 @@ import dayjs from "dayjs";
 import { LocalizationProvider, DatePicker } from "@mui/x-date-pickers";
 import { AdapterDayjs } from "@mui/x-date-pickers/AdapterDayjs";
 import { TextField } from "@mui/material";
+import ViewEventLocation from "../event-location/ViewEventLocation";
 
 interface EventTableProps {
   events: Event[];
@@ -142,7 +143,7 @@ const EventTable = ({ events, onEdit, onDelete }: EventTableProps) => {
         <thead>
           <tr>
             <th className="py-2 px-4 border">Pavadinimas</th>
-            <th className="py-2 px-4 border">Vietovės ID</th>
+            <th className="py-2 px-4 border">Vietovė</th>
             <th
               className="py-2 px-4 border hover:bg-gray-200 cursor-pointer"
               onClick={() => handleSort("start_time")}
@@ -191,7 +192,14 @@ const EventTable = ({ events, onEdit, onDelete }: EventTableProps) => {
             <tr key={event.id} className="text-center">
               <td className="py-2 px-4 border">{event.name}</td>
               <td className="py-2 px-4 border">
-                {event.event_location_id ?? "Nuotoliniu"}
+                {event.event_location_id ? (
+                  <ViewEventLocation
+                    eventLocationId={event.event_location_id}
+                    disable={true}
+                  />
+                ) : (
+                  "Nuotoliniu"
+                )}
               </td>
               <td className="py-2 px-4 border">
                 {dayjs(event.start_time).format("YYYY-MM-DD, HH:mm:ss")}

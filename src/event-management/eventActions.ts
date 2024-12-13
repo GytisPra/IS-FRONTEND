@@ -1,3 +1,4 @@
+import { fetchEventLocation } from "../event-location/locationActions";
 import { supabase } from "../userService";
 import { Event, NewEventForm, Location } from "./types";
 
@@ -25,6 +26,14 @@ export const deleteEventLocation = async (
       throw new Error("Invalid location ID.");
     }
 
+    // Check if the location exists
+    const { data: location, error: fetchLocationError } =
+      await fetchEventLocation(locationId);
+
+    if (fetchLocationError || !location) {
+      throw new Error("Location does not exist or could not be fetched.");
+    }
+
     const { error: updateEventError } = await supabase
       .from<Event>("event")
       .update({ event_location_id: null })
@@ -43,6 +52,7 @@ export const deleteEventLocation = async (
       throw new Error(deleteLocationError.message);
     }
 
+    // Update events array locally
     const updatedEvents = events.map((evt) =>
       evt.event_location_id === locationId
         ? ({ ...evt, event_location_id: null } as Event)
