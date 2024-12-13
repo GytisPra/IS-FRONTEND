@@ -8,7 +8,8 @@ export const fetchEvents = async (): Promise<{
   const { data, error } = await supabase
     .from<Event>("event")
     .select("*")
-    .order("date", { ascending: true });
+    .order("start_time", { ascending: true });
+
   return { data, error: error?.message || null };
 };
 

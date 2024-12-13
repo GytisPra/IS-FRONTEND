@@ -1,6 +1,14 @@
 // EventModal.tsx
-import React from "react";
+import React, { ChangeEvent } from "react";
 import { NewEventForm } from "./types";
+import {
+  LocalizationProvider,
+  DateTimePicker,
+  DatePicker,
+} from "@mui/x-date-pickers";
+import { AdapterDayjs } from "@mui/x-date-pickers/AdapterDayjs";
+import dayjs from "dayjs";
+import { TextField } from "@mui/material";
 
 interface EventModalProps {
   isEditing: boolean;
@@ -57,37 +65,81 @@ const EventModal: React.FC<EventModalProps> = ({
             <div className="col-span-1">
               <h3 className="text-lg font-semibold mb-2">Renginio detalės</h3>
               <div className="mb-4">
-                <label className="block mb-1">Data</label>
-                <input
-                  type="date"
-                  name="date"
-                  value={newEventForm.date}
-                  onChange={onFieldChange}
+                <TextField
                   className="w-full p-2 border rounded"
+                  name="name"
+                  onChange={onFieldChange}
+                  value={newEventForm.name}
+                  label="Pavadinimas"
                   required
                 />
               </div>
               <div className="mb-4">
-                <label className="block mb-1">Pradžios laikas</label>
-                <input
-                  type="time"
-                  name="start_time"
-                  value={newEventForm.start_time}
-                  onChange={onFieldChange}
-                  className="w-full p-2 border rounded"
-                  required
-                />
+                <LocalizationProvider dateAdapter={AdapterDayjs}>
+                  <DatePicker
+                    className="w-full p-0"
+                    label="Data"
+                    onChange={(value) =>
+                      onFieldChange({
+                        target: {
+                          name: "date",
+                          value,
+                          type: "datetime",
+                        },
+                      } as unknown as ChangeEvent<HTMLInputElement>)
+                    }
+                    value={
+                      newEventForm.date.length > 0
+                        ? dayjs(newEventForm.date)
+                        : null
+                    }
+                    minDate={dayjs()}
+                  />
+                </LocalizationProvider>
               </div>
-              <div className="mb-4">
-                <label className="block mb-1">Pabaigos laikas</label>
-                <input
-                  type="time"
-                  name="end_time"
-                  value={newEventForm.end_time}
-                  onChange={onFieldChange}
-                  className="w-full p-2 border rounded"
-                  required
-                />
+              <div className="flex space-y-4 flex-col mb-4">
+                <LocalizationProvider dateAdapter={AdapterDayjs}>
+                  <DateTimePicker
+                    className="w-full"
+                    label="Pradžia"
+                    onChange={(value) =>
+                      onFieldChange({
+                        target: {
+                          name: "start_time",
+                          value,
+                          type: "datetime",
+                        },
+                      } as unknown as ChangeEvent<HTMLInputElement>)
+                    }
+                    value={
+                      newEventForm.start_time.length > 0
+                        ? dayjs(newEventForm.start_time)
+                        : null
+                    }
+                    ampm={false}
+                    minDateTime={dayjs()}
+                  />
+                  <DateTimePicker
+                    className="w-full p-0"
+                    label="Pabaiga"
+                    onChange={(value) =>
+                      onFieldChange({
+                        target: {
+                          name: "end_time",
+                          value,
+                          type: "datetime",
+                        },
+                      } as unknown as ChangeEvent<HTMLInputElement>)
+                    }
+                    value={
+                      newEventForm.end_time.length > 0
+                        ? dayjs(newEventForm.end_time)
+                        : null
+                    }
+                    ampm={false}
+                    minDateTime={dayjs()}
+                  />
+                </LocalizationProvider>
               </div>
               <div className="mb-4 flex items-center">
                 <input

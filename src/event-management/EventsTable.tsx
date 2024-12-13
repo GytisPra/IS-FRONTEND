@@ -1,5 +1,6 @@
 import { useState } from "react";
 import { Event } from "./types";
+import dayjs from "dayjs";
 
 interface EventTableProps {
   events: Event[];
@@ -124,16 +125,8 @@ const EventTable = ({ events, onEdit, onDelete }: EventTableProps) => {
       <table className="min-w-full bg-white border">
         <thead>
           <tr>
-            <th className="py-2 px-4 border">ID</th>
+            <th className="py-2 px-4 border">Pavadinimas</th>
             <th className="py-2 px-4 border">Vietovės ID</th>
-            <th
-              className="py-2 px-4 border hover:bg-gray-200 cursor-pointer"
-              onClick={() => handleSort("date")}
-            >
-              Data
-              {sortConfig?.key === "date" &&
-                (sortConfig.direction === "asc" ? "\u2191" : "\u2193")}
-            </th>
             <th
               className="py-2 px-4 border hover:bg-gray-200 cursor-pointer"
               onClick={() => handleSort("start_time")}
@@ -180,13 +173,16 @@ const EventTable = ({ events, onEdit, onDelete }: EventTableProps) => {
         <tbody>
           {sortedEvents.map((event) => (
             <tr key={event.id} className="text-center">
-              <td className="py-2 px-4 border">{event.id}</td>
+              <td className="py-2 px-4 border">{event.name}</td>
               <td className="py-2 px-4 border">
                 {event.event_location_id ?? "Nuotoliniu"}
               </td>
-              <td className="py-2 px-4 border text-nowrap">{event.date}</td>
-              <td className="py-2 px-4 border">{event.start_time}</td>
-              <td className="py-2 px-4 border">{event.end_time}</td>
+              <td className="py-2 px-4 border">
+                {dayjs(event.start_time).format("YYYY-MM-DD, HH:mm:ss")}
+              </td>
+              <td className="py-2 px-4 border">
+                {dayjs(event.end_time).format("YYYY-MM-DD, HH:mm:ss")}
+              </td>
               <td className="py-2 px-4 border">
                 {event.is_free ? "Taip" : "Ne"}
               </td>

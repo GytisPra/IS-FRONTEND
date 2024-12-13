@@ -9,6 +9,7 @@ import {
 } from "./eventActions";
 import EventModal from "./EventModal";
 import EventTable from "./EventsTable";
+import dayjs from "dayjs";
 
 const EventManager: React.FC = () => {
   const [events, setEvents] = useState<Event[]>([]);
@@ -17,6 +18,7 @@ const EventManager: React.FC = () => {
 
   const [showModal, setShowModal] = useState<boolean>(false);
   const [newEventForm, setNewEventForm] = useState<NewEventForm>({
+    name: "",
     date: "",
     start_time: "",
     end_time: "",
@@ -44,10 +46,43 @@ const EventManager: React.FC = () => {
     getEvents();
   }, []);
 
+  const validateStartEndTimes = (startTime: string, endTime: string) => {
+    if (startTime && endTime) {
+      const startDate = new Date(startTime);
+      const endDate = new Date(endTime);
+
+      return startDate >= endDate;
+    }
+
+    return false;
+  };
+
+  const validateStartTime = (startTime: string) => {
+    if (startTime) {
+      const startDate = new Date(startTime);
+
+      return startDate < new Date();
+    }
+
+    return false;
+  };
+
   const handleChange = (
-    e: ChangeEvent<HTMLInputElement | HTMLSelectElement | HTMLTextAreaElement>
+    e:
+      | ChangeEvent<HTMLInputElement | HTMLSelectElement | HTMLTextAreaElement>
+      // eslint-disable-next-line @typescript-eslint/no-explicit-any
+      | { target: { name: string; value: any; type: string } }
   ) => {
     const { name, value, type } = e.target;
+
+    if (type === "datetime" && value instanceof Object && value.$d) {
+      setNewEventForm({
+        ...newEventForm,
+        [name]: dayjs(value.$d).format("YYYY-MM-DDTHH:mm:ssZ"),
+      });
+
+      return;
+    }
 
     let checked: boolean | undefined;
     if (e.target instanceof HTMLInputElement && type === "checkbox") {
@@ -101,6 +136,7 @@ const EventManager: React.FC = () => {
       }
 
       setNewEventForm({
+        name: event.name,
         date: event.date,
         start_time: event.start_time,
         end_time: event.end_time,
@@ -132,6 +168,38 @@ const EventManager: React.FC = () => {
     e.preventDefault();
     setModalLoading(true);
 
+    const date = newEventForm["date"];
+    const startTime = newEventForm["start_time"];
+    const endTime = newEventForm["end_time"];
+
+    if (date.trim().length <= 0) {
+      setModalError("Įveskite datą");
+      setModalLoading(false);
+      return;
+    }
+
+    if (startTime.trim().length <= 0) {
+      setModalError("Įveskite pradžios laiką");
+      setModalLoading(false);
+      return;
+    }
+
+    if (endTime.trim().length <= 0) {
+      setModalError("Įveskite pabaigos laiką");
+      setModalLoading(false);
+      return;
+    }
+
+    if (validateStartEndTimes(startTime, endTime)) {
+      setModalError("Pradžios laikas turi būti anksčiau nei pabaigos");
+      setModalLoading(false);
+      return;
+    } else if (validateStartTime(startTime)) {
+      setModalError("Pradžios laikas negali būti praeityje");
+      setModalLoading(false);
+      return;
+    }
+
     const { updatedEvents, error } = await submitEvent(
       newEventForm,
       showLocationFields,
@@ -157,6 +225,7 @@ const EventManager: React.FC = () => {
 
   const resetForm = () => {
     setNewEventForm({
+      name: "",
       date: "",
       start_time: "",
       end_time: "",
@@ -166,6 +235,7 @@ const EventManager: React.FC = () => {
     });
 
     setShowModal(!showModal);
+    setModalError(null);
     setIsEditing(false);
     setEditingEventId(null);
     setShowLocationFields(false);

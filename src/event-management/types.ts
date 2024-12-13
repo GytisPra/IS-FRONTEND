@@ -1,5 +1,6 @@
 export interface Event {
   id: number;
+  name: string;
   date: string;
   start_time: string;
   end_time: string;
@@ -23,6 +24,7 @@ export interface Location {
 }
 
 export interface NewEventForm {
+  name: string;
   date: string;
   start_time: string;
   end_time: string;
