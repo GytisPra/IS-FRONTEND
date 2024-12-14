@@ -3,71 +3,26 @@ import Box from "@mui/material/Box";
 import { Container } from "@mui/material";
 import EventCard from "./eventCard";
 import EventRowCard from "../components/common/eventRowCard";
+import { getEvents } from "./api";
+import { Event } from "../volunteers/objects/types";
 
-export interface IVolunteer {
-  id: number;
-  name: string;
-  email: string;
-}
-
-export interface IEvent {
-  id: number;
-  name: string;
-  description: string;
-  startTime: Date;
-  attendees: string[];
-  volunteers?: IVolunteer[];
-  volunteerRequests?: IVolunteer[];
-}
-
-const eventsFromBE: IEvent[] = [
-  {
-    id: 1,
-    name: "Renginys 1",
-    description: "Aprašymas 1",
-    startTime: new Date(),
-    attendees: ["Dalyvis 1", "Dalyvis 2"],
-    volunteers: [],
-    volunteerRequests: [
-      { id: 3, email: "3@", name: "Savanoris 3" },
-      { id: 1, email: "3@", name: "Savanoris 1" },
-      { id: 4, email: "3@", name: "Savanoris 4" },
-      { id: 2, email: "3@", name: "Savanoris 2" },
-    ],
-  },
-  {
-    id: 2,
-    name: "Renginys 2",
-    description: "Aprašymas 2",
-    startTime: new Date(),
-    attendees: ["Dalyvis 1", "Dalyvis 2"],
-    volunteers: [],
-    volunteerRequests: [
-      { id: 3, email: "3@", name: "Savanoris 3" },
-      { id: 1, email: "3@", name: "Savanoris 1" },
-      { id: 4, email: "3@", name: "Savanoris 4" },
-      { id: 2, email: "3@", name: "Savanoris 2" },
-    ],
-  },
-  {
-    id: 3,
-    name: "Renginys 3",
-    description: "Aprašymas 3",
-    startTime: new Date(),
-    attendees: ["Dalyvis 1", "Dalyvis 2"],
-    volunteers: [],
-    volunteerRequests: [
-      { id: 3, email: "3@", name: "Savanoris 3" },
-      { id: 1, email: "3@", name: "Savanoris 1" },
-      { id: 4, email: "3@", name: "Savanoris 4" },
-      { id: 2, email: "3@", name: "Savanoris 2" },
-    ],
-  },
-];
-
-export default function BasicSelect() {
-  const [selectedEvent, setSelectedEvent] = React.useState<number | null>(null);
+const OrganiserPage = () => {
+  const [selectedEvent, setSelectedEvent] = React.useState<Event | undefined>(undefined);
   const containerRef = React.useRef<HTMLDivElement>(null);
+  const [events, setEvents] = React.useState<Event[]>([] as Event[]);
+
+  React.useEffect(() => {
+    const fetchEvents = async () => {
+      try {
+        const events = await getEvents();
+        setEvents(events);
+      } catch (error) {
+        console.error("Failed to fetch events:", error);
+      }
+    };
+
+    fetchEvents();
+  } , []);
 
   // Handle clicking on the same event or clicking outside
   const handleClickOutside = (event: MouseEvent) => {
@@ -75,15 +30,13 @@ export default function BasicSelect() {
       containerRef.current &&
       !containerRef.current.contains(event.target as Node)
     ) {
-      setSelectedEvent(null);
+      setSelectedEvent(undefined);
     }
   };
 
   // Toggle event selection
-  const handleEventClick = (eventId: number) => {
-    setSelectedEvent((prevSelected) =>
-      prevSelected === eventId ? null : eventId
-    );
+  const handleEventClick = (event: Event) => {
+    setSelectedEvent((prev) => (prev === event ? undefined : event));
   };
 
   React.useEffect(() => {
@@ -96,15 +49,23 @@ export default function BasicSelect() {
   return (
     <Container ref={containerRef}>
       <Box sx={{ minWidth: 120, margin: "50px" }}>
-        {eventsFromBE.map((event) => (
+        {events.map((event) => (
           <div key={event.id}>
             <EventRowCard
-              event={event}
+              event={
+                {
+                  attendees: event.seats_count,
+                  description: event.description || "", 
+                  name: event.name || "",
+                  id: event.id,
+                  startTime: new Date(event.date),
+                }
+              }
               height={150}
-              onClick={() => handleEventClick(event.id)}
+              onClick={() => handleEventClick(event)}
             />
-            {selectedEvent === event.id && (
-              <EventCard eventId={selectedEvent} />
+            {selectedEvent?.id === event.id && (
+              <EventCard event={selectedEvent} />
             )}
           </div>
         ))}
@@ -112,3 +73,5 @@ export default function BasicSelect() {
     </Container>
   );
 }
+
+export default OrganiserPage;

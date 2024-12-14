@@ -4,6 +4,8 @@ export interface Event {
     id: string; // Assuming event IDs are UUIDs
     date: string;
     start_time: string;
+    name?: string;
+    description?: string;
     end_time: string;
     is_free: boolean;
     created_at: string;
@@ -11,6 +13,7 @@ export interface Event {
     seats_count: number;
     event_location_id: string | null;
     max_volunteer_count: number;
+    available_volunteers: number;
     // eslint-disable-next-line @typescript-eslint/no-explicit-any
     [key: string]: any;
   }

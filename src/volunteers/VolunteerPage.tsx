@@ -50,7 +50,7 @@ const VolunteersPage: React.FC = () => {
         setApplications(applicationsData || []);
         setLoadingApplications(false);
 
-        const appliedEventIds = applicationsData.map((app) => app.event_id);
+        const appliedEventIds = applicationsData!.map((app) => app.event_id);
         const newRemovedEvents: Record<string, Event> = {};
 
         const updatedEvents =
