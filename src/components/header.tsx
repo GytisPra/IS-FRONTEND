@@ -84,13 +84,8 @@ export default function Header() {
     { text: "Ateinantys renginiai", href: "/my-events", roles: ["user"] },
     { text: "Mano Bilietai", href: "/tickets", roles: ["user"] },
     {
-      text: "Tapti savanoriu!",
+      text: "Savanorystė",
       href: "/volunteers/events",
-      roles: ["volunteer"],
-    },
-    {
-      text: "Mano savanorystės",
-      href: "/my-applications",
       roles: ["volunteer"],
     },
     { text: "Renginų tvarkyklė", href: "/event-management", roles: ["admin"] },
