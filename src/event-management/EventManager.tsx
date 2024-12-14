@@ -1,6 +1,6 @@
 import React, { useState, useEffect, ChangeEvent, FormEvent } from "react";
 import { supabase } from "../../supabase";
-import { Event, Location, NewEventForm } from "./types";
+import { Event, NewEventForm } from "./types";
 import {
   fetchEvents,
   submitEvent,
@@ -126,7 +126,7 @@ const EventManager: React.FC = () => {
 
       if (event.event_location_id) {
         const { data, error } = await supabase
-          .from<Location>("event_location")
+          .from("event_location")
           .select("*")
           .eq("id", event.event_location_id)
           .single();

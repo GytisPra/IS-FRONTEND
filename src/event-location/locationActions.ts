@@ -9,7 +9,7 @@ export const fetchEventLocation = async (
   error: PostgrestError | null;
 }> => {
   const { data, error } = await supabase
-    .from<EventLocation>("event_location")
+    .from("event_location")
     .select("*")
     .eq("id", eventLocationId)
     .single();
