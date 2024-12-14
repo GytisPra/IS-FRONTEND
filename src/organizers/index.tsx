@@ -24,7 +24,6 @@ const OrganiserPage = () => {
     fetchEvents();
   } , []);
 
-  // Handle clicking on the same event or clicking outside
   const handleClickOutside = (event: MouseEvent) => {
     if (
       containerRef.current &&
@@ -34,7 +33,6 @@ const OrganiserPage = () => {
     }
   };
 
-  // Toggle event selection
   const handleEventClick = (event: Event) => {
     setSelectedEvent((prev) => (prev === event ? undefined : event));
   };

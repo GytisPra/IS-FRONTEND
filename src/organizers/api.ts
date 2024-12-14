@@ -12,9 +12,9 @@ export interface IApplication {
 }
 
 export const getEvents = async () => {
-  const { data, error } = await supabase.from('event')
-    .select('*')
-    .returns<Event[]>();
+    const { data, error } = await supabase.from('event')
+        .select('*')
+        .returns<Event[]>();
 
     if (error) {
         throw error;
@@ -26,9 +26,9 @@ export const getEvents = async () => {
 export const getVolunteerApplications = async (eventId: string) => {
     console.log(eventId);
     const { data, error } = await supabase.from('volunteer_application')
-    .select('id, volunteer:volunteer_id(id, name), eventId:event_id, status')
-    .eq('event_id', eventId)
-    .returns<IApplication[]>();
+        .select('id, volunteer:volunteer_id(id, name), eventId:event_id, status')
+        .eq('event_id', eventId)
+        .returns<IApplication[]>();
 
     if (error) {
         throw error;
@@ -41,9 +41,9 @@ export const getVolunteerApplications = async (eventId: string) => {
 
 export const setApplicationStatus = async (applicationId: string, status: 'priimta' | 'atmesta' | 'laukiama') => {
     const { data, error } = await supabase.from('volunteer_application')
-    .update({ status })
-    .eq('id', applicationId)
-    .single();
+        .update({ status })
+        .eq('id', applicationId)
+        .single();
 
     if (error) {
         throw error;
@@ -54,9 +54,9 @@ export const setApplicationStatus = async (applicationId: string, status: 'priim
 
 export const getUser = async (userId: string) => {
     const { data, error } = await supabase.from('users')
-    .select('*')
-    .eq('id', userId)
-    .single();
+        .select('*')
+        .eq('id', userId)
+        .single();
 
     if (error) {
         throw error;

@@ -50,5 +50,6 @@ export interface Event {
     volunteer_id: string; 
     event_id: string; 
     status: 'priimta' | 'atmesta' | 'laukiama';
+    form_url?: string;
   }
   

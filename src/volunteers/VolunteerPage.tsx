@@ -9,6 +9,8 @@ import {
 import { user } from "./objects/user";
 import { ToastContainer, toast } from "react-toastify";
 import "react-toastify/dist/ReactToastify.css";
+import { Button } from "@mui/material";
+import FormModal from "../organizers/formModal";
 
 const VolunteersPage: React.FC = () => {
   const [events, setEvents] = useState<Event[]>([]);
@@ -47,6 +49,17 @@ const VolunteersPage: React.FC = () => {
             `Įvyko klaida kraunant aplikacijas: ${applicationsError}`
           );
         }
+
+        if (applicationsData) {
+          for (let i = 0; i < applicationsData.length; i++) {
+            const event = eventsData?.find(
+              (event) => event.id === applicationsData[i].event_id
+            );
+            applicationsData[i].form_url = event?.form_url;
+          }
+        }
+
+
         setApplications(applicationsData || []);
         setLoadingApplications(false);
 
@@ -260,9 +273,8 @@ const VolunteersPage: React.FC = () => {
           </label>
           <button
             id="hidePaidEvents"
-            className={`py-2 px-4 border rounded ${
-              filters.hidePaidEvents ? "bg-gray-100" : ""
-            }`}
+            className={`py-2 px-4 border rounded ${filters.hidePaidEvents ? "bg-gray-100" : ""
+              }`}
             onClick={toggleHidePaidEvents}
           >
             {filters.hidePaidEvents ? "Ne" : "Taip"}
@@ -377,6 +389,17 @@ const VolunteersPage: React.FC = () => {
                           : "Atšaukti"}
                       </button>
                     )}
+                    {(app.form_url && app.status === "laukiama") && (
+                    <FormModal formUrl={app.form_url}>
+                      <Button
+                        variant="contained"
+                        color="primary"
+                        size="medium"
+                      >
+                        Užpildyti savanoriu formą
+                      </Button>
+                    </FormModal>
+                  )}
                   </td>
                 </tr>
               ))}
