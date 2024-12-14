@@ -11,10 +11,11 @@ export const fetchEvents = async (): Promise<{
   error: string | null;
 }> => {
   const { data, error } = await supabase
-    .from<Event>("event")
+    .from("event")
     .select("*")
     .gt("available_volunteers", 0)
-    .order("date", { ascending: true });
+    .order("date", { ascending: true })
+    .returns<Event[]>();
 
   return { data, error: error?.message || null };
 };

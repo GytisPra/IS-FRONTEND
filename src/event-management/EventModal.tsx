@@ -204,6 +204,24 @@ const EventModal: React.FC<EventModalProps> = ({
                 />
                 <label>Nemokamas</label>
               </div>
+              <div className="mt-10">
+                <TextField
+                  className="w-full p-2 border rounded"
+                  type="text"
+                  name="form_url"
+                  onChange={onFieldChange}
+                  value={newEventForm.form_url}
+                  helperText="Google Forms nuoroda"
+                  label="Savanorystės apklausos formos nuoroda"
+                  slotProps={{
+                    input: {
+                      inputProps: {
+                        step: "1",
+                      },
+                    },
+                  }}
+                />
+              </div>
 
               {!showLocationFields && (
                 <button

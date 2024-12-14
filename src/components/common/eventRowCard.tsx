@@ -8,10 +8,10 @@ import {
 } from "@mui/material";
 
 export interface Event {
-  id: number;
+  id: string;
   name: string;
   startTime: Date;
-  attendees: string[];
+  attendees: number;
   description: string;
 }
 
@@ -46,7 +46,7 @@ const EventRowCard: React.FC<EventRowCardProps> = ({
         </Grid>
         <Grid item xs={3}>
           <Typography variant="body1" color="text.secondary">
-            {event.attendees.length} Dalyviai
+            {event.attendees} Dalyviai
           </Typography>
         </Grid>
       </Grid>
