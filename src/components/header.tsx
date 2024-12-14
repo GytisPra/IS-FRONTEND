@@ -12,10 +12,30 @@ import { Drawer, ListItemButton, ListItemText, List } from "@mui/material";
 import MenuIcon from "@mui/icons-material/Menu";
 import theme from "../theme";
 import { logout } from "../userService";
+import { user } from '../home/user';
+import {supabase } from '../../supabase';
+import { useEffect } from 'react';
 
 export default function Header() {
   const [anchorEl, setAnchorEl] = useState<null | HTMLElement>(null);
   const [drawerOpen, setDrawerOpen] = useState(false);
+
+  useEffect(() => {
+      const checkFirstTimeLogin = async () => {
+  
+        if (!user) {
+          console.log('No user is currently signed in.');
+          return;
+        }
+  
+        if (user.email) {
+          console.log(user)
+       
+        }
+      };
+  
+      checkFirstTimeLogin();
+    }, []);
 
   const toggleDrawer = (open: boolean) => () => {
     setDrawerOpen(open);

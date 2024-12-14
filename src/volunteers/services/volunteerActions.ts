@@ -15,6 +15,7 @@ export const fetchEvents = async (): Promise<{
     .select("*")
     .gt("available_volunteers", 0)
     .order("date", { ascending: true });
+
   return { data, error: error?.message || null };
 };
 
@@ -23,7 +24,9 @@ export const fetchEvents = async (): Promise<{
  *
  * @param volunteerId - The ID of the volunteer.
  */
-export const fetchVolunteerApplications = async (volunteerId: string): Promise<{
+export const fetchVolunteerApplications = async (
+  volunteerId: string
+): Promise<{
   data: VolunteerApplication[] | null;
   error: string | null;
 }> => {
@@ -102,8 +105,7 @@ export const declineVolunteerApplication = async (
   data: VolunteerApplication | null;
   error: string | null;
 }> => {
-
-  const {data: event} = await supabase
+  const { data: event } = await supabase
     .from<VolunteerApplication>("volunteer_application")
     .select("event_id")
     .eq("id", applicationId)
@@ -114,9 +116,9 @@ export const declineVolunteerApplication = async (
   const { data, error } = await supabase
     .from<VolunteerApplication>("volunteer_application")
     .delete()
-    .eq("id", applicationId)
+    .eq("id", applicationId);
 
-    const { data: eventData, error: selectError } = await supabase
+  const { data: eventData, error: selectError } = await supabase
     .from<Event>("event")
     .select("available_volunteers")
     .eq("id", currentEventId)
