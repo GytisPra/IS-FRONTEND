@@ -400,6 +400,9 @@ const VolunteersPage: React.FC = () => {
                       </Button>
                     </FormModal>
                   )}
+                  {app.status !== "laukiama" && (
+                    <span className="text-gray-500">Veiksmai neprieinami</span>
+                  )}
                   </td>
                 </tr>
               ))}
