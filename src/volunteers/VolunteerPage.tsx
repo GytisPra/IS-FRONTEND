@@ -16,7 +16,9 @@ const VolunteersPage: React.FC = () => {
   const [loadingEvents, setLoadingEvents] = useState<boolean>(true);
   const [loadingApplications, setLoadingApplications] = useState<boolean>(true);
   const [applyingEventId, setApplyingEventId] = useState<string | null>(null);
-  const [decliningApplicationId, setDecliningApplicationId] = useState<string | null>(null);
+  const [decliningApplicationId, setDecliningApplicationId] = useState<
+    string | null
+  >(null);
   const [removedEvents, setRemovedEvents] = useState<Record<string, Event>>({});
   const [filters, setFilters] = useState({
     startDate: "",
@@ -29,6 +31,7 @@ const VolunteersPage: React.FC = () => {
       setLoadingEvents(true);
 
       const { data: eventsData, error: eventsError } = await fetchEvents();
+
       if (eventsError) {
         throw new Error(`Klaida kraunant renginius: ${eventsError}`);
       }
@@ -37,9 +40,12 @@ const VolunteersPage: React.FC = () => {
 
       if (user) {
         setLoadingApplications(true);
-        const { data: applicationsData, error: applicationsError } = await fetchVolunteerApplications(user.id);
+        const { data: applicationsData, error: applicationsError } =
+          await fetchVolunteerApplications(user.id);
         if (applicationsError) {
-          throw new Error(`Įvyko klaida kraunant aplikacijas: ${applicationsError}`);
+          throw new Error(
+            `Įvyko klaida kraunant aplikacijas: ${applicationsError}`
+          );
         }
         setApplications(applicationsData || []);
         setLoadingApplications(false);
@@ -47,13 +53,14 @@ const VolunteersPage: React.FC = () => {
         const appliedEventIds = applicationsData.map((app) => app.event_id);
         const newRemovedEvents: Record<string, Event> = {};
 
-        const updatedEvents = eventsData?.filter((event) => {
-          if (appliedEventIds.includes(event.id)) {
-            newRemovedEvents[event.id] = event;
-            return false;
-          }
-          return true;
-        }) || [];
+        const updatedEvents =
+          eventsData?.filter((event) => {
+            if (appliedEventIds.includes(event.id)) {
+              newRemovedEvents[event.id] = event;
+              return false;
+            }
+            return true;
+          }) || [];
 
         setEvents(updatedEvents);
         setRemovedEvents(newRemovedEvents);
@@ -71,11 +78,15 @@ const VolunteersPage: React.FC = () => {
 
   const handleApply = async (eventId: string) => {
     if (!user) {
-      toast.error("Jūs privalote būti prisijungęs, kad aplikuoti savanorystei.");
+      toast.error(
+        "Jūs privalote būti prisijungęs, kad aplikuoti savanorystei."
+      );
       return;
     }
 
-    const existingApplication = applications.find((app) => app.event_id === eventId);
+    const existingApplication = applications.find(
+      (app) => app.event_id === eventId
+    );
     if (existingApplication) {
       toast.error("Jūs jau pateikėte savanorystės aplikaciją šiam renginiui.");
       return;
@@ -94,7 +105,10 @@ const VolunteersPage: React.FC = () => {
     setRemovedEvents((prev) => ({ ...prev, [eventId]: eventToApply }));
 
     try {
-      const { data, error } = await submitVolunteerApplication(eventId, user.id);
+      const { data, error } = await submitVolunteerApplication(
+        eventId,
+        user.id
+      );
 
       if (error) {
         throw new Error(error);
@@ -117,7 +131,9 @@ const VolunteersPage: React.FC = () => {
   };
 
   const handleDecline = async (applicationId: string) => {
-    const applicationToDecline = applications.find((app) => app.id === applicationId);
+    const applicationToDecline = applications.find(
+      (app) => app.id === applicationId
+    );
 
     if (!applicationToDecline) {
       toast.error("Aplikacija nerasta.");
@@ -270,7 +286,9 @@ const VolunteersPage: React.FC = () => {
                 <th className="py-2 px-4 border">Pabaigos laikas</th>
                 <th className="py-2 px-4 border">Ar mokamas?</th>
                 <th className="py-2 px-4 border">Vietų skaičius</th>
-                <th className="py-2 px-4 border">Laisvos savanorystės vietos</th>
+                <th className="py-2 px-4 border">
+                  Laisvos savanorystės vietos
+                </th>
                 <th className="py-2 px-4 border">Veiksmai</th>
               </tr>
             </thead>
@@ -284,23 +302,35 @@ const VolunteersPage: React.FC = () => {
                     </td>
                     <td className="py-2 px-4 border">{event.start_time}</td>
                     <td className="py-2 px-4 border">{event.end_time}</td>
-                    <td className="py-2 px-4 border">{event.is_free ? "Taip" : "Ne"}</td>
+                    <td className="py-2 px-4 border">
+                      {event.is_free ? "Taip" : "Ne"}
+                    </td>
                     <td className="py-2 px-4 border">{event.seats_count}</td>
-                    <td className="py-2 px-4 border">{event.available_volunteers}</td>
+                    <td className="py-2 px-4 border">
+                      {event.available_volunteers}
+                    </td>
                     <td className="py-2 px-4 border">
                       {status === "priimta" ? (
-                        <span className="text-green-600 font-semibold">Priimta</span>
+                        <span className="text-green-600 font-semibold">
+                          Priimta
+                        </span>
                       ) : status === "atmesta" ? (
-                        <span className="text-red-600 font-semibold">Atmesta</span>
+                        <span className="text-red-600 font-semibold">
+                          Atmesta
+                        </span>
                       ) : status === "laukiama" ? (
-                        <span className="text-yellow-600 font-semibold">Laukiama</span>
+                        <span className="text-yellow-600 font-semibold">
+                          Laukiama
+                        </span>
                       ) : (
                         <button
                           onClick={() => handleApply(event.id)}
                           disabled={applyingEventId === event.id}
                           className="bg-blue-500 text-white px-4 py-2 rounded hover:bg-blue-600"
                         >
-                          {applyingEventId === event.id ? "Pateikiama..." : "Pateikti"}
+                          {applyingEventId === event.id
+                            ? "Pateikiama..."
+                            : "Pateikti"}
                         </button>
                       )}
                     </td>
@@ -334,9 +364,7 @@ const VolunteersPage: React.FC = () => {
                   <td className="py-2 px-4 border">
                     {new Date(app.date).toLocaleString()}
                   </td>
-                  <td className="py-2 px-4 border capitalize">
-                    {app.status}
-                  </td>
+                  <td className="py-2 px-4 border capitalize">{app.status}</td>
                   <td className="py-2 px-4 border">
                     {app.status === "laukiama" && (
                       <button
@@ -344,7 +372,9 @@ const VolunteersPage: React.FC = () => {
                         disabled={decliningApplicationId === app.id}
                         className="bg-red-500 text-white px-4 py-2 rounded hover:bg-red-600"
                       >
-                        {decliningApplicationId === app.id ? "Atšaukiama..." : "Atšaukti"}
+                        {decliningApplicationId === app.id
+                          ? "Atšaukiama..."
+                          : "Atšaukti"}
                       </button>
                     )}
                   </td>

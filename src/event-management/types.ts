@@ -16,6 +16,7 @@ export interface Event {
 
 export interface Location {
   id: string;
+  city: string;
   country: string;
   address: string;
   specified_location: string;
@@ -33,6 +34,7 @@ export interface NewEventForm {
   max_volunteer_count: number;
   location?: {
     // manau, kad gali but nullable, nes renginys gali but ir online
+    city?: string;
     country?: string;
     address?: string;
     specified_location?: string;

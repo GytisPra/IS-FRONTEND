@@ -1,12 +1,13 @@
+import { fetchEventLocation } from "../event-location/locationActions";
 import { supabase } from "../userService";
-import { Event, NewEventForm, Location } from "./types";
+import { Event, NewEventForm } from "./types";
 
 export const fetchEvents = async (): Promise<{
   data: Event[] | null;
   error: string | null;
 }> => {
   const { data, error } = await supabase
-    .from<Event>("event")
+    .from("event")
     .select("*")
     .order("start_time", { ascending: true });
 
@@ -25,8 +26,16 @@ export const deleteEventLocation = async (
       throw new Error("Invalid location ID.");
     }
 
+    // Check if the location exists
+    const { data: location, error: fetchLocationError } =
+      await fetchEventLocation(locationId);
+
+    if (fetchLocationError || !location) {
+      throw new Error("Location does not exist or could not be fetched.");
+    }
+
     const { error: updateEventError } = await supabase
-      .from<Event>("event")
+      .from("event")
       .update({ event_location_id: null })
       .eq("event_location_id", locationId);
 
@@ -35,7 +44,7 @@ export const deleteEventLocation = async (
     }
 
     const { error: deleteLocationError } = await supabase
-      .from<Location>("event_location")
+      .from("event_location")
       .delete()
       .eq("id", locationId);
 
@@ -43,6 +52,7 @@ export const deleteEventLocation = async (
       throw new Error(deleteLocationError.message);
     }
 
+    // Update events array locally
     const updatedEvents = events.map((evt) =>
       evt.event_location_id === locationId
         ? ({ ...evt, event_location_id: null } as Event)
@@ -50,6 +60,7 @@ export const deleteEventLocation = async (
     );
 
     return { updatedEvents, error: null };
+    // eslint-disable-next-line @typescript-eslint/no-explicit-any
   } catch (err: any) {
     return { updatedEvents: events, error: err.message || "An error occurred" };
   }
@@ -76,7 +87,7 @@ export const submitEvent = async (
         if (eventToEdit.event_location_id !== null) {
           const { data: updatedLocationData, error: updateLocationError } =
             await supabase
-              .from<Location>("event_location")
+              .from("event_location")
               .update({
                 country: newEventForm.location.country,
                 address: newEventForm.location.address,
@@ -91,7 +102,7 @@ export const submitEvent = async (
           locationId = updatedLocationData?.[0]?.id || null;
         } else {
           const { data: locationData, error: locationError } = await supabase
-            .from<Location>("event_location")
+            .from("event_location")
             .insert([newEventForm.location])
             .select();
 
@@ -100,7 +111,7 @@ export const submitEvent = async (
         }
       } else {
         const { data: locationData, error: locationError } = await supabase
-          .from<Location>("event_location")
+          .from("event_location")
           .insert([newEventForm.location])
           .select();
 
@@ -118,7 +129,7 @@ export const submitEvent = async (
       delete eventDataToUpdate.location;
 
       const { data: eventData, error: eventError } = await supabase
-        .from<Event>("event")
+        .from("event")
         .update(eventDataToUpdate)
         .eq("id", editingEventId)
         .select();
@@ -134,13 +145,20 @@ export const submitEvent = async (
       delete newEventForm.location;
 
       const { data: eventData, error: eventError } = await supabase
-        .from<Event>("event")
-        .insert([{ ...newEventForm, event_location_id: locationId }])
+        .from("event")
+        .insert([
+          {
+            ...newEventForm,
+            available_volunteers: newEventForm.max_volunteer_count,
+            event_location_id: locationId,
+          },
+        ])
         .select();
 
       if (eventError) throw new Error(eventError.message);
       return { updatedEvents: [...events, eventData[0]], error: null };
     }
+    // eslint-disable-next-line @typescript-eslint/no-explicit-any
   } catch (err: any) {
     return { updatedEvents: events, error: err.message || "An error occurred" };
   }

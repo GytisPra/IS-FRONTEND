@@ -1,5 +1,5 @@
 // EventModal.tsx
-import React, { ChangeEvent } from "react";
+import React, { ChangeEvent, useState } from "react";
 import { NewEventForm } from "./types";
 import {
   LocalizationProvider,
@@ -9,6 +9,8 @@ import {
 import { AdapterDayjs } from "@mui/x-date-pickers/AdapterDayjs";
 import dayjs from "dayjs";
 import { TextField } from "@mui/material";
+import PreviewEventLocation from "../event-location/PreviewEventLocation";
+import { toast } from "react-toastify";
 
 interface EventModalProps {
   isEditing: boolean;
@@ -39,6 +41,19 @@ const EventModal: React.FC<EventModalProps> = ({
   onFieldChange,
   onToggleLocationFields,
 }) => {
+  const [showMapPreview, setShowMapPreview] = useState(false);
+
+  const toggleMapPreview = () => {
+    if (
+      (newEventForm.location?.latitude && newEventForm.location?.longitude) ||
+      showMapPreview
+    ) {
+      setShowMapPreview(!showMapPreview);
+    } else {
+      toast.error("Nenurodytos koordinatės");
+    }
+  };
+
   return (
     <div className="fixed inset-0 flex items-center justify-center bg-black bg-opacity-50 z-50">
       <div className="bg-white rounded-lg shadow-lg w-full max-w-3xl mx-4">
@@ -203,82 +218,119 @@ const EventModal: React.FC<EventModalProps> = ({
 
             {showLocationFields && (
               <div className="col-span-1">
-                <h3 className="text-lg font-semibold mb-2">
-                  Vietovės duomenys
-                </h3>
-                <div className="mb-4">
-                  <TextField
-                    className="w-full p-2 border rounded"
-                    name="location.country"
-                    onChange={onFieldChange}
-                    value={newEventForm.location?.country || ""}
-                    label="Šalis"
-                    required
-                  />
+                {showMapPreview ? (
+                  <>
+                    <h3 className="text-lg font-semibold mb-2">
+                      Vietovės Žemėlapis
+                    </h3>
+                    <PreviewEventLocation
+                      latitude={newEventForm.location?.latitude}
+                      longitude={newEventForm.location?.longitude}
+                      disable={false}
+                    />
+                  </>
+                ) : (
+                  <>
+                    <h3 className="text-lg font-semibold mb-2">
+                      Vietovės duomenys
+                    </h3>
+                    <div className="mb-4">
+                      <TextField
+                        className="w-full p-2 border rounded"
+                        name="location.city"
+                        onChange={onFieldChange}
+                        value={newEventForm.location?.city || ""}
+                        label="Miestas"
+                        required
+                      />
+                    </div>
+                    <div className="mb-4">
+                      <TextField
+                        className="w-full p-2 border rounded"
+                        name="location.country"
+                        onChange={onFieldChange}
+                        value={newEventForm.location?.country || ""}
+                        label="Šalis"
+                        required
+                      />
+                    </div>
+                    <div className="mb-4">
+                      <TextField
+                        className="w-full p-2 border rounded"
+                        name="location.address"
+                        onChange={onFieldChange}
+                        value={newEventForm.location?.address || ""}
+                        label="Adresas"
+                        required
+                      />
+                    </div>
+                    <div className="mb-4">
+                      <TextField
+                        className="w-full p-2 border rounded"
+                        name="location.specified_location"
+                        onChange={onFieldChange}
+                        value={newEventForm.location?.specified_location || ""}
+                        label="Patikslinta vietovė"
+                        required
+                      />
+                    </div>
+                    <div className="mb-4">
+                      <TextField
+                        className="w-full p-2 border rounded"
+                        type="number"
+                        name="location.longitude"
+                        onChange={onFieldChange}
+                        value={newEventForm.location?.longitude || ""}
+                        label="Ilguma"
+                        required
+                        slotProps={{
+                          input: {
+                            inputProps: {
+                              step: "0.01",
+                            },
+                          },
+                        }}
+                      />
+                    </div>
+                    <div className="mb-4">
+                      <TextField
+                        className="w-full p-2 border rounded"
+                        type="number"
+                        name="location.latitude"
+                        onChange={onFieldChange}
+                        value={newEventForm.location?.latitude || ""}
+                        label="Platuma"
+                        required
+                        slotProps={{
+                          input: {
+                            inputProps: {
+                              step: "0.01",
+                            },
+                          },
+                        }}
+                      />
+                    </div>
+                  </>
+                )}
+
+                <div className="flex space-x-4">
+                  <button
+                    type="button"
+                    onClick={() => onToggleLocationFields(editingEventId)}
+                    className="mt-2 bg-gray-500 text-white px-4 py-2 rounded hover:bg-gray-600"
+                  >
+                    Pašalinti vietovę
+                  </button>
+                  <button
+                    type="button"
+                    onClick={toggleMapPreview}
+                    className="mt-2 bg-blue-500 text-white px-4 py-2 rounded hover:bg-blue-600"
+                  >
+                    {showMapPreview
+                      ? "Uždaryti žemėlapį"
+                      : "Atidaryti žemėlapį"}
+                  </button>
                 </div>
-                <div className="mb-4">
-                  <TextField
-                    className="w-full p-2 border rounded"
-                    name="location.address"
-                    onChange={onFieldChange}
-                    value={newEventForm.location?.address || ""}
-                    label="Adresas"
-                    required
-                  />
-                </div>
-                <div className="mb-4">
-                  <TextField
-                    className="w-full p-2 border rounded"
-                    name="location.specified_location"
-                    onChange={onFieldChange}
-                    value={newEventForm.location?.specified_location || ""}
-                    label="Patikslinta vietovė"
-                    required
-                  />
-                </div>
-                <div className="mb-4">
-                  <TextField
-                    className="w-full p-2 border rounded"
-                    type="number"
-                    name="location.longitude"
-                    onChange={onFieldChange}
-                    value={newEventForm.location?.longitude || ""}
-                    label="Ilguma"
-                    required
-                    slotProps={{
-                      input: {
-                        inputProps: {
-                          step: "0.01",
-                        },
-                      },
-                    }}
-                  />
-                </div>
-                <div className="mb-4">
-                  <TextField
-                    className="w-full p-2 border rounded"
-                    type="number"
-                    name="location.latitude"
-                    onChange={onFieldChange}
-                    value={newEventForm.location?.latitude || ""}
-                    label="Platuma"
-                    required
-                    slotProps={{
-                      input: {
-                        inputProps: {
-                          step: "0.01",
-                        },
-                      },
-                    }}
-                  />
-                </div>
-                <button
-                  type="button"
-                  onClick={() => onToggleLocationFields(editingEventId)}
-                  className="mt-2 bg-gray-500 text-white px-4 py-2 rounded hover:bg-gray-600"
-                >
-                  Pašalinti vietovę
-                </button>
               </div>
             )}
           </div>
