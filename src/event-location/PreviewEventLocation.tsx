@@ -24,7 +24,7 @@ export default function PreviewEventLocation({
 
   return (
     <div>
-      {latitude && longitude ? (
+      {latitude !== undefined && longitude !== undefined ? (
         <APIProvider apiKey={import.meta.env.VITE_GOOGLE_MAPS_API_KEY}>
           <div className="flex justify-center items-center h-[27rem] w-full">
             <Map

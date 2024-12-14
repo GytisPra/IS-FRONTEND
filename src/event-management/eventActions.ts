@@ -145,7 +145,13 @@ export const submitEvent = async (
 
       const { data: eventData, error: eventError } = await supabase
         .from<Event>("event")
-        .insert([{ ...newEventForm, event_location_id: locationId }])
+        .insert([
+          {
+            ...newEventForm,
+            available_volunteers: newEventForm.max_volunteer_count,
+            event_location_id: locationId,
+          },
+        ])
         .select();
 
       if (eventError) throw new Error(eventError.message);
