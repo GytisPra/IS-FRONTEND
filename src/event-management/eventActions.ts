@@ -23,10 +23,24 @@ export const fetchEvents = async (): Promise<{
   data: Event[] | null;
   error: string | null;
 }> => {
+  if (!user || user.email === undefined) {
+    throw new Error("User not found");
+  }
+
+  const { data: publicUser, error: errorDb } = await getUserByEmail(user.email);
+
+  if (!publicUser) {
+    throw new Error("User not found");
+  }
+
+  if (errorDb) {
+    throw new Error(errorDb.message);
+  }
+
   const { data, error } = await supabase
     .from("event")
     .select("*")
-    .eq("created_by", user?.id)
+    .eq("created_by", publicUser.id)
     .order("start_time", { ascending: true });
 
   return { data, error: error?.message || null };
