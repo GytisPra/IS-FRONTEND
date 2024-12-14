@@ -8,7 +8,13 @@ import { TextField, Typography, Box, Button } from "@mui/material";
 import "react-toastify/dist/ReactToastify.css";
 import { ToastContainer } from "react-toastify";
 
-const ViewEventLocation = ({ eventLocationId, disable }: { eventLocationId: string; disable: boolean }) => {
+const ViewEventLocation = ({
+  eventLocationId,
+  disable,
+}: {
+  eventLocationId: string;
+  disable: boolean;
+}) => {
   return <span>Vietovės ID: {eventLocationId}</span>;
 };
 
@@ -21,11 +27,15 @@ interface Event {
   seats_count: number;
   max_volunteer_count: number;
   event_location_id: string | null;
+  payment_link: string | null;
 }
 
 const UserPage = () => {
   const [events, setEvents] = useState<Event[]>([]);
-  const [sortConfig, setSortConfig] = useState<{ key: string; direction: "asc" | "desc" } | null>(null);
+  const [sortConfig, setSortConfig] = useState<{
+    key: string;
+    direction: "asc" | "desc";
+  } | null>(null);
   const [filter, setFilter] = useState<{
     startDate: string;
     endDate: string;
@@ -100,7 +110,11 @@ const UserPage = () => {
 
   const handleSort = (key: string) => {
     let direction: "asc" | "desc" = "asc";
-    if (sortConfig && sortConfig.key === key && sortConfig.direction === "asc") {
+    if (
+      sortConfig &&
+      sortConfig.key === key &&
+      sortConfig.direction === "asc"
+    ) {
       direction = "desc";
     }
     setSortConfig({ key, direction });
@@ -108,8 +122,12 @@ const UserPage = () => {
 
   return (
     <div>
-      <ToastContainer position="top-right" autoClose={5000} hideProgressBar={false} />
-      <Box sx={{ textAlign: 'center', my: 4 }}>
+      <ToastContainer
+        position="top-right"
+        autoClose={5000}
+        hideProgressBar={false}
+      />
+      <Box sx={{ textAlign: "center", my: 4 }}>
         <Typography variant="h1" component="h1" gutterBottom>
           Renginiai
         </Typography>
@@ -118,18 +136,20 @@ const UserPage = () => {
       {/* Wrap the filter and table in a parent container with equal margins */}
       <div style={{ margin: "0 100px" }}>
         <LocalizationProvider dateAdapter={AdapterDayjs}>
-          <div 
-            style={{ 
-              display: "flex", 
-              gap: "1rem", 
-              marginBottom: "1rem" 
+          <div
+            style={{
+              display: "flex",
+              gap: "1rem",
+              marginBottom: "1rem",
             }}
           >
             <div>
               <button
                 id="hideFree"
                 name="hideFree"
-                className={`min-w-max px-2 py-[0.95rem] ${filter.hideNotFree && "bg-gray-100"} border rounded hover:bg-gray-200`}
+                className={`min-w-max px-2 py-[0.95rem] ${
+                  filter.hideNotFree && "bg-gray-100"
+                } border rounded hover:bg-gray-200`}
                 onClick={handleHideNotFree}
               >
                 {filter.hideNotFree ? "Rodyti mokamus" : "Paslėpti mokamus"}
@@ -140,7 +160,10 @@ const UserPage = () => {
                 label="Nuo datos"
                 value={filter.startDate ? dayjs(filter.startDate) : null}
                 onChange={(date) =>
-                  handleFilterChange("startDate", date ? date.format("YYYY-MM-DD") : null)
+                  handleFilterChange(
+                    "startDate",
+                    date ? date.format("YYYY-MM-DD") : null
+                  )
                 }
                 slotProps={{ textField: { id: "startDate" } }}
               />
@@ -150,7 +173,10 @@ const UserPage = () => {
                 label="Iki datos"
                 value={filter.endDate ? dayjs(filter.endDate) : null}
                 onChange={(date) =>
-                  handleFilterChange("endDate", date ? date.format("YYYY-MM-DD") : null)
+                  handleFilterChange(
+                    "endDate",
+                    date ? date.format("YYYY-MM-DD") : null
+                  )
                 }
                 slotProps={{ textField: { id: "endDate" } }}
               />
@@ -160,7 +186,9 @@ const UserPage = () => {
               name="searchQuery"
               label="Ieškoti renginio 🔍"
               value={filter.searchQuery}
-              onChange={(e) => handleFilterChange("searchQuery", e.target.value)}
+              onChange={(e) =>
+                handleFilterChange("searchQuery", e.target.value)
+              }
             />
           </div>
         </LocalizationProvider>
@@ -170,28 +198,44 @@ const UserPage = () => {
           style={{
             width: "100%",
             background: "white",
-            borderCollapse: "collapse"
+            borderCollapse: "collapse",
           }}
         >
           <thead>
             <tr>
               <th className="py-2 px-4 border">Pavadinimas</th>
               <th className="py-2 px-4 border">Vietovė</th>
-              <th className="py-2 px-4 border hover:bg-gray-200 cursor-pointer" onClick={() => handleSort("start_time")}>
+              <th
+                className="py-2 px-4 border hover:bg-gray-200 cursor-pointer"
+                onClick={() => handleSort("start_time")}
+              >
                 Pradžios Laikas
-                {sortConfig?.key === "start_time" && (sortConfig.direction === "asc" ? "↑" : "↓")}
+                {sortConfig?.key === "start_time" &&
+                  (sortConfig.direction === "asc" ? "↑" : "↓")}
               </th>
-              <th className="py-2 px-4 border hover:bg-gray-200 cursor-pointer" onClick={() => handleSort("end_time")}>
+              <th
+                className="py-2 px-4 border hover:bg-gray-200 cursor-pointer"
+                onClick={() => handleSort("end_time")}
+              >
                 Pabaigos Laikas
-                {sortConfig?.key === "end_time" && (sortConfig.direction === "asc" ? "↑" : "↓")}
+                {sortConfig?.key === "end_time" &&
+                  (sortConfig.direction === "asc" ? "↑" : "↓")}
               </th>
-              <th className="py-2 px-4 border hover:bg-gray-200 cursor-pointer" onClick={() => handleSort("is_free")}>
+              <th
+                className="py-2 px-4 border hover:bg-gray-200 cursor-pointer"
+                onClick={() => handleSort("is_free")}
+              >
                 Ar Mokamas
-                {sortConfig?.key === "is_free" && (sortConfig.direction === "asc" ? "↑" : "↓")}
+                {sortConfig?.key === "is_free" &&
+                  (sortConfig.direction === "asc" ? "↑" : "↓")}
               </th>
-              <th className="py-2 px-4 border hover:bg-gray-200 cursor-pointer" onClick={() => handleSort("seats_count")}>
+              <th
+                className="py-2 px-4 border hover:bg-gray-200 cursor-pointer"
+                onClick={() => handleSort("seats_count")}
+              >
                 Vietų Skaičius
-                {sortConfig?.key === "seats_count" && (sortConfig.direction === "asc" ? "↑" : "↓")}
+                {sortConfig?.key === "seats_count" &&
+                  (sortConfig.direction === "asc" ? "↑" : "↓")}
               </th>
               <th className="py-2 px-4 border">Veiksmai</th>
             </tr>
@@ -202,20 +246,45 @@ const UserPage = () => {
                 <td className="py-2 px-4 border">{event.name}</td>
                 <td className="py-2 px-4 border">
                   {event.event_location_id ? (
-                    <ViewEventLocation eventLocationId={event.event_location_id} disable={false} />
+                    <ViewEventLocation
+                      eventLocationId={event.event_location_id}
+                      disable={false}
+                    />
                   ) : (
                     "Nuotoliniu"
                   )}
                 </td>
-                <td className="py-2 px-4 border">{dayjs(event.start_time).format("YYYY-MM-DD, HH:mm:ss")}</td>
-                <td className="py-2 px-4 border">{dayjs(event.end_time).format("YYYY-MM-DD, HH:mm:ss")}</td>
-                <td className="py-2 px-4 border">{event.is_free ? "Taip" : "Ne"}</td>
+                <td className="py-2 px-4 border">
+                  {dayjs(event.start_time).format("YYYY-MM-DD, HH:mm:ss")}
+                </td>
+                <td className="py-2 px-4 border">
+                  {dayjs(event.end_time).format("YYYY-MM-DD, HH:mm:ss")}
+                </td>
+                <td className="py-2 px-4 border">
+                  {event.is_free ? "Taip" : "Ne"}
+                </td>
                 <td className="py-2 px-4 border">{event.seats_count}</td>
                 <td className="py-2 px-4 border">
-                  <div className="flex items-center justify-center" style={{ display: "flex", justifyContent: "center" }}>
-                    <button className="bg-blue-500 text-white px-2 py-1 rounded hover:bg-blue-600">
-                      Pirkti bilietą
-                    </button>
+                  <div
+                    className="flex items-center justify-center"
+                    style={{ display: "flex", justifyContent: "center" }}
+                  >
+                    {event.is_free && event.payment_link ? (
+                      <button
+                        className="bg-blue-500 text-white px-2 py-1 rounded hover:bg-blue-600"
+                        onClick={() =>
+                          (window.location.href = event.payment_link!)
+                        }
+                      >
+                        Pirkti bilietą
+                      </button>
+                    ) : (
+                      !event.is_free && (
+                        <span className="text-gray-500">
+                          Nemokamas renginys
+                        </span>
+                      )
+                    )}
                   </div>
                 </td>
               </tr>
