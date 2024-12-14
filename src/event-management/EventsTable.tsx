@@ -87,6 +87,35 @@ const EventTable = ({ events, onEdit, onDelete }: EventTableProps) => {
     setSortConfig({ key, direction });
   };
 
+  const handleBuy = async (event: Event) => {
+    try {
+      const response = await fetch(
+        `${process.env.REACT_APP_API_URL}/create-checkout-session`,
+        {
+          method: "POST",
+          headers: {
+            "Content-Type": "application/json",
+          },
+          body: JSON.stringify({
+            eventId: event.id,
+            eventName: event.name,
+            price: 10,
+          }),
+        }
+      );
+
+      const data = await response.json();
+
+      if (data.url) {
+        window.location.href = data.url; // Redirect to Stripe Checkout
+      } else {
+        console.error("Checkout session creation failed.");
+      }
+    } catch (error) {
+      console.error("Error processing payment:", error);
+    }
+  };
+
   return (
     <>
       <LocalizationProvider dateAdapter={AdapterDayjs}>
@@ -212,12 +241,29 @@ const EventTable = ({ events, onEdit, onDelete }: EventTableProps) => {
                   >
                     Redaguoti
                   </button>
-                  <button
-                    onClick={() => onDelete(event.id)}
-                    className="bg-red-500 text-white px-2 py-1 rounded-r-lg hover:bg-red-600"
-                  >
-                    Pašalinti
-                  </button>
+                  {event.is_free ? (
+                    <>
+                      <button
+                        onClick={() => onDelete(event.id)}
+                        className="bg-red-500 text-white px-2 py-1 hover:bg-red-600"
+                      >
+                        Pašalinti
+                      </button>
+                      <button
+                        onClick={() => handleBuy(event)}
+                        className="bg-green-500 text-white px-2 py-1 rounded-r-lg hover:bg-green-600"
+                      >
+                        Pirkti
+                      </button>
+                    </>
+                  ) : (
+                    <button
+                      onClick={() => onDelete(event.id)}
+                      className="bg-red-500 text-white px-2 py-1 rounded-r-lg hover:bg-red-600"
+                    >
+                      Pašalinti
+                    </button>
+                  )}
                 </div>
               </td>
             </tr>

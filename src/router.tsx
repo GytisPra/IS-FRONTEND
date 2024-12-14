@@ -23,7 +23,7 @@ export const router = createBrowserRouter([
   },
   {
     path: "/volunteers/events",
-    element: <VolunteersPage />, 
+    element: <VolunteersPage />,
   },
   {
     path: "/tickets",
