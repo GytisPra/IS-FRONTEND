@@ -10,16 +10,9 @@ interface EventTableProps {
   events: Event[];
   onEdit: (event: Event) => void;
   onDelete: (id: number) => void;
-
-  closePaymentModal: () => void;
 }
 
-const EventTable = ({
-  events,
-  onEdit,
-  onDelete,
-  closePaymentModal,
-}: EventTableProps) => {
+const EventTable = ({ events, onEdit, onDelete }: EventTableProps) => {
   const [sortConfig, setSortConfig] = useState<{
     key: string;
     direction: "asc" | "desc";
@@ -227,29 +220,12 @@ const EventTable = ({
                   >
                     Redaguoti
                   </button>
-                  {event.is_free ? (
-                    <>
-                      <button
-                        onClick={() => onDelete(event.id)}
-                        className="bg-red-500 text-white px-2 py-1 hover:bg-red-600"
-                      >
-                        Pašalinti
-                      </button>
-                      <button
-                        onClick={closePaymentModal}
-                        className="bg-green-500 text-white px-2 py-1 rounded-r-lg hover:bg-green-600"
-                      >
-                        Pirkti
-                      </button>
-                    </>
-                  ) : (
-                    <button
-                      onClick={() => onDelete(event.id)}
-                      className="bg-red-500 text-white px-2 py-1 rounded-r-lg hover:bg-red-600"
-                    >
-                      Pašalinti
-                    </button>
-                  )}
+                  <button
+                    onClick={() => onDelete(event.id)}
+                    className="bg-red-500 text-white px-2 py-1 rounded-r-lg hover:bg-red-600"
+                  >
+                    Pašalinti
+                  </button>
                 </div>
               </td>
             </tr>

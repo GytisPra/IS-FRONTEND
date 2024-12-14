@@ -12,7 +12,6 @@ import EventTable from "./EventsTable";
 import dayjs from "dayjs";
 import { ToastContainer } from "react-toastify";
 import "react-toastify/dist/ReactToastify.css";
-import EventPaymentModal from "./EventPaymentModal";
 
 const EventManager: React.FC = () => {
   const [events, setEvents] = useState<Event[]>([]);
@@ -20,7 +19,6 @@ const EventManager: React.FC = () => {
   const [error, setError] = useState<string | null>(null);
 
   const [showCreationModal, setShowCreationModal] = useState<boolean>(false);
-  const [showPaymentModal, setShowPaymentModal] = useState<boolean>(false);
   const [newEventForm, setNewEventForm] = useState<NewEventForm>({
     name: "",
     date: "",
@@ -29,6 +27,7 @@ const EventManager: React.FC = () => {
     is_free: false,
     seats_count: 0,
     max_volunteer_count: 0,
+    price: 0,
   });
   const [modalLoading, setModalLoading] = useState<boolean>(false);
   const [modalError, setModalError] = useState<string | null>(null);
@@ -148,6 +147,7 @@ const EventManager: React.FC = () => {
         is_free: event.is_free,
         seats_count: event.seats_count,
         max_volunteer_count: event.max_volunteer_count,
+        price: 0,
         location: locationData
           ? {
               city: locationData.city,
@@ -169,7 +169,6 @@ const EventManager: React.FC = () => {
       setModalLoading(false);
     }
   };
-
   const formSubmit = async (e: FormEvent) => {
     e.preventDefault();
     setModalLoading(true);
@@ -246,6 +245,7 @@ const EventManager: React.FC = () => {
       is_free: false,
       seats_count: 0,
       max_volunteer_count: 0,
+      price: 0,
     });
 
     setShowCreationModal(!showCreationModal);
@@ -253,9 +253,6 @@ const EventManager: React.FC = () => {
     setIsEditing(false);
     setEditingEventId(null);
     setShowLocationFields(false);
-  };
-  const closePaymentModal = () => {
-    setShowPaymentModal(!showPaymentModal);
   };
 
   const handleLocationDeletion = async (eventId: number | null) => {
@@ -324,7 +321,6 @@ const EventManager: React.FC = () => {
           events={events}
           onEdit={handleEditClick}
           onDelete={handleDelete}
-          closePaymentModal={closePaymentModal}
         />
       )}
 
@@ -342,7 +338,6 @@ const EventManager: React.FC = () => {
           onToggleLocationFields={handleLocationDeletion}
         />
       )}
-      {showPaymentModal && <EventPaymentModal onClose={closePaymentModal} />}
     </div>
   );
 };

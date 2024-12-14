@@ -3,6 +3,7 @@ import { supabase } from "../userService";
 import { Event, NewEventForm, User } from "./types";
 import { user } from "../volunteers/objects/user";
 import { PostgrestError } from "@supabase/supabase-js";
+import Stripe from "stripe";
 
 const getUserByEmail = async (
   userEmail: string
@@ -204,6 +205,11 @@ export const submitEvent = async (
         .select();
 
       if (eventError) throw new Error(eventError.message);
+      if (newEventForm.is_free) {
+        const { url, productId } = await createProductLink(newEventForm);
+        console.log(url);
+        addPaymentLink(eventData[0].id, url, productId);
+      }
       return { updatedEvents: [...events, eventData[0]], error: null };
     }
     // eslint-disable-next-line @typescript-eslint/no-explicit-any
@@ -211,7 +217,35 @@ export const submitEvent = async (
     return { updatedEvents: events, error: err.message || "An error occurred" };
   }
 };
-
+const createProductLink = async (newEventForm: NewEventForm) => {
+  // eslint-disable-next-line @typescript-eslint/no-require-imports
+  const apiKey = import.meta.env.VITE_STRIPE_SECRET_KEY;
+  const stripe = new Stripe(apiKey);
+  const product = await stripe.products.create({
+    name: newEventForm.name,
+  });
+  // Create the price for the product
+  const price = await stripe.prices.create({
+    unit_amount: newEventForm.price * 100,
+    currency: "eur",
+    product: product.id,
+  });
+  const paymentLink = await stripe.paymentLinks.create({
+    line_items: [
+      {
+        price: price.id,
+        quantity: 1,
+      },
+    ],
+    after_completion: {
+      type: "redirect",
+      redirect: {
+        url: "http://localhost:5173/",
+      },
+    },
+  });
+  return { url: paymentLink.url, productId: product.id };
+};
 export const deleteEvent = async (
   id: number,
   events: Event[]
@@ -222,4 +256,23 @@ export const deleteEvent = async (
     updatedEvents: events.filter((event) => event.id !== id),
     error: null,
   };
+};
+export const addPaymentLink = async (
+  eventId: number,
+  paymentLink: string,
+  productId: string
+) => {
+  const { data: eventData, error: eventError } = await supabase
+    .from("event")
+    .update([
+      {
+        payment_link: paymentLink,
+        product_id: productId,
+      },
+    ])
+    .eq("id", eventId)
+    .single();
+
+  if (eventError) throw new Error(eventError.message);
+  if (eventData != null) throw new Error("Event not found");
 };
