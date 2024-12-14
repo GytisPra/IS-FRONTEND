@@ -195,7 +195,7 @@ const EventTable = ({ events, onEdit, onDelete }: EventTableProps) => {
                 {event.event_location_id ? (
                   <ViewEventLocation
                     eventLocationId={event.event_location_id}
-                    disable={true}
+                    disable={false}
                   />
                 ) : (
                   "Nuotoliniu"
