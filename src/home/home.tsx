@@ -16,6 +16,8 @@ import emailjs from "emailjs-com";
 import { loginWithGoogle, logout } from "../userService";
 import { user } from "./user";
 import { supabase } from "../../supabase";
+import { toast, ToastContainer } from "react-toastify";
+import "react-toastify/dist/ReactToastify.css";
 
 const teamMembers = [
   { name: "Gedmantas", role: "Dev'as | Rekvizitai" },
@@ -37,6 +39,7 @@ const App = () => {
   });
   const [signedInEmail, setSignedInEmail] = useState("");
   const [isSignedIn, setIsSignedIn] = useState(false);
+  const [loading, setLoading] = useState(false);
 
   const location = useLocation();
 
@@ -44,33 +47,30 @@ const App = () => {
     const verifyEmail = async () => {
       const queryParams = new URLSearchParams(location.search);
       const email = queryParams.get("email");
-      const verified = queryParams.get("verified");
 
-      if (email) {
-        console.log(`Attempting to verify email: ${email}`);
-        try {
-          const { data, error } = await supabase
-            .from("users")
-            .update({ is_email_verified: true })
-            .eq("email", email);
+      if (!email) return;
 
-          if (error) {
-            console.error("Error updating is_email_verified:", error.message);
-            alert("Nepavyko patvirtinti el. pašto.");
-          } else if (data.length === 0) {
-            console.warn("No user found with this email:", email);
-            alert("Tokio vartotojo nera.");
-          } else {
-            console.log("El. paštas patvirtintas sėkmingai:", data);
-            setShowNotification(true);
-          }
-        } catch (error) {
-          console.error("Klaida:", error.message);
+      console.log(`Attempting to verify email: ${email}`);
+      try {
+        const { data, error } = await supabase
+          .from("users")
+          .update({ is_email_verified: true })
+          .eq("email", email)
+          .select("*");
+
+        if (error) {
+          console.error("Error updating is_email_verified:", error.message);
+        } else if (!data || data.length === 0) {
+          console.warn("No user found with this email:", email);
+        } else {
+          console.log("El. paštas patvirtintas sėkmingai:", data);
+          setShowNotification(true);
+
+          const newUrl = window.location.pathname;
+          window.history.replaceState(null, "", newUrl);
         }
-      }
-
-      if (verified === "true") {
-        setShowNotification(true);
+      } catch (error) {
+        console.error("Klaida:", error.message);
       }
     };
 
@@ -85,32 +85,34 @@ const App = () => {
 
   useEffect(() => {
     const checkFirstTimeLogin = async () => {
-      if (!user) {
-        console.log("No user is currently signed in.");
+      if (!user || !user.email) {
+        console.log("No user is currently signed in or no email is available.");
         setIsSignedIn(false);
         return;
       }
 
-      if (user.email) {
-        setSignedInEmail(user.email);
-        setIsSignedIn(true);
+      // User is signed in
+      setSignedInEmail(user.email);
+      setIsSignedIn(true);
 
-        const now = new Date();
-        const created = new Date(user.created_at);
-        const localTime = now;
+      try {
+        // Check if this email exists in the 'users' table
+        const { data, error } = await supabase
+          .from("users")
+          .select("email")
+          .eq("email", user.email);
 
-        const utcNow = new Date(
-          created.getTime() + created.getTimezoneOffset() * 60000
-        );
-        const twoHoursLater = new Date(utcNow.getTime() + 2 * 60 * 60 * 1000);
+        if (error) {
+          console.error("Error checking user existence:", error.message);
+          return;
+        }
 
-        const timeDifference = Math.abs(
-          localTime.getTime() - twoHoursLater.getTime()
-        );
-        console.log(timeDifference);
-        if (timeDifference <= 40000) {
+        // If no record found, the user is new
+        if (data.length === 0) {
           setShowSignUp(true);
         }
+      } catch (err) {
+        console.error("Unexpected error:", err.message);
       }
     };
 
@@ -141,10 +143,10 @@ const App = () => {
       );
 
       console.log("Email sent successfully:", response.text);
-      alert("Registracijos patvirtinimas iššiųstas į Jūsų paštą.");
+      toast.success("Registracijos patvirtinimas išsiųstas į Jūsų paštą.");
     } catch (error) {
       console.error("Error sending email:", error);
-      alert("Nepavyko išsiųsti patvirtinimo laiško.");
+      toast.error("Nepavyko išsiųsti patvirtinimo laiško.");
     }
   };
 
@@ -156,11 +158,12 @@ const App = () => {
       !formData.phoneNumber ||
       !formData.age
     ) {
-      alert("Supildykite visus laukus.");
+      toast.error("Supildykite visus laukus.");
       return;
     }
 
     try {
+      setLoading(true);
       await sendEmail(signedInEmail);
 
       const { data, error: dbError } = await supabase.from("users").insert({
@@ -175,20 +178,31 @@ const App = () => {
 
       if (dbError) {
         console.error("Error saving user data:", dbError.message);
+        toast.error("Nepavyko išsaugoti naudotojo duomenų.");
       } else {
         console.log("User data saved successfully:", data);
-        alert(
-          "Sėkmingai užsiregistravote sistemoje. Į elektroninį paštą išsiuntėme registracijos patvirtinimą."
+        toast.success(
+          "Sėkmingai užsiregistravote sistemoje. Patikrinkite el. paštą patvirtinimui."
         );
         setShowSignUp(false);
       }
     } catch (err) {
       console.error("Unexpected error:", err.message);
+      toast.error("Įvyko klaida registracijos metu. Bandykite vėliau.");
+    } finally {
+      setLoading(false);
     }
   };
 
   return (
     <Container>
+      {/* Toast Container */}
+      <ToastContainer
+        position="top-right"
+        autoClose={5000}
+        hideProgressBar={false}
+      />
+
       <Box sx={{ textAlign: "center", my: 4 }}>
         <Typography variant="h1" component="h1" gutterBottom>
           Rangovai
@@ -248,7 +262,7 @@ const App = () => {
 
       <Modal
         open={showSignUp}
-        onClose={() => {}}
+        onClose={() => setShowSignUp(false)}
         aria-labelledby="modal-modal-title"
         aria-describedby="modal-modal-description"
       >
@@ -336,14 +350,19 @@ const App = () => {
             sx={{ mb: 2 }}
           />
 
-          <Button variant="contained" fullWidth onClick={handleSubmit}>
-            Registruotis
+          <Button
+            variant="contained"
+            fullWidth
+            onClick={handleSubmit}
+            disabled={loading}
+          >
+            {loading ? "Registruojama..." : "Registruotis"}
           </Button>
         </Box>
       </Modal>
 
       <Modal
-        open={showNotification} // Show notification modal
+        open={showNotification}
         onClose={() => setShowNotification(false)}
         aria-labelledby="notification-modal-title"
         aria-describedby="notification-modal-description"

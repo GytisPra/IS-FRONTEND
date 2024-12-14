@@ -12,82 +12,41 @@ import {
   CircularProgress,
   Modal,
 } from "@mui/material";
-import { IEvent, IVolunteer } from "./index";
 import FormResponseBox from "./formResponseBox";
+import { Event } from "../volunteers/objects/types";
+import { getVolunteerApplications, IApplication, setApplicationStatus } from "./api";
 
-const eventsFromBE: IEvent[] = [
-  {
-    id: 1,
-    name: "Renginys 1",
-    description: "Aprašymas 1",
-    startTime: new Date(),
-    attendees: ["Dalyvis 1", "Dalyvis 2"],
-    volunteers: [],
-    volunteerRequests: [
-      { id: 3, email: "3@", name: "Savanoris 3" },
-      { id: 1, email: "3@", name: "Savanoris 1" },
-      { id: 4, email: "3@", name: "Savanoris 4" },
-      { id: 2, email: "3@", name: "Savanoris 2" },
-    ],
-  },
-  {
-    id: 2,
-    name: "Renginys 2",
-    description: "Aprašymas 2",
-    startTime: new Date(),
-    attendees: ["Dalyvis 1", "Dalyvis 2"],
-    volunteers: [],
-    volunteerRequests: [
-      { id: 3, email: "3@", name: "Savanoris 3" },
-      { id: 1, email: "3@", name: "Savanoris 1" },
-      { id: 4, email: "3@", name: "Savanoris 4" },
-      { id: 2, email: "3@", name: "Savanoris 2" },
-    ],
-  },
-  {
-    id: 3,
-    name: "Renginys 3",
-    description: "Aprašymas 3",
-    startTime: new Date(),
-    attendees: ["Dalyvis 1", "Dalyvis 2"],
-    volunteers: [],
-    volunteerRequests: [
-      { id: 3, email: "3@", name: "Savanoris 3" },
-      { id: 1, email: "3@", name: "Savanoris 1" },
-      { id: 4, email: "3@", name: "Savanoris 4" },
-      { id: 2, email: "3@", name: "Savanoris 2" },
-    ],
-  },
-];
-
-const getEventById = async (eventId: number): Promise<IEvent> => {
-  return new Promise((resolve) => {
-    setTimeout(() => {
-      const event = eventsFromBE.find(
-        (event) => event.id === eventId
-      ) as IEvent;
-      resolve(event);
-    }, 1000);
-  });
-};
-
-const EventCard = ({ eventId }: { eventId: number }) => {
-  const [event, setEvent] = useState<IEvent | null>(null);
+const EventCard = ({ event }: { event: Event }) => {
   const [searchTerm, setSearchTerm] = useState("");
   const [isModalOpen, setIsModalOpen] = useState(false);
+  const [modalUserId, setModalUserId] = useState<string | undefined>(undefined);
+  const [volunteerRequests, setVolunteerRequests] = useState<IApplication[] | undefined>(undefined);
+  const [acceptedVolunteers, setAcceptedVolunteers] = useState<number>(0);
 
   useEffect(() => {
-    const fetchEvent = async () => {
-      const eventData = await getEventById(eventId);
-      setEvent(eventData);
-    };
+    (async () => {
+      try {
+        const applications = await getVolunteerApplications(event.id);
+        const notCancelledApplications = applications.filter((application) => application.status !== "atmesta");
+        setVolunteerRequests(notCancelledApplications);
 
-    fetchEvent();
-  }, [eventId]);
+        const accepted = applications.filter((application) => application.status === "priimta");
+        setAcceptedVolunteers(accepted.length);
+
+      } catch (error) {
+        console.error("Failed to fetch volunteers:", error);
+      }
+    })();
+  }, [event.id]);
 
   const handleSearchChange = (event: React.ChangeEvent<HTMLInputElement>) => {
     setSearchTerm(event.target.value);
   };
+
+  const handleModalOpen = (userId: string) => {
+    setModalUserId(userId);
+    setIsModalOpen(true);
+  }
 
   if (!event) {
     return (
@@ -105,27 +64,32 @@ const EventCard = ({ eventId }: { eventId: number }) => {
     );
   }
 
-  const filteredVolunteers = event.volunteerRequests!.filter((volunteer) =>
-    volunteer.name.toLowerCase().includes(searchTerm.toLowerCase())
+  const filteredVolunteers = volunteerRequests?.filter((volunteer) =>
+    volunteer.status === 'laukiama' &&
+    volunteer.volunteer.name.toLowerCase().includes(searchTerm.toLowerCase())
   );
 
-  const handleAcceptVolunteer = (volunteer: IVolunteer) => {
-    setEvent({
-      ...event,
-      volunteers: [...event.volunteers!, volunteer],
-      volunteerRequests: event.volunteerRequests!.filter(
-        (v) => v.id !== volunteer.id
-      ),
+  const handleAcceptApplication = (applicationId: string) => {
+    const updatedRequests = volunteerRequests?.map((application) => {
+      if (application.id === applicationId) {
+        return { ...application, status: 'priimta' };
+      }
+      return application;
     });
+    setVolunteerRequests(updatedRequests);
+    setApplicationStatus(applicationId, "priimta");
+    // Todo: Update the accepted volunteers count
   };
-
-  const handleDeclineVolunteer = (volunteer: IVolunteer) => {
-    setEvent({
-      ...event,
-      volunteerRequests: event.volunteerRequests!.filter(
-        (v) => v.id !== volunteer.id
-      ),
+  
+  const handleDeclineApplication = (applicationId: string) => {
+    const updatedRequests = volunteerRequests?.map((application) => {
+      if (application.id === applicationId) {
+        return { ...application, status: 'atmesta' };
+      }
+      return application;
     });
+    setVolunteerRequests(updatedRequests);
+    setApplicationStatus(applicationId, "atmesta");
   };
 
   return (
@@ -139,17 +103,19 @@ const EventCard = ({ eventId }: { eventId: number }) => {
           color="text.secondary"
           sx={{ marginBottom: 5 }}
         >
-          {event.attendees.length} Dalyviai
+          {event.available_volunteers} Likusių savanorystės vietų
         </Typography>
         <Typography variant="h6" component="div">
-          {event.attendees.length} Priimti savanoriai
+          {acceptedVolunteers} Priimtų savanorių
         </Typography>
         <List>
-          {event.volunteers!.map((volunteer) => (
-            <ListItem key={volunteer.id}>
-              <ListItemText primary={volunteer.name} />
-            </ListItem>
-          ))}
+          <List>
+            {volunteerRequests?.filter((application) => application.status === 'priimta').map((application) => (
+              <ListItem key={application.volunteer.id}>
+                <ListItemText primary={application.volunteer.name} />
+              </ListItem>
+            ))}
+          </List>
         </List>
         <TextField
           label="Ieškoti savanorių"
@@ -160,23 +126,24 @@ const EventCard = ({ eventId }: { eventId: number }) => {
           onChange={handleSearchChange}
         />
         <List>
-          {filteredVolunteers.map((volunteer) => (
-            <ListItem key={volunteer.id} sx={{ gap: 5 }}>
+          {filteredVolunteers?.map((application) => (
+            <ListItem key={application.id} sx={{ gap: 5 }}>
               <ListItemText
-                primary={volunteer.name}
-                onClick={() => setIsModalOpen(true)}
+                primary={application.volunteer.name}
+                onClick={() => handleModalOpen(application.volunteer.id)}
+                sx={{ cursor: "pointer" }}
               />
               <Button
                 variant="contained"
                 color="success"
-                onClick={() => handleAcceptVolunteer(volunteer)}
+                onClick={() => handleAcceptApplication(application.id)}
               >
                 Priimti
               </Button>
               <Button
                 variant="contained"
                 color="error"
-                onClick={() => handleDeclineVolunteer(volunteer)}
+                onClick={() => handleDeclineApplication(application.id)}
               >
                 Nepriimti
               </Button>
@@ -191,7 +158,8 @@ const EventCard = ({ eventId }: { eventId: number }) => {
         aria-describedby="modal-description"
       >
         <FormResponseBox
-          response="Savanoris atsakė..."
+          userId={modalUserId!}
+          formUrl={event.form_url}
           onClose={() => setIsModalOpen(false)}
         />
       </Modal>

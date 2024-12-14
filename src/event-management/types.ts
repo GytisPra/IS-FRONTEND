@@ -34,6 +34,7 @@ export interface NewEventForm {
   seats_count: number;
   max_volunteer_count: number;
   price: number;
+  form_url?: string;
   location?: {
     // manau, kad gali but nullable, nes renginys gali but ir online
     city?: string;
