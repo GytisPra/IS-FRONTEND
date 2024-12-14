@@ -42,3 +42,13 @@ export interface NewEventForm {
     latitude?: number;
   } | null;
 }
+
+export interface User {
+  id: string;
+  name: string;
+  email: string;
+  username: string;
+  age: number;
+  phone_number: string;
+  is_email_verified: boolean;
+}
