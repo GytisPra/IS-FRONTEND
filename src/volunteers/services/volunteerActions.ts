@@ -1,7 +1,8 @@
 // volunteerActions.ts
 
 import { supabase } from "../../userService";
-import { Event, VolunteerApplication } from "../objects/types";
+import { Event, VolunteerApplication, User } from "../objects/types";
+import { user } from "../objects/user";
 
 /**
  * Fetches all events ordered by date ascending.
@@ -11,11 +12,10 @@ export const fetchEvents = async (): Promise<{
   error: string | null;
 }> => {
   const { data, error } = await supabase
-    .from("event")
+    .from<Event>("event")
     .select("*")
     .gt("available_volunteers", 0)
-    .order("date", { ascending: true })
-    .returns<Event[]>();
+    .order("date", { ascending: true });
 
   return { data, error: error?.message || null };
 };
@@ -147,6 +147,21 @@ export const declineVolunteerApplication = async (
       error: `Prašymas pateiktas, tačiau nepavyko atnaujinti renginio savanorių prieinamumo skaičių: ${updateError.message}`,
     };
   }
+
+  return { data, error: error?.message || null };
+};
+
+export const getCurrentUser = async (
+  userId: string
+): Promise<{
+  data: User | null;
+  error: string | null;
+}> => {
+  const { data, error } = await supabase
+    .from<User>("users")
+    .select("*")
+    .eq("id", userId)
+    .single()
 
   return { data, error: error?.message || null };
 };

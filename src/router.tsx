@@ -7,6 +7,9 @@ import UserPage from "./User-subsystem/UserPage";
 import ProfileUpdatePage from "./User-subsystem/Profile";
 import EventManager from "./event-management/EventManager";
 import VolunteersPage from "./volunteers/VolunteerPage";
+import ProtectedRoute from "./components/common/protectedRoute/ProtectedRoute";
+import Unauthorized from "./components/common/protectedRoute/Unauthorized";
+
 export const router = createBrowserRouter([
   {
     path: "/",
@@ -22,7 +25,11 @@ export const router = createBrowserRouter([
   },
   {
     path: "/volunteers/events",
-    element: <VolunteersPage />,
+    element: (
+    <ProtectedRoute requiredRole="volunteer">
+        <VolunteersPage />
+    </ProtectedRoute>
+    ),
   },
   {
     path: "/tickets",
@@ -36,4 +43,8 @@ export const router = createBrowserRouter([
     path: "/update-profile",
     element: <ProfileUpdatePage />,
   },
+  {
+    path: "/unauthorized",
+    element: <Unauthorized />
+  }
 ]);

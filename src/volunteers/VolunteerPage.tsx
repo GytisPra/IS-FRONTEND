@@ -1,3 +1,5 @@
+// src/pages/VolunteersPage.tsx
+
 import React, { useState, useEffect, useCallback } from "react";
 import { Event, VolunteerApplication } from "./objects/types";
 import {
@@ -6,11 +8,11 @@ import {
   submitVolunteerApplication,
   declineVolunteerApplication,
 } from "./services/volunteerActions";
-import { user } from "./objects/user";
 import { ToastContainer, toast } from "react-toastify";
 import "react-toastify/dist/ReactToastify.css";
 import { Button } from "@mui/material";
 import FormModal from "../organizers/formModal";
+import { user } from "./objects/user";
 
 const VolunteersPage: React.FC = () => {
   const [events, setEvents] = useState<Event[]>([]);
@@ -18,17 +20,19 @@ const VolunteersPage: React.FC = () => {
   const [loadingEvents, setLoadingEvents] = useState<boolean>(true);
   const [loadingApplications, setLoadingApplications] = useState<boolean>(true);
   const [applyingEventId, setApplyingEventId] = useState<string | null>(null);
-  const [decliningApplicationId, setDecliningApplicationId] = useState<
-    string | null
-  >(null);
+  const [decliningApplicationId, setDecliningApplicationId] = useState<string | null>(null);
   const [removedEvents, setRemovedEvents] = useState<Record<string, Event>>({});
   const [filters, setFilters] = useState({
     startDate: "",
     endDate: "",
     hidePaidEvents: false,
+    searchTerm: "", // Added searchTerm to filters
   });
 
+  // Fetch Events and Applications Data
   const fetchData = useCallback(async () => {
+    if (!user) return;
+
     try {
       setLoadingEvents(true);
 
@@ -40,66 +44,60 @@ const VolunteersPage: React.FC = () => {
       setEvents(eventsData || []);
       setLoadingEvents(false);
 
-      if (user) {
-        setLoadingApplications(true);
-        const { data: applicationsData, error: applicationsError } =
-          await fetchVolunteerApplications(user.id);
-        if (applicationsError) {
-          throw new Error(
-            `Įvyko klaida kraunant aplikacijas: ${applicationsError}`
-          );
-        }
-
-        if (applicationsData) {
-          for (let i = 0; i < applicationsData.length; i++) {
-            const event = eventsData?.find(
-              (event) => event.id === applicationsData[i].event_id
-            );
-            applicationsData[i].form_url = event?.form_url;
-          }
-        }
-
-
-        setApplications(applicationsData || []);
-        setLoadingApplications(false);
-
-        const appliedEventIds = applicationsData!.map((app) => app.event_id);
-        const newRemovedEvents: Record<string, Event> = {};
-
-        const updatedEvents =
-          eventsData?.filter((event) => {
-            if (appliedEventIds.includes(event.id)) {
-              newRemovedEvents[event.id] = event;
-              return false;
-            }
-            return true;
-          }) || [];
-
-        setEvents(updatedEvents);
-        setRemovedEvents(newRemovedEvents);
+      setLoadingApplications(true);
+      const { data: applicationsData, error: applicationsError } =
+        await fetchVolunteerApplications(user.id);
+      if (applicationsError) {
+        throw new Error(`Įvyko klaida kraunant aplikacijas: ${applicationsError}`);
       }
+
+      if (applicationsData) {
+        applicationsData.forEach((app) => {
+          if (eventsData) {
+            const event = eventsData.find((e) => e.id === app.event_id);
+            app.form_url = event?.form_url || undefined;
+          }
+        });
+      }
+
+      setApplications(applicationsData || []);
+      setLoadingApplications(false);
+
+      const appliedEventIds = applicationsData!.map((app) => app.event_id);
+      const newRemovedEvents: Record<string, Event> = {};
+
+      const updatedEvents =
+        eventsData?.filter((event) => {
+          if (appliedEventIds.includes(event.id)) {
+            newRemovedEvents[event.id] = event;
+            return false;
+          }
+          return true;
+        }) || [];
+
+      setEvents(updatedEvents);
+      setRemovedEvents(newRemovedEvents);
     } catch (err: any) {
       toast.error(err.message || "Įvyko netikėta klaida.");
       setLoadingEvents(false);
       setLoadingApplications(false);
     }
-  }, []);
+  }, [user]);
 
   useEffect(() => {
-    fetchData();
-  }, [fetchData, user]);
+    if (user) {
+      fetchData();
+    }
+  }, [user, fetchData]);
 
+  // Handle Applying to an Event
   const handleApply = async (eventId: string) => {
     if (!user) {
-      toast.error(
-        "Jūs privalote būti prisijungęs, kad aplikuoti savanorystei."
-      );
+      toast.error("Jūs privalote būti prisijungęs, kad aplikuoti savanorystei.");
       return;
     }
 
-    const existingApplication = applications.find(
-      (app) => app.event_id === eventId
-    );
+    const existingApplication = applications.find((app) => app.event_id === eventId);
     if (existingApplication) {
       toast.error("Jūs jau pateikėte savanorystės aplikaciją šiam renginiui.");
       return;
@@ -118,10 +116,7 @@ const VolunteersPage: React.FC = () => {
     setRemovedEvents((prev) => ({ ...prev, [eventId]: eventToApply }));
 
     try {
-      const { data, error } = await submitVolunteerApplication(
-        eventId,
-        user.id
-      );
+      const { data, error } = await submitVolunteerApplication(eventId, user.id);
 
       if (error) {
         throw new Error(error);
@@ -143,10 +138,9 @@ const VolunteersPage: React.FC = () => {
     }
   };
 
+  // Handle Declining an Application
   const handleDecline = async (applicationId: string) => {
-    const applicationToDecline = applications.find(
-      (app) => app.id === applicationId
-    );
+    const applicationToDecline = applications.find((app) => app.id === applicationId);
 
     if (!applicationToDecline) {
       toast.error("Aplikacija nerasta.");
@@ -180,7 +174,6 @@ const VolunteersPage: React.FC = () => {
       }
 
       toast.success("Aplikacija atmesta sėkmingai!");
-
       await fetchData();
     } catch (err: any) {
       toast.error(err.message || "Įvyko netikėta klaida.");
@@ -193,24 +186,35 @@ const VolunteersPage: React.FC = () => {
     }
   };
 
+  // Get Application Status for an Event
   const getApplicationStatus = (eventId: string): string | null => {
     const application = applications.find((app) => app.event_id === eventId);
     return application ? application.status : null;
   };
 
+  // Handle Filter Changes
   const handleFilterChange = (e: React.ChangeEvent<HTMLInputElement>) => {
     const { name, value } = e.target;
     setFilters((prev) => ({ ...prev, [name]: value }));
   };
 
+  // Toggle Hide Paid Events
   const toggleHidePaidEvents = () => {
     setFilters((prev) => ({ ...prev, hidePaidEvents: !prev.hidePaidEvents }));
   };
 
+  // Handle Search Term Change
+  const handleSearchChange = (e: React.ChangeEvent<HTMLInputElement>) => {
+    const { value } = e.target;
+    setFilters((prev) => ({ ...prev, searchTerm: value }));
+  };
+
+  // Filter Events Based on Filters State
   const filteredEvents = events.filter((event) => {
     const eventDate = new Date(event.date);
     const startDate = filters.startDate ? new Date(filters.startDate) : null;
     const endDate = filters.endDate ? new Date(filters.endDate) : null;
+    const searchTerm = filters.searchTerm.trim().toLowerCase();
 
     if (filters.hidePaidEvents && !event.is_free) {
       return false;
@@ -219,6 +223,9 @@ const VolunteersPage: React.FC = () => {
       return false;
     }
     if (endDate && eventDate > endDate) {
+      return false;
+    }
+    if (searchTerm && !event.name.toLowerCase().includes(searchTerm)) {
       return false;
     }
     return true;
@@ -240,8 +247,10 @@ const VolunteersPage: React.FC = () => {
 
       <h1 className="text-2xl font-bold mb-4">Savanorystės aplikacija</h1>
 
-      <div className="flex space-x-4 mb-4">
-        <div>
+      {/* Filter Controls */}
+      <div className="flex flex-wrap space-x-4 mb-4">
+        {/* Existing Filters */}
+        <div className="mb-2">
           <label htmlFor="startDate" className="block mb-1">
             Nuo datos
           </label>
@@ -254,7 +263,7 @@ const VolunteersPage: React.FC = () => {
             className="w-full p-2 border rounded"
           />
         </div>
-        <div>
+        <div className="mb-2">
           <label htmlFor="endDate" className="block mb-1">
             Iki datos
           </label>
@@ -267,23 +276,40 @@ const VolunteersPage: React.FC = () => {
             className="w-full p-2 border rounded"
           />
         </div>
-        <div>
+        <div className="mb-2 flex flex-col">
           <label htmlFor="hidePaidEvents" className="block mb-1">
             Paslėpti mokamus?
           </label>
           <button
             id="hidePaidEvents"
-            className={`py-2 px-4 border rounded ${filters.hidePaidEvents ? "bg-gray-100" : ""
-              }`}
             onClick={toggleHidePaidEvents}
+            className={`py-2 px-4 border rounded ${
+              filters.hidePaidEvents ? "bg-gray-100" : ""
+            }`}
           >
             {filters.hidePaidEvents ? "Ne" : "Taip"}
           </button>
         </div>
+
+        {/* New Search Filter */}
+        <div className="mb-2 flex flex-col">
+          <label htmlFor="searchTerm" className="block mb-1">
+            Ieškoti pagal pavadinimą
+          </label>
+          <input
+            type="text"
+            id="searchTerm"
+            name="searchTerm"
+            value={filters.searchTerm}
+            onChange={handleSearchChange}
+            placeholder="Įveskite renginio pavadinimą..."
+            className="w-full p-2 border rounded"
+          />
+        </div>
       </div>
 
+      {/* Events Section */}
       <h2 className="text-xl font-semibold mb-2">Renginiai</h2>
-
       {loadingEvents ? (
         <p>Renginiai kraunami...</p>
       ) : filteredEvents.length === 0 ? (
@@ -293,14 +319,13 @@ const VolunteersPage: React.FC = () => {
           <table className="min-w-full bg-white border">
             <thead>
               <tr>
+                <th className="py-2 px-4 border">Pavadinimas</th>
                 <th className="py-2 px-4 border">Data</th>
                 <th className="py-2 px-4 border">Pradžios laikas</th>
                 <th className="py-2 px-4 border">Pabaigos laikas</th>
                 <th className="py-2 px-4 border">Ar mokamas?</th>
                 <th className="py-2 px-4 border">Vietų skaičius</th>
-                <th className="py-2 px-4 border">
-                  Laisvos savanorystės vietos
-                </th>
+                <th className="py-2 px-4 border">Laisvos savanorystės vietos</th>
                 <th className="py-2 px-4 border">Veiksmai</th>
               </tr>
             </thead>
@@ -309,6 +334,7 @@ const VolunteersPage: React.FC = () => {
                 const status = getApplicationStatus(event.id);
                 return (
                   <tr key={event.id} className="text-center">
+                    <td className="py-2 px-4 border">{event.name}</td>
                     <td className="py-2 px-4 border">
                       {new Date(event.date).toLocaleDateString()}
                     </td>
@@ -318,31 +344,21 @@ const VolunteersPage: React.FC = () => {
                       {event.is_free ? "Taip" : "Ne"}
                     </td>
                     <td className="py-2 px-4 border">{event.seats_count}</td>
-                    <td className="py-2 px-4 border">
-                      {event.available_volunteers}
-                    </td>
+                    <td className="py-2 px-4 border">{event.available_volunteers}</td>
                     <td className="py-2 px-4 border">
                       {status === "priimta" ? (
-                        <span className="text-green-600 font-semibold">
-                          Priimta
-                        </span>
+                        <span className="text-green-600 font-semibold">Priimta</span>
                       ) : status === "atmesta" ? (
-                        <span className="text-red-600 font-semibold">
-                          Atmesta
-                        </span>
+                        <span className="text-red-600 font-semibold">Atmesta</span>
                       ) : status === "laukiama" ? (
-                        <span className="text-yellow-600 font-semibold">
-                          Laukiama
-                        </span>
+                        <span className="text-yellow-600 font-semibold">Laukiama</span>
                       ) : (
                         <button
                           onClick={() => handleApply(event.id)}
-                          disabled={applyingEventId === event.id}
+                          disabled={applyingEventId === event.id || event.available_volunteers <= 0}
                           className="bg-blue-500 text-white px-4 py-2 rounded hover:bg-blue-600"
                         >
-                          {applyingEventId === event.id
-                            ? "Pateikiama..."
-                            : "Pateikti"}
+                          {applyingEventId === event.id ? "Pateikiama..." : "Pateikti"}
                         </button>
                       )}
                     </td>
@@ -354,8 +370,8 @@ const VolunteersPage: React.FC = () => {
         </div>
       )}
 
+      {/* Applications Section */}
       <h2 className="text-xl font-semibold mt-8 mb-2">Mano savanorystės</h2>
-
       {loadingApplications ? (
         <p>Jūsų savanorystės kraunamos...</p>
       ) : applications.length === 0 ? (
@@ -378,31 +394,30 @@ const VolunteersPage: React.FC = () => {
                   </td>
                   <td className="py-2 px-4 border capitalize">{app.status}</td>
                   <td className="py-2 px-4 border">
-                    {app.status === "laukiama" && (
-                      <button
-                        onClick={() => handleDecline(app.id)}
-                        disabled={decliningApplicationId === app.id}
-                        className="bg-red-500 text-white px-4 py-2 rounded hover:bg-red-600"
-                      >
-                        {decliningApplicationId === app.id
-                          ? "Atšaukiama..."
-                          : "Atšaukti"}
-                      </button>
+                    {app.status === "laukiama" ? (
+                      <>
+                        <button
+                          onClick={() => handleDecline(app.id)}
+                          disabled={decliningApplicationId === app.id}
+                          className="bg-red-500 text-white px-4 py-2 rounded hover:bg-red-600 mr-2"
+                        >
+                          {decliningApplicationId === app.id ? "Atšaukiama..." : "Atšaukti"}
+                        </button>
+                        {app.form_url && (
+                          <FormModal formUrl={app.form_url}>
+                            <Button
+                              variant="contained"
+                              color="primary"
+                              size="medium"
+                            >
+                              Užpildyti savanorių formą
+                            </Button>
+                          </FormModal>
+                        )}
+                      </>
+                    ) : (
+                      <span className="text-gray-500">Veiksmai neprieinami</span>
                     )}
-                    {(app.form_url && app.status === "laukiama") && (
-                    <FormModal formUrl={app.form_url}>
-                      <Button
-                        variant="contained"
-                        color="primary"
-                        size="medium"
-                      >
-                        Užpildyti savanoriu formą
-                      </Button>
-                    </FormModal>
-                  )}
-                  {app.status !== "laukiama" && (
-                    <span className="text-gray-500">Veiksmai neprieinami</span>
-                  )}
                   </td>
                 </tr>
               ))}
