@@ -17,7 +17,11 @@ export const router = createBrowserRouter([
   },
   {
     path: "/event-management",
-    element: <EventManager />,
+    element: (
+      <ProtectedRoute requiredRole="admin">
+        <EventManager />
+      </ProtectedRoute>
+    ),
   },
   {
     path: "/organiser",
@@ -26,9 +30,9 @@ export const router = createBrowserRouter([
   {
     path: "/volunteers/events",
     element: (
-    <ProtectedRoute requiredRole="volunteer">
+      <ProtectedRoute requiredRole="volunteer">
         <VolunteersPage />
-    </ProtectedRoute>
+      </ProtectedRoute>
     ),
   },
   {
@@ -45,6 +49,6 @@ export const router = createBrowserRouter([
   },
   {
     path: "/unauthorized",
-    element: <Unauthorized />
-  }
+    element: <Unauthorized />,
+  },
 ]);

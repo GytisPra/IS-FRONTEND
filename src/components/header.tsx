@@ -12,8 +12,8 @@ import { Drawer, ListItemButton, ListItemText, List } from "@mui/material";
 import MenuIcon from "@mui/icons-material/Menu";
 import theme from "../theme";
 import { logout } from "../userService";
-import { user } from '../home/user';
-import { useEffect } from 'react';
+import { user } from "../home/user";
+import { useEffect } from "react";
 import { getCurrentUser } from "../volunteers/services/volunteerActions";
 import { User } from "../volunteers/objects/types";
 
@@ -23,27 +23,21 @@ export default function Header() {
   const [currentUser, setUser] = useState<User | null>(null);
   const [loadingRole, setLoadingUser] = useState<boolean>(true);
 
-
   useEffect(() => {
-      const checkFirstTimeLogin = async () => {
-  
-        if (!user) {
-          console.log('No user is currently signed in.');
-          return;
-        }
-  
-        if (user.email) {
-       
-        }
-      };
-  
-      checkFirstTimeLogin();
-    }, []);
+    const checkFirstTimeLogin = async () => {
+      if (!user) {
+        console.log("No user is currently signed in.");
+        return;
+      }
+    };
+
+    checkFirstTimeLogin();
+  }, []);
 
   useEffect(() => {
     const fetchUser = async () => {
       if (!user || !user.id) {
-        console.log('No user is currently signed in.');
+        console.log("No user is currently signed in.");
         setLoadingUser(false);
         return;
       }
@@ -52,14 +46,14 @@ export default function Header() {
         const { data, error } = await getCurrentUser(user.id);
         if (error) {
           setUser(null);
-        } 
-        else if(data){
+        } else if (data) {
           setUser(data);
         } else {
           setUser(null);
         }
       } catch (err: any) {
         setUser(null);
+        console.error(err.message);
       } finally {
         setLoadingUser(false);
       }
@@ -67,7 +61,6 @@ export default function Header() {
 
     fetchUser();
   }, []);
-
 
   const toggleDrawer = (open: boolean) => () => {
     setDrawerOpen(open);
@@ -83,16 +76,25 @@ export default function Header() {
 
   const navigationItems = [
     { text: "Mano profilis", href: "/update-profile" },
-    { text: "Renginių naršyklė", href: "/user" },
-    { text: "Ateinantys renginiai", href: "/my-events" },
-    { text: "Mano Bilietai", href: "/tickets" },
-    ...(currentUser && currentUser.role === "volunteer"
-      ? [{ text: "Tapti savanoriu!", href: "/volunteers/events" }]
-      : []
-    ),
-    { text: "Mano savanorystės", href: "/my-applications" },
-    { text: "Renginų tvarkyklė", href: "/event-management" },
-    { text: "Ieškoti savanorių", href: "/organiser" },
+    {
+      text: "Renginių naršyklė",
+      href: "/user",
+      roles: ["user", "volunteer", "admin"],
+    },
+    { text: "Ateinantys renginiai", href: "/my-events", roles: ["user"] },
+    { text: "Mano Bilietai", href: "/tickets", roles: ["user"] },
+    {
+      text: "Tapti savanoriu!",
+      href: "/volunteers/events",
+      roles: ["volunteer"],
+    },
+    {
+      text: "Mano savanorystės",
+      href: "/my-applications",
+      roles: ["volunteer"],
+    },
+    { text: "Renginų tvarkyklė", href: "/event-management", roles: ["admin"] },
+    { text: "Ieškoti savanorių", href: "/organiser", roles: ["admin"] },
   ];
 
   return (
@@ -165,23 +167,29 @@ export default function Header() {
             Navigacija :)
           </Typography>
           <List>
-          {navigationItems.map((item, index) => (
-              <ListItemButton
-                key={index}
-                onClick={() => (window.location.href = item.href)}
-                sx={{
-                  marginBottom: 1,
-                  "&:hover": {
-                    backgroundColor: theme.palette.primary.light,
-                  },
-                }}
-              >
-                <ListItemText
-                  primary={item.text}
-                  sx={{ textAlign: "center" }}
-                />
-              </ListItemButton>
-            ))}
+            {navigationItems
+              .filter(
+                (item) =>
+                  !item.roles ||
+                  (currentUser && item.roles.includes(currentUser.role))
+              )
+              .map((item, index) => (
+                <ListItemButton
+                  key={index}
+                  onClick={() => (window.location.href = item.href)}
+                  sx={{
+                    marginBottom: 1,
+                    "&:hover": {
+                      backgroundColor: theme.palette.primary.light,
+                    },
+                  }}
+                >
+                  <ListItemText
+                    primary={item.text}
+                    sx={{ textAlign: "center" }}
+                  />
+                </ListItemButton>
+              ))}
           </List>
         </Box>
       </Drawer>
