@@ -176,7 +176,7 @@ const UserPage = () => {
             <TextField
               className="pr-2 border rounded"
               name="searchQuery"
-              label="Ieškoti renginio 🔍"
+              label="Ieškoti renginio &#x1F50E;&#xFE0E;"
               value={filter.searchQuery}
               onChange={(e) =>
                 handleFilterChange("searchQuery", e.target.value)
