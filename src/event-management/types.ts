@@ -32,6 +32,7 @@ export interface NewEventForm {
   is_free: boolean;
   seats_count: number;
   max_volunteer_count: number;
+  form_url?: string;
   location?: {
     // manau, kad gali but nullable, nes renginys gali but ir online
     city?: string;

@@ -39,12 +39,12 @@ const OrganiserPage = () => {
     setSelectedEvent((prev) => (prev === event ? undefined : event));
   };
 
-  React.useEffect(() => {
-    document.addEventListener("mousedown", handleClickOutside);
-    return () => {
-      document.removeEventListener("mousedown", handleClickOutside);
-    };
-  }, []);
+  // React.useEffect(() => {
+  //   document.addEventListener("mousedown", handleClickOutside);
+  //   return () => {
+  //     document.removeEventListener("mousedown", handleClickOutside);
+  //   };
+  // }, []);
 
   return (
     <Container ref={containerRef}>

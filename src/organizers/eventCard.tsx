@@ -19,6 +19,7 @@ import { getVolunteerApplications, IApplication, setApplicationStatus } from "./
 const EventCard = ({ event }: { event: Event }) => {
   const [searchTerm, setSearchTerm] = useState("");
   const [isModalOpen, setIsModalOpen] = useState(false);
+  const [modalUserId, setModalUserId] = useState<string | undefined>(undefined);
   const [volunteerRequests, setVolunteerRequests] = useState<IApplication[] | undefined>(undefined);
   const [acceptedVolunteers, setAcceptedVolunteers] = useState<number>(0);
 
@@ -41,6 +42,11 @@ const EventCard = ({ event }: { event: Event }) => {
   const handleSearchChange = (event: React.ChangeEvent<HTMLInputElement>) => {
     setSearchTerm(event.target.value);
   };
+
+  const handleModalOpen = (userId: string) => {
+    setModalUserId(userId);
+    setIsModalOpen(true);
+  }
 
   if (!event) {
     return (
@@ -124,7 +130,7 @@ const EventCard = ({ event }: { event: Event }) => {
             <ListItem key={application.id} sx={{ gap: 5 }}>
               <ListItemText
                 primary={application.volunteer.name}
-                onClick={() => setIsModalOpen(true)}
+                onClick={() => handleModalOpen(application.volunteer.id)}
                 sx={{ cursor: "pointer" }}
               />
               <Button
@@ -152,7 +158,8 @@ const EventCard = ({ event }: { event: Event }) => {
         aria-describedby="modal-description"
       >
         <FormResponseBox
-          response="Savanoris atsakė..."
+          userId={modalUserId!}
+          formUrl={event.form_url}
           onClose={() => setIsModalOpen(false)}
         />
       </Modal>

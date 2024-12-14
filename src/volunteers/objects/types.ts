@@ -14,6 +14,7 @@ export interface Event {
     event_location_id: string | null;
     max_volunteer_count: number;
     available_volunteers: number;
+    form_url?: string;
     // eslint-disable-next-line @typescript-eslint/no-explicit-any
     [key: string]: any;
   }
