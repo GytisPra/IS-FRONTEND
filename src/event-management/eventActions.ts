@@ -1,14 +1,46 @@
 import { fetchEventLocation } from "../event-location/locationActions";
 import { supabase } from "../userService";
-import { Event, NewEventForm } from "./types";
+import { Event, NewEventForm, User } from "./types";
+import { user } from "../volunteers/objects/user";
+import { PostgrestError } from "@supabase/supabase-js";
+
+const getUserByEmail = async (
+  userEmail: string
+): Promise<{
+  data: User | null;
+  error: PostgrestError | null;
+}> => {
+  const { data, error } = await supabase
+    .from("users")
+    .select("*")
+    .eq("email", userEmail)
+    .single();
+
+  return { data, error };
+};
 
 export const fetchEvents = async (): Promise<{
   data: Event[] | null;
   error: string | null;
 }> => {
+  if (!user || user.email === undefined) {
+    throw new Error("User not found");
+  }
+
+  const { data: publicUser, error: errorDb } = await getUserByEmail(user.email);
+
+  if (!publicUser) {
+    throw new Error("User not found");
+  }
+
+  if (errorDb) {
+    throw new Error(errorDb.message);
+  }
+
   const { data, error } = await supabase
     .from("event")
     .select("*")
+    .eq("created_by", publicUser.id)
     .order("start_time", { ascending: true });
 
   return { data, error: error?.message || null };
@@ -77,6 +109,20 @@ export const submitEvent = async (
   error: string | null;
 }> => {
   try {
+    if (!user || user.email === undefined) {
+      throw new Error("User not found");
+    }
+
+    const { data: publicUser, error } = await getUserByEmail(user.email);
+
+    if (!publicUser) {
+      throw new Error("User not found");
+    }
+
+    if (error) {
+      throw new Error(error.message);
+    }
+
     let locationId: string | null = null;
 
     if (showLocationFields && newEventForm.location) {
@@ -124,6 +170,7 @@ export const submitEvent = async (
       const eventDataToUpdate = {
         ...newEventForm,
         event_location_id: locationId || null,
+        created_by: publicUser.id,
       };
 
       delete eventDataToUpdate.location;
@@ -151,6 +198,7 @@ export const submitEvent = async (
             ...newEventForm,
             available_volunteers: newEventForm.max_volunteer_count,
             event_location_id: locationId,
+            created_by: publicUser.id,
           },
         ])
         .select();
