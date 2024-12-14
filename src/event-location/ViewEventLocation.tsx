@@ -52,47 +52,61 @@ export default function ViewEventLocation({
 
   return (
     <div>
-      {showMap && location && location.latitude && location.longitude ? (
-        <APIProvider apiKey={import.meta.env.VITE_GOOGLE_MAPS_API_KEY}>
-          <span>
-            Patikslinta vieta: {location.specified_location}
-            <br />
-          </span>
-          <span
-            onClick={handleLocationClick}
-            className="cursor-pointer hover:text-blue-400 hover:underline"
-          >
-            Uždaryti žemėlapį &#x2715;
-          </span>
-          <div className="flex justify-center items-center h-[500px] w-[500px]">
-            <Map
-              defaultZoom={13}
-              defaultCenter={{
-                lat: location.latitude,
-                lng: location.longitude,
-              }}
-              mapId="dae187a0cbdd5192"
-            >
-              <AdvancedMarker
-                key={location.id}
-                position={{ lat: location.latitude, lng: location.longitude }}
-              >
-                <Pin
-                  background={"#FBBC04"}
-                  glyphColor={"#000"}
-                  borderColor={"#000"}
-                />
-              </AdvancedMarker>
-            </Map>
-          </div>
-        </APIProvider>
-      ) : (
-        <span
-          onClick={handleLocationClick}
-          className="cursor-pointer hover:text-blue-400 hover:underline"
+      <span
+        onClick={handleLocationClick}
+        className="cursor-pointer hover:text-blue-400 hover:underline"
+      >
+        {location.address}, {location.city}
+      </span>
+
+      {showMap && (
+        <div
+          className="fixed inset-0 flex items-center justify-center bg-black bg-opacity-50 z-50"
+          onClick={handleLocationClick} // Close the modal on overlay click
         >
-          {location.address}, {location.city}
-        </span>
+          <div
+            className="relative bg-white rounded-lg shadow-lg w-[90%] max-w-3xl"
+            onClick={(e) => e.stopPropagation()} // Prevent modal close on content click
+          >
+            <div className="p-4 border-b flex justify-between items-center">
+              <h2 className="text-lg font-semibold">
+                Patikslinta vieta: {location.specified_location}
+              </h2>
+              <button
+                onClick={handleLocationClick}
+                className="text-gray-500 hover:text-red-500"
+              >
+                &#x2715;
+              </button>
+            </div>
+            <div className="flex justify-center items-center h-[500px] w-full p-4">
+              <APIProvider apiKey={import.meta.env.VITE_GOOGLE_MAPS_API_KEY}>
+                <Map
+                  defaultZoom={13}
+                  defaultCenter={{
+                    lat: location.latitude,
+                    lng: location.longitude,
+                  }}
+                  mapId="dae187a0cbdd5192"
+                >
+                  <AdvancedMarker
+                    key={location.id}
+                    position={{
+                      lat: location.latitude,
+                      lng: location.longitude,
+                    }}
+                  >
+                    <Pin
+                      background={"#FBBC04"}
+                      glyphColor={"#000"}
+                      borderColor={"#000"}
+                    />
+                  </AdvancedMarker>
+                </Map>
+              </APIProvider>
+            </div>
+          </div>
+        </div>
       )}
 
       {dbError && <div className="text-red-500">{dbError.message}</div>}
