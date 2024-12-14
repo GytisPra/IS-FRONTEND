@@ -10,9 +10,16 @@ interface EventTableProps {
   events: Event[];
   onEdit: (event: Event) => void;
   onDelete: (id: number) => void;
+
+  closePaymentModal: () => void;
 }
 
-const EventTable = ({ events, onEdit, onDelete }: EventTableProps) => {
+const EventTable = ({
+  events,
+  onEdit,
+  onDelete,
+  closePaymentModal,
+}: EventTableProps) => {
   const [sortConfig, setSortConfig] = useState<{
     key: string;
     direction: "asc" | "desc";
@@ -86,35 +93,6 @@ const EventTable = ({ events, onEdit, onDelete }: EventTableProps) => {
       direction = "desc";
     }
     setSortConfig({ key, direction });
-  };
-
-  const handleBuy = async (event: Event) => {
-    try {
-      const response = await fetch(
-        `${process.env.REACT_APP_API_URL}/create-checkout-session`,
-        {
-          method: "POST",
-          headers: {
-            "Content-Type": "application/json",
-          },
-          body: JSON.stringify({
-            eventId: event.id,
-            eventName: event.name,
-            price: 10,
-          }),
-        }
-      );
-
-      const data = await response.json();
-
-      if (data.url) {
-        window.location.href = data.url; // Redirect to Stripe Checkout
-      } else {
-        console.error("Checkout session creation failed.");
-      }
-    } catch (error) {
-      console.error("Error processing payment:", error);
-    }
   };
 
   return (
@@ -258,7 +236,7 @@ const EventTable = ({ events, onEdit, onDelete }: EventTableProps) => {
                         Pašalinti
                       </button>
                       <button
-                        onClick={() => handleBuy(event)}
+                        onClick={closePaymentModal}
                         className="bg-green-500 text-white px-2 py-1 rounded-r-lg hover:bg-green-600"
                       >
                         Pirkti

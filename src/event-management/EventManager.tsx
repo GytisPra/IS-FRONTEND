@@ -12,13 +12,15 @@ import EventTable from "./EventsTable";
 import dayjs from "dayjs";
 import { ToastContainer } from "react-toastify";
 import "react-toastify/dist/ReactToastify.css";
+import EventPaymentModal from "./EventPaymentModal";
 
 const EventManager: React.FC = () => {
   const [events, setEvents] = useState<Event[]>([]);
   const [loading, setLoading] = useState<boolean>(true);
   const [error, setError] = useState<string | null>(null);
 
-  const [showModal, setShowModal] = useState<boolean>(false);
+  const [showCreationModal, setShowCreationModal] = useState<boolean>(false);
+  const [showPaymentModal, setShowPaymentModal] = useState<boolean>(false);
   const [newEventForm, setNewEventForm] = useState<NewEventForm>({
     name: "",
     date: "",
@@ -159,7 +161,7 @@ const EventManager: React.FC = () => {
       });
 
       setShowLocationFields(!!locationData);
-      setShowModal(true);
+      setShowCreationModal(true);
       // eslint-disable-next-line @typescript-eslint/no-explicit-any
     } catch (err: any) {
       setModalError(err.message || "Nepavyko gauti vietovės duomenų.");
@@ -217,7 +219,7 @@ const EventManager: React.FC = () => {
     if (error) setModalError(error);
     else {
       setEvents(updatedEvents);
-      setShowModal(false);
+      setShowCreationModal(false);
     }
   };
 
@@ -246,11 +248,14 @@ const EventManager: React.FC = () => {
       max_volunteer_count: 0,
     });
 
-    setShowModal(!showModal);
+    setShowCreationModal(!showCreationModal);
     setModalError(null);
     setIsEditing(false);
     setEditingEventId(null);
     setShowLocationFields(false);
+  };
+  const closePaymentModal = () => {
+    setShowPaymentModal(!showPaymentModal);
   };
 
   const handleLocationDeletion = async (eventId: number | null) => {
@@ -319,10 +324,11 @@ const EventManager: React.FC = () => {
           events={events}
           onEdit={handleEditClick}
           onDelete={handleDelete}
+          closePaymentModal={closePaymentModal}
         />
       )}
 
-      {showModal && (
+      {showCreationModal && (
         <EventModal
           isEditing={isEditing}
           editingEventId={editingEventId}
@@ -336,6 +342,7 @@ const EventManager: React.FC = () => {
           onToggleLocationFields={handleLocationDeletion}
         />
       )}
+      {showPaymentModal && <EventPaymentModal onClose={closePaymentModal} />}
     </div>
   );
 };
