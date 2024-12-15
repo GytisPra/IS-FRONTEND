@@ -229,8 +229,13 @@ const EventManager: React.FC = () => {
 
   const handleDelete = async (id: number) => {
     const { updatedEvents, error } = await deleteEvent(id, events);
-    if (error) setError(error);
-    else setEvents(updatedEvents);
+    if (error) {
+      setError(error);
+      toast.error("Įvyko klaida bandant pašalinti renginį!");
+    } else {
+      toast.success("Rengninys pašalintas!");
+      setEvents(updatedEvents);
+    }
   };
 
   const resetForm = () => {
