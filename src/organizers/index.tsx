@@ -3,7 +3,7 @@ import Box from "@mui/material/Box";
 import { Container } from "@mui/material";
 import EventCard from "./eventCard";
 import EventRowCard from "../components/common/eventRowCard";
-import { getEvents } from "./api";
+import { getAttendeeCount, getEvents } from "./api";
 import { Event } from "../volunteers/objects/types";
 import { getSession } from "../userService";
 
@@ -17,6 +17,9 @@ const OrganiserPage = () => {
       try {
         const user = await getSession();
         const events = await getEvents(user.user!.id);
+        events.map(async (event) => {
+          event.attendees = await getAttendeeCount(event.id) || 0;
+        });
         setEvents(events);
       } catch (error) {
         console.error("Failed to fetch events:", error);
@@ -54,7 +57,7 @@ const OrganiserPage = () => {
             <EventRowCard
               event={
                 {
-                  attendees: event.seats_count,
+                  attendees: event.attendees || 0,
                   description: event.description || "", 
                   name: event.name || "",
                   id: event.id,
