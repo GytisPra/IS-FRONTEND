@@ -175,8 +175,8 @@ export default function Header() {
             {navigationItems
               .filter(
                 (item) =>
-                  !item.roles ||
-                  (currentUser && item.roles.includes(currentUser.role))
+                  !item.roles || 
+                  (currentUser && item.roles.includes(currentUser.role) && currentUser.is_email_verified)
               )
               .map((item, index) => (
                 <ListItemButton

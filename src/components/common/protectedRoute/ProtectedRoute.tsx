@@ -23,7 +23,7 @@ const ProtectedRoute: React.FC<ProtectedRouteProps> = ({ children, requiredRole 
     return <Navigate to="/" replace state={{ from: location }} />;
   }
 
-  if (requiredRole && currentUser.role !== requiredRole) {
+  if (requiredRole && currentUser.role !== requiredRole || !currentUser.is_email_verified) {
     return <Navigate to="/unauthorized" replace />;
   }
 
