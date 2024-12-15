@@ -101,49 +101,55 @@ export default function Header() {
       <Box sx={{ flexGrow: 1 }}>
         <AppBar position="static">
           <Toolbar>
-            <IconButton
-              size="large"
-              edge="start"
-              color="inherit"
-              aria-label="menu"
-              onClick={toggleDrawer(true)}
-            >
-              <MenuIcon />
-            </IconButton>
-            <Typography variant="h6" component="div" sx={{ flexGrow: 1 }}>
-              Rangovai
-            </Typography>
-            <div>
-              <IconButton
-                size="large"
-                aria-label="profile"
-                aria-controls="menu-appbar"
-                aria-haspopup="true"
-                onClick={handleMenu}
-                color="inherit"
-              >
-                <AccountCircle fontSize="large" />
-              </IconButton>
-              <Menu
-                id="basic-menu"
-                anchorEl={anchorEl}
-                open={anchorEl !== null}
-                onClose={handleClose}
-                MenuListProps={{
-                  "aria-labelledby": "basic-button",
-                }}
-              >
-                <MenuItem
-                  onClick={() => (window.location.href = "/update-profile")}
+            {currentUser && (
+              <>
+                <IconButton
+                  size="large"
+                  edge="start"
+                  color="inherit"
+                  aria-label="menu"
+                  onClick={toggleDrawer(true)}
                 >
-                  Paskyra
-                </MenuItem>
-                <MenuItem onClick={() => (window.location.href = "/user")}>
-                  Renginiai
-                </MenuItem>
-                <MenuItem onClick={logout}>Atsijungti</MenuItem>
-              </Menu>
-            </div>
+                  <MenuIcon />
+                </IconButton>
+                <Typography variant="h6" component="div" sx={{ flexGrow: 1 }}>
+                  Rangovai
+                </Typography>
+              </>
+            )}
+            {currentUser && (
+              <div>
+                <IconButton
+                  size="large"
+                  aria-label="profile"
+                  aria-controls="menu-appbar"
+                  aria-haspopup="true"
+                  onClick={handleMenu}
+                  color="inherit"
+                >
+                  <AccountCircle fontSize="large" />
+                </IconButton>
+                <Menu
+                  id="basic-menu"
+                  anchorEl={anchorEl}
+                  open={anchorEl !== null}
+                  onClose={handleClose}
+                  MenuListProps={{
+                    "aria-labelledby": "basic-button",
+                  }}
+                >
+                  <MenuItem
+                    onClick={() => (window.location.href = "/update-profile")}
+                  >
+                    Paskyra
+                  </MenuItem>
+                  <MenuItem onClick={() => (window.location.href = "/user")}>
+                    Renginiai
+                  </MenuItem>
+                  <MenuItem onClick={logout}>Atsijungti</MenuItem>
+                </Menu>
+              </div>
+            )}
           </Toolbar>
         </AppBar>
       </Box>
