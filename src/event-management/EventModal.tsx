@@ -171,6 +171,23 @@ const EventModal: React.FC<EventModalProps> = ({
                 <TextField
                   className="w-full p-2 border rounded"
                   type="number"
+                  name="price"
+                  onChange={onFieldChange}
+                  value={newEventForm.price}
+                  label="Bilieto kaina"
+                  slotProps={{
+                    input: {
+                      inputProps: {
+                        step: "1",
+                      },
+                    },
+                  }}
+                />
+              </div>
+              <div className="mb-4">
+                <TextField
+                  className="w-full p-2 border rounded"
+                  type="number"
                   name="max_volunteer_count"
                   onChange={onFieldChange}
                   value={newEventForm.max_volunteer_count}
@@ -186,7 +203,7 @@ const EventModal: React.FC<EventModalProps> = ({
                   onChange={onFieldChange}
                   className="mr-2"
                 />
-                <label>Nemokamas</label>
+                <label>Mokamas</label>
               </div>
               <div className="mt-4">
                 <TextField

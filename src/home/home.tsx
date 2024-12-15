@@ -1,32 +1,43 @@
-import { Container, Typography, Box, Grid, Paper, Button, Modal, MenuItem, Select, TextField } from '@mui/material';
-import { useEffect, useState } from 'react';
-import { useLocation } from 'react-router-dom';
-import emailjs from 'emailjs-com';
-import { loginWithGoogle, logout } from '../userService';
-import { user } from './user';
-import { supabase } from '../../supabase';
-import { toast, ToastContainer } from 'react-toastify';
-import 'react-toastify/dist/ReactToastify.css';
+import {
+  Container,
+  Typography,
+  Box,
+  Grid,
+  Paper,
+  Button,
+  Modal,
+  MenuItem,
+  Select,
+  TextField,
+} from "@mui/material";
+import { useEffect, useState } from "react";
+import { useLocation } from "react-router-dom";
+import emailjs from "emailjs-com";
+import { loginWithGoogle, logout } from "../userService";
+import { user } from "./user";
+import { supabase } from "../../supabase";
+import { toast, ToastContainer } from "react-toastify";
+import "react-toastify/dist/ReactToastify.css";
 
 const teamMembers = [
-  { name: 'Gedmantas', role: "Dev'as | Rekvizitai" },
-  { name: 'Lukas', role: "Dev'as | Įmonė" },
-  { name: 'Gytis', role: "Dev'as | Gelbėtojas" },
-  { name: 'Dominykas', role: "Dev'as | Finansininkas" },
-  { name: 'Rokas', role: "Dev'as | Visažynis" },
+  { name: "Gedmantas", role: "Dev'as | Rekvizitai" },
+  { name: "Lukas", role: "Dev'as | Įmonė" },
+  { name: "Gytis", role: "Dev'as | Gelbėtojas" },
+  { name: "Dominykas", role: "Dev'as | Finansininkas" },
+  { name: "Rokas", role: "Dev'as | Visažynis" },
 ];
 
 const App = () => {
   const [showSignUp, setShowSignUp] = useState(false);
   const [showNotification, setShowNotification] = useState(false);
-  const [role, setRole] = useState('');
+  const [role, setRole] = useState("");
   const [formData, setFormData] = useState({
-    username: '',
-    name: '',
-    phoneNumber: '',
-    age: '',
+    username: "",
+    name: "",
+    phoneNumber: "",
+    age: "",
   });
-  const [signedInEmail, setSignedInEmail] = useState('');
+  const [signedInEmail, setSignedInEmail] = useState("");
   const [isSignedIn, setIsSignedIn] = useState(false);
   const [loading, setLoading] = useState(false);
 
@@ -35,49 +46,47 @@ const App = () => {
   useEffect(() => {
     const verifyEmail = async () => {
       const queryParams = new URLSearchParams(location.search);
-      const email = queryParams.get('email');
-  
-      if (!email) return; 
-  
+      const email = queryParams.get("email");
+
+      if (!email) return;
+
       console.log(`Attempting to verify email: ${email}`);
       try {
         const { data, error } = await supabase
-          .from('users')
+          .from("users")
           .update({ is_email_verified: true })
-          .eq('email', email)
-          .select('*'); 
-  
+          .eq("email", email)
+          .select("*");
+
         if (error) {
-          console.error('Error updating is_email_verified:', error.message);
+          console.error("Error updating is_email_verified:", error.message);
         } else if (!data || data.length === 0) {
-          console.warn('No user found with this email:', email);
+          console.warn("No user found with this email:", email);
         } else {
-          console.log('El. paštas patvirtintas sėkmingai:', data);
+          console.log("El. paštas patvirtintas sėkmingai:", data);
           setShowNotification(true);
-  
-          
+
           const newUrl = window.location.pathname;
-          window.history.replaceState(null, '', newUrl);
+          window.history.replaceState(null, "", newUrl);
         }
       } catch (error) {
-        console.error('Klaida:', error.message);
+        console.error("Klaida:", error.message);
       }
     };
-  
+
     verifyEmail();
   }, [location]);
-  
-  
+
   useEffect(() => {
     if (showNotification) {
-      console.log('Notification is being displayed.');
+      console.log("Notification is being displayed.");
     }
   }, [showNotification]);
 
   useEffect(() => {
     const checkFirstTimeLogin = async () => {
       if (!user || !user.email) {
-        console.log('No user is currently signed in or no email is available.');
+        console.log("No user is currently signed in or no email is available.");
         setIsSignedIn(false);
         return;
       }
@@ -89,12 +98,12 @@ const App = () => {
       try {
         // Check if this email exists in the 'users' table
         const { data, error } = await supabase
-          .from('users')
-          .select('email')
-          .eq('email', user.email);
+          .from("users")
+          .select("email")
+          .eq("email", user.email);
 
         if (error) {
-          console.error('Error checking user existence:', error.message);
+          console.error("Error checking user existence:", error.message);
           return;
         }
 
@@ -103,7 +112,7 @@ const App = () => {
           setShowSignUp(true);
         }
       } catch (err) {
-        console.error('Unexpected error:', err.message);
+        console.error("Unexpected error:", err.message);
       }
     };
 
@@ -133,17 +142,23 @@ const App = () => {
         import.meta.env.VITE_EMAILJS_PUBLIC_KEY // Public Key
       );
 
-      console.log('Email sent successfully:', response.text);
-      toast.success('Registracijos patvirtinimas išsiųstas į Jūsų paštą.');
+      console.log("Email sent successfully:", response.text);
+      toast.success("Registracijos patvirtinimas išsiųstas į Jūsų paštą.");
     } catch (error) {
-      console.error('Error sending email:', error);
-      toast.error('Nepavyko išsiųsti patvirtinimo laiško.');
+      console.error("Error sending email:", error);
+      toast.error("Nepavyko išsiųsti patvirtinimo laiško.");
     }
   };
 
   const handleSubmit = async () => {
-    if (!role || !formData.username || !formData.name || !formData.phoneNumber || !formData.age) {
-      toast.error('Supildykite visus laukus.');
+    if (
+      !role ||
+      !formData.username ||
+      !formData.name ||
+      !formData.phoneNumber ||
+      !formData.age
+    ) {
+      toast.error("Supildykite visus laukus.");
       return;
     }
 
@@ -151,7 +166,7 @@ const App = () => {
       setLoading(true);
       await sendEmail(signedInEmail);
 
-      const { data, error: dbError } = await supabase.from('users').insert({
+      const { data, error: dbError } = await supabase.from("users").insert({
         email: signedInEmail,
         role,
         username: formData.username,
@@ -162,16 +177,18 @@ const App = () => {
       });
 
       if (dbError) {
-        console.error('Error saving user data:', dbError.message);
-        toast.error('Nepavyko išsaugoti naudotojo duomenų.');
+        console.error("Error saving user data:", dbError.message);
+        toast.error("Nepavyko išsaugoti naudotojo duomenų.");
       } else {
-        console.log('User data saved successfully:', data);
-        toast.success('Sėkmingai užsiregistravote sistemoje. Patikrinkite el. paštą patvirtinimui.');
+        console.log("User data saved successfully:", data);
+        toast.success(
+          "Sėkmingai užsiregistravote sistemoje. Patikrinkite el. paštą patvirtinimui."
+        );
         setShowSignUp(false);
       }
     } catch (err) {
-      console.error('Unexpected error:', err.message);
-      toast.error('Įvyko klaida registracijos metu. Bandykite vėliau.');
+      console.error("Unexpected error:", err.message);
+      toast.error("Įvyko klaida registracijos metu. Bandykite vėliau.");
     } finally {
       setLoading(false);
     }
@@ -180,9 +197,13 @@ const App = () => {
   return (
     <Container>
       {/* Toast Container */}
-      <ToastContainer position="top-right" autoClose={5000} hideProgressBar={false} />
+      <ToastContainer
+        position="top-right"
+        autoClose={5000}
+        hideProgressBar={false}
+      />
 
-      <Box sx={{ textAlign: 'center', my: 4 }}>
+      <Box sx={{ textAlign: "center", my: 4 }}>
         <Typography variant="h1" component="h1" gutterBottom>
           Rangovai
         </Typography>
@@ -193,21 +214,24 @@ const App = () => {
 
       <Box
         sx={{
-          position: 'absolute',
+          position: "absolute",
           top: 100,
           right: 20,
-          textAlign: 'right',
+          textAlign: "right",
         }}
       >
         <Typography variant="body1" gutterBottom>
-          Prisijunges kaip: {isSignedIn ? signedInEmail : 'Nėra naudotojo'}
+          Prisijunges kaip: {isSignedIn ? signedInEmail : "Nėra naudotojo"}
         </Typography>
       </Box>
 
       <Grid container spacing={4} justifyContent="center">
         {teamMembers.map((member, index) => (
           <Grid item xs={12} sm={6} md={4} key={index}>
-            <Paper elevation={3} sx={{ padding: 2, textAlign: 'center', height: '100%' }}>
+            <Paper
+              elevation={3}
+              sx={{ padding: 2, textAlign: "center", height: "100%" }}
+            >
               <Typography variant="h6" component="h3">
                 {member.name}
               </Typography>
@@ -219,9 +243,13 @@ const App = () => {
         ))}
       </Grid>
 
-      <Box sx={{ textAlign: 'center', my: 4 }}>
+      <Box sx={{ textAlign: "center", my: 4 }}>
         {!isSignedIn && (
-          <Button variant="outlined" onClick={loginWithGoogle} sx={{ marginRight: 2 }}>
+          <Button
+            variant="outlined"
+            onClick={loginWithGoogle}
+            sx={{ marginRight: 2 }}
+          >
             Prisijungti su Google
           </Button>
         )}
@@ -240,17 +268,22 @@ const App = () => {
       >
         <Box
           sx={{
-            position: 'absolute',
-            top: '50%',
-            left: '50%',
-            transform: 'translate(-50%, -50%)',
+            position: "absolute",
+            top: "50%",
+            left: "50%",
+            transform: "translate(-50%, -50%)",
             width: 400,
-            bgcolor: 'background.paper',
+            bgcolor: "background.paper",
             boxShadow: 24,
             p: 4,
           }}
         >
-          <Typography id="modal-modal-title" variant="h6" component="h2" sx={{ mb: 2 }}>
+          <Typography
+            id="modal-modal-title"
+            variant="h6"
+            component="h2"
+            sx={{ mb: 2 }}
+          >
             Registracija
           </Typography>
           <Select
@@ -277,7 +310,7 @@ const App = () => {
             value={formData.username}
             onChange={handleInputChange}
             error={!formData.username}
-            helperText={!formData.username ? 'Slapyvardis yra privalomas.' : ''}
+            helperText={!formData.username ? "Slapyvardis yra privalomas." : ""}
             sx={{ mb: 2 }}
           />
           <TextField
@@ -287,7 +320,7 @@ const App = () => {
             value={formData.name}
             onChange={handleInputChange}
             error={!formData.name}
-            helperText={!formData.name ? 'Vardas yra privalomas.' : ''}
+            helperText={!formData.name ? "Vardas yra privalomas." : ""}
             sx={{ mb: 2 }}
           />
           <TextField
@@ -300,7 +333,7 @@ const App = () => {
             helperText={
               !/^\+\d+$/.test(formData.phoneNumber)
                 ? 'Tel. nr turi prasidėti su "+" ir būti tik skaičiai.'
-                : ''
+                : ""
             }
             sx={{ mb: 2 }}
           />
@@ -312,7 +345,7 @@ const App = () => {
             onChange={handleInputChange}
             error={!/^\d+$/.test(formData.age)}
             helperText={
-              !/^\d+$/.test(formData.age) ? 'Amžius turi būti skaičius.' : ''
+              !/^\d+$/.test(formData.age) ? "Amžius turi būti skaičius." : ""
             }
             sx={{ mb: 2 }}
           />
@@ -323,7 +356,7 @@ const App = () => {
             onClick={handleSubmit}
             disabled={loading}
           >
-            {loading ? 'Registruojama...' : 'Registruotis'}
+            {loading ? "Registruojama..." : "Registruotis"}
           </Button>
         </Box>
       </Modal>
@@ -336,21 +369,29 @@ const App = () => {
       >
         <Box
           sx={{
-            position: 'absolute',
-            top: '50%',
-            left: '50%',
-            transform: 'translate(-50%, -50%)',
+            position: "absolute",
+            top: "50%",
+            left: "50%",
+            transform: "translate(-50%, -50%)",
             width: 400,
-            bgcolor: 'background.paper',
+            bgcolor: "background.paper",
             boxShadow: 24,
             p: 4,
-            textAlign: 'center',
+            textAlign: "center",
           }}
         >
-          <Typography id="notification-modal-title" variant="h6" component="h2" sx={{ mb: 2 }}>
+          <Typography
+            id="notification-modal-title"
+            variant="h6"
+            component="h2"
+            sx={{ mb: 2 }}
+          >
             Sėkmingai patvirtinote el. paštą!
           </Typography>
-          <Button variant="contained" onClick={() => setShowNotification(false)}>
+          <Button
+            variant="contained"
+            onClick={() => setShowNotification(false)}
+          >
             Gerai
           </Button>
         </Box>

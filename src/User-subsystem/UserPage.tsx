@@ -18,12 +18,14 @@ interface Event {
   seats_count: number;
   max_volunteer_count: number;
   event_location_id: string | null;
+  payment_link: string | null;
   // eslint-disable-next-line @typescript-eslint/no-explicit-any
   [key: string]: any;
 }
 
 const UserPage = () => {
   const [events, setEvents] = useState<Event[]>([]);
+  const [ticketsSold, setTicketsSold] = useState<Record<number, number>>({});
   const [sortConfig, setSortConfig] = useState<{
     key: string;
     direction: "asc" | "desc";
@@ -50,7 +52,29 @@ const UserPage = () => {
       }
     };
 
+    const fetchTicketsSold = async () => {
+      const { data, error } = await supabase
+        .from("ticket") // Replace 'tickets' with your actual table name
+        .select("event_id"); // Only select event_id column
+
+      if (error) {
+        console.error("Error fetching tickets:", error.message);
+        return;
+      }
+
+      // Process the data into a record { event_id: count }
+      const ticketCounts: Record<number, number> = {};
+      // eslint-disable-next-line @typescript-eslint/no-explicit-any
+      data.forEach((ticket: any) => {
+        const eventId = ticket.event_id;
+        ticketCounts[eventId] = (ticketCounts[eventId] || 0) + 1; // Count tickets per event
+      });
+
+      setTicketsSold(ticketCounts);
+    };
+
     fetchEvents();
+    fetchTicketsSold();
   }, []);
 
   const handleFilterChange = (name: string, value: string | null) => {
@@ -221,14 +245,10 @@ const UserPage = () => {
                 {sortConfig?.key === "is_free" &&
                   (sortConfig.direction === "asc" ? "↑" : "↓")}
               </th>
-              <th
-                className="py-2 px-4 border hover:bg-gray-200 cursor-pointer"
-                onClick={() => handleSort("seats_count")}
-              >
-                Vietų Skaičius
-                {sortConfig?.key === "seats_count" &&
-                  (sortConfig.direction === "asc" ? "↑" : "↓")}
+              <th className="py-2 px-4 border">
+                Laisvų bilietų/vietų skaičius
               </th>
+
               <th className="py-2 px-4 border">Veiksmai</th>
             </tr>
           </thead>
@@ -255,16 +275,37 @@ const UserPage = () => {
                 <td className="py-2 px-4 border">
                   {event.is_free ? "Taip" : "Ne"}
                 </td>
-                <td className="py-2 px-4 border">{event.seats_count}</td>
                 <td className="py-2 px-4 border">
-                  <div
-                    className="flex items-center justify-center"
-                    style={{ display: "flex", justifyContent: "center" }}
-                  >
-                    <button className="bg-blue-500 text-white px-2 py-1 rounded hover:bg-blue-600">
+                  {Number.isNaN(event.seats_count) || event.seats_count == null
+                    ? 0
+                    : event.seats_count - (ticketsSold[event.id] || 0)}
+                </td>
+                <td className="py-2 px-4 border">
+                  {ticketsSold[event.id] === event.seats_count ? (
+                    <span style={{ color: "red" }}>Nebėra vietų</span>
+                  ) : !event.is_free ? (
+                    <button
+                      className="bg-blue-500 text-white px-2 py-1 rounded hover:bg-blue-600"
+                      onClick={() =>
+                        (window.location.href = `http://localhost:5173/payment-confirmation?event_id=${event.id}`)
+                      }
+                    >
+                      Dalyvauti
+                    </button>
+                  ) : event.payment_link ? (
+                    <button
+                      className="bg-blue-500 text-white px-2 py-1 rounded hover:bg-blue-600"
+                      onClick={() =>
+                        (window.location.href = event.payment_link!)
+                      }
+                    >
                       Pirkti bilietą
                     </button>
-                  </div>
+                  ) : (
+                    <span style={{ color: "red" }}>
+                      Mokėjimo nuoroda nerasta
+                    </span>
+                  )}
                 </td>
               </tr>
             ))}
