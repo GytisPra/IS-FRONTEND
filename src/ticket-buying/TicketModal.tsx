@@ -34,12 +34,11 @@ const TicketModal: React.FC<EventModalProps> = ({
         <div
           ref={ticketRef}
           style={{
-            margin: "2rem auto",
-            maxWidth: "600px",
-            border: "1px solid #ddd",
-            padding: "1.5rem",
-            boxShadow: "0px 4px 6px rgba(0, 0, 0, 0.1)",
-            textAlign: "left",
+            width: "100%", // Full width
+            maxWidth: "100%", // Remove any max width limitation
+            margin: 0, // Remove margins to span the whole page
+            padding: "2rem", // Optional padding for better visual alignment
+            boxShadow: "none", // Remove any shadows for cleaner PDF
           }}
         >
           <div

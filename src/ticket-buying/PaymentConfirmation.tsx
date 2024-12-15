@@ -165,9 +165,9 @@ const PaymentConfirmation: React.FC = () => {
           ref={ticketRef}
           style={{
             margin: "2rem auto",
-            maxWidth: "600px",
+            maxWidth: "800px",
             border: "1px solid #ddd",
-            padding: "1.5rem",
+            padding: "2rem",
             boxShadow: "0px 4px 6px rgba(0, 0, 0, 0.1)",
             textAlign: "left",
           }}
