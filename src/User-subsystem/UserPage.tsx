@@ -245,13 +245,8 @@ const UserPage = () => {
                 {sortConfig?.key === "is_free" &&
                   (sortConfig.direction === "asc" ? "↑" : "↓")}
               </th>
-              <th
-                className="py-2 px-4 border hover:bg-gray-200 cursor-pointer"
-                onClick={() => handleSort("seats_count")}
-              >
-                Vietų Skaičius
-                {sortConfig?.key === "seats_count" &&
-                  (sortConfig.direction === "asc" ? "↑" : "↓")}
+              <th className="py-2 px-4 border">
+                Laisvų bilietų/vietų skaičius
               </th>
 
               <th className="py-2 px-4 border">Veiksmai</th>
@@ -286,22 +281,30 @@ const UserPage = () => {
                     : event.seats_count - (ticketsSold[event.id] || 0)}
                 </td>
                 <td className="py-2 px-4 border">
-                  {!event.is_free ? (
-                    <span>Renginys nemokamas</span>
-                  ) : (ticketsSold[event.id] || 0) >= event.seats_count ||
-                    !event.payment_link ? (
-                    <span style={{ color: "red" }}>Nebėra bilietų</span>
+                  {ticketsSold[event.id] === event.seats_count ? (
+                    <span style={{ color: "red" }}>Nebėra vietų</span>
+                  ) : !event.is_free ? (
+                    <button
+                      className="bg-blue-500 text-white px-2 py-1 rounded hover:bg-blue-600"
+                      onClick={() =>
+                        (window.location.href = `http://localhost:5173/payment-confirmation?event_id=${event.id}`)
+                      }
+                    >
+                      Dalyvauti
+                    </button>
+                  ) : event.payment_link ? (
+                    <button
+                      className="bg-blue-500 text-white px-2 py-1 rounded hover:bg-blue-600"
+                      onClick={() =>
+                        (window.location.href = event.payment_link!)
+                      }
+                    >
+                      Pirkti bilietą
+                    </button>
                   ) : (
-                    event.payment_link && (
-                      <button
-                        className="bg-blue-500 text-white px-2 py-1 rounded hover:bg-blue-600"
-                        onClick={() =>
-                          (window.location.href = event.payment_link!)
-                        }
-                      >
-                        Pirkti bilietą
-                      </button>
-                    )
+                    <span style={{ color: "red" }}>
+                      Mokėjimo nuoroda nerasta
+                    </span>
                   )}
                 </td>
               </tr>

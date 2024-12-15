@@ -108,7 +108,12 @@ const PaymentConfirmation: React.FC = () => {
       setEventData(eventData);
       const { data: ticketData, error: ticketError } = await supabase
         .from("ticket")
-        .insert([{ price: eventData.price, event_id: eventId }])
+        .insert([
+          {
+            price: eventData.price ?? 0, // Use 0 if price is null or undefined
+            event_id: eventId,
+          },
+        ])
         .select()
         .single();
 

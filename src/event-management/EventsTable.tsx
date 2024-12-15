@@ -1,10 +1,11 @@
-import { useState } from "react";
+import { useEffect, useState } from "react";
 import { Event } from "./types";
 import dayjs from "dayjs";
 import { LocalizationProvider, DatePicker } from "@mui/x-date-pickers";
 import { AdapterDayjs } from "@mui/x-date-pickers/AdapterDayjs";
 import { TextField } from "@mui/material";
 import ViewEventLocation from "../event-location/ViewEventLocation";
+import { supabase } from "../userService";
 
 interface EventTableProps {
   events: Event[];
@@ -13,6 +14,8 @@ interface EventTableProps {
 }
 
 const EventTable = ({ events, onEdit, onDelete }: EventTableProps) => {
+  const [eventss, setEvents] = useState<Event[]>([]);
+  const [ticketsSold, setTicketsSold] = useState<Record<number, number>>({});
   const [sortConfig, setSortConfig] = useState<{
     key: string;
     direction: "asc" | "desc";
@@ -87,7 +90,40 @@ const EventTable = ({ events, onEdit, onDelete }: EventTableProps) => {
     }
     setSortConfig({ key, direction });
   };
+  useEffect(() => {
+    const fetchEvents = async () => {
+      const { data, error } = await supabase.from("event").select("*");
+      if (error) {
+        console.error("Error fetching events:", error.message);
+      } else {
+        setEvents(data as Event[]);
+      }
+    };
 
+    const fetchTicketsSold = async () => {
+      const { data, error } = await supabase
+        .from("ticket") // Replace 'tickets' with your actual table name
+        .select("event_id"); // Only select event_id column
+
+      if (error) {
+        console.error("Error fetching tickets:", error.message);
+        return;
+      }
+
+      // Process the data into a record { event_id: count }
+      const ticketCounts: Record<number, number> = {};
+      // eslint-disable-next-line @typescript-eslint/no-explicit-any
+      data.forEach((ticket: any) => {
+        const eventId = ticket.event_id;
+        ticketCounts[eventId] = (ticketCounts[eventId] || 0) + 1; // Count tickets per event
+      });
+
+      setTicketsSold(ticketCounts);
+    };
+
+    fetchEvents();
+    fetchTicketsSold();
+  }, []);
   return (
     <>
       <LocalizationProvider dateAdapter={AdapterDayjs}>
@@ -168,14 +204,7 @@ const EventTable = ({ events, onEdit, onDelete }: EventTableProps) => {
               {sortConfig?.key === "is_free" &&
                 (sortConfig.direction === "asc" ? "\u2191" : "\u2193")}
             </th>
-            <th
-              className="py-2 px-4 border hover:bg-gray-200 cursor-pointer"
-              onClick={() => handleSort("seats_count")}
-            >
-              Vietų Skaičius
-              {sortConfig?.key === "seats_count" &&
-                (sortConfig.direction === "asc" ? "\u2191" : "\u2193")}
-            </th>
+            <th className="py-2 px-4 border">Dalyvių skaičius</th>
             <th
               className="py-2 px-4 border hover:bg-gray-200 cursor-pointer"
               onClick={() => handleSort("max_volunteer_count")}
@@ -210,7 +239,9 @@ const EventTable = ({ events, onEdit, onDelete }: EventTableProps) => {
               <td className="py-2 px-4 border">
                 {event.is_free ? "Taip" : "Ne"}
               </td>
-              <td className="py-2 px-4 border">{event.seats_count}</td>
+              <td className="py-2 px-4 border">
+                {!ticketsSold[event.id] ? 0 : ticketsSold[event.id]}
+              </td>
               <td className="py-2 px-4 border">{event.max_volunteer_count}</td>
               <td className="py-2 px-4 border">
                 <div className="flex items-center justify-center">
