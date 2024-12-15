@@ -5,6 +5,7 @@ import EventCard from "./eventCard";
 import EventRowCard from "../components/common/eventRowCard";
 import { getEvents } from "./api";
 import { Event } from "../volunteers/objects/types";
+import { getSession } from "../userService";
 
 const OrganiserPage = () => {
   const [selectedEvent, setSelectedEvent] = React.useState<Event | undefined>(undefined);
@@ -14,7 +15,8 @@ const OrganiserPage = () => {
   React.useEffect(() => {
     const fetchEvents = async () => {
       try {
-        const events = await getEvents();
+        const user = await getSession();
+        const events = await getEvents(user.user!.id);
         setEvents(events);
       } catch (error) {
         console.error("Failed to fetch events:", error);
