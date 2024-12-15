@@ -7,6 +7,7 @@ import UserPage from "./User-subsystem/UserPage";
 import ProfileUpdatePage from "./User-subsystem/Profile";
 import EventManager from "./event-management/EventManager";
 import VolunteersPage from "./volunteers/VolunteerPage";
+import PaymentConfirmation from "./ticket-buying/PaymentConfirmation";
 import ProtectedRoute from "./components/common/protectedRoute/ProtectedRoute";
 import Unauthorized from "./components/common/protectedRoute/Unauthorized";
 import VolunteerStatisticsPage from "./volunteers/StatisticsPage";
@@ -40,21 +41,37 @@ export const router = createBrowserRouter([
     path: "/volunteers/statistics",
     element: (
       <ProtectedRoute requiredRole="volunteer">
-        <VolunteerStatisticsPage/>
+        <VolunteerStatisticsPage />
       </ProtectedRoute>
-    )
+    ),
   },
   {
     path: "/tickets",
-    element: <UserTickets />,
+    element: (
+      <ProtectedRoute requiredRole="user">
+        <UserTickets />
+      </ProtectedRoute>
+    ),
   },
   {
-    path: "/user",
-    element: <UserPage />,
+    path: "/event-list",
+    element: (
+      <ProtectedRoute requiredRole="user">
+        <UserPage />
+      </ProtectedRoute>
+    ),
   },
   {
     path: "/update-profile",
     element: <ProfileUpdatePage />,
+  },
+  {
+    path: "/payment-confirmation",
+    element: (
+      <ProtectedRoute requiredRole="user">
+        <PaymentConfirmation />
+      </ProtectedRoute>
+    ),
   },
   {
     path: "/unauthorized",

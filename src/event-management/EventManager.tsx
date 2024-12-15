@@ -18,7 +18,7 @@ const EventManager: React.FC = () => {
   const [loading, setLoading] = useState<boolean>(true);
   const [error, setError] = useState<string | null>(null);
 
-  const [showModal, setShowModal] = useState<boolean>(false);
+  const [showCreationModal, setShowCreationModal] = useState<boolean>(false);
   const [newEventForm, setNewEventForm] = useState<NewEventForm>({
     name: "",
     date: "",
@@ -27,6 +27,7 @@ const EventManager: React.FC = () => {
     is_free: false,
     seats_count: 0,
     max_volunteer_count: 0,
+    price: 0,
   });
   const [modalLoading, setModalLoading] = useState<boolean>(false);
   const [modalError, setModalError] = useState<string | null>(null);
@@ -147,6 +148,7 @@ const EventManager: React.FC = () => {
         seats_count: event.seats_count,
         form_url: event.form_url,
         max_volunteer_count: event.max_volunteer_count,
+        price: event.price,
         location: locationData
           ? {
               city: locationData.city,
@@ -160,7 +162,7 @@ const EventManager: React.FC = () => {
       });
 
       setShowLocationFields(!!locationData);
-      setShowModal(true);
+      setShowCreationModal(true);
       // eslint-disable-next-line @typescript-eslint/no-explicit-any
     } catch (err: any) {
       setModalError(err.message || "Nepavyko gauti vietovės duomenų.");
@@ -168,7 +170,6 @@ const EventManager: React.FC = () => {
       setModalLoading(false);
     }
   };
-
   const formSubmit = async (e: FormEvent) => {
     e.preventDefault();
     setModalLoading(true);
@@ -223,7 +224,7 @@ const EventManager: React.FC = () => {
         toast.success("Renginys sėkmingas sukurtas!");
       }
       setEvents(updatedEvents);
-      setShowModal(false);
+      setShowCreationModal(false);
     }
   };
 
@@ -255,9 +256,10 @@ const EventManager: React.FC = () => {
       is_free: false,
       seats_count: 0,
       max_volunteer_count: 0,
+      price: 0,
     });
 
-    setShowModal(!showModal);
+    setShowCreationModal(!showCreationModal);
     setModalError(null);
     setIsEditing(false);
     setEditingEventId(null);
@@ -333,7 +335,7 @@ const EventManager: React.FC = () => {
         />
       )}
 
-      {showModal && (
+      {showCreationModal && (
         <EventModal
           isEditing={isEditing}
           editingEventId={editingEventId}

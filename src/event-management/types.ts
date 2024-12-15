@@ -10,6 +10,7 @@ export interface Event {
   seats_count: number;
   event_location_id: string | null;
   max_volunteer_count: number;
+  price: number;
   // eslint-disable-next-line @typescript-eslint/no-explicit-any
   [key: string]: any;
 }
@@ -32,6 +33,7 @@ export interface NewEventForm {
   is_free: boolean;
   seats_count: number;
   max_volunteer_count: number;
+  price: number;
   form_url?: string;
   location?: {
     // manau, kad gali but nullable, nes renginys gali but ir online
@@ -52,4 +54,10 @@ export interface User {
   age: number;
   phone_number: string;
   is_email_verified: boolean;
+}
+export interface Ticket {
+  id: number;
+  price: number;
+  event_id: string;
+  created_at: string;
 }
