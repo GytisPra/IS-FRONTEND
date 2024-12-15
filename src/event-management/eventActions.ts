@@ -184,12 +184,15 @@ export const submitEvent = async (
         .select();
 
       if (eventError) throw new Error(eventError.message);
-      const { success, error } = await updatePaymenLink(
-        editingEventId,
-        eventDataToUpdate.price
-      );
-      if (!success && error) {
-        throw new Error(error);
+      if (newEventForm.is_free) {
+        console.log(newEventForm.is_free);
+        const { success, error } = await updatePaymenLink(
+          editingEventId,
+          eventDataToUpdate.price
+        );
+        if (!success && error) {
+          throw new Error(error);
+        }
       }
       return {
         updatedEvents: events.map((evt) =>
