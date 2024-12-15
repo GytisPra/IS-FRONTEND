@@ -32,6 +32,7 @@ interface Event {
 
 const UserPage = () => {
   const [events, setEvents] = useState<Event[]>([]);
+  const [ticketsSold, setTicketsSold] = useState<Record<number, number>>({});
   const [sortConfig, setSortConfig] = useState<{
     key: string;
     direction: "asc" | "desc";
@@ -58,7 +59,28 @@ const UserPage = () => {
       }
     };
 
+    const fetchTicketsSold = async () => {
+      const { data, error } = await supabase
+        .from("ticket") // Replace 'tickets' with your actual table name
+        .select("event_id"); // Only select event_id column
+
+      if (error) {
+        console.error("Error fetching tickets:", error.message);
+        return;
+      }
+
+      // Process the data into a record { event_id: count }
+      const ticketCounts: Record<number, number> = {};
+      data.forEach((ticket: any) => {
+        const eventId = ticket.event_id;
+        ticketCounts[eventId] = (ticketCounts[eventId] || 0) + 1; // Count tickets per event
+      });
+
+      setTicketsSold(ticketCounts);
+    };
+
     fetchEvents();
+    fetchTicketsSold();
   }, []);
 
   const handleFilterChange = (name: string, value: string | null) => {
@@ -264,12 +286,14 @@ const UserPage = () => {
                   {event.is_free ? "Taip" : "Ne"}
                 </td>
                 <td className="py-2 px-4 border">{event.seats_count}</td>
-                <td className="py-2 px-4 border">
-                  <div
-                    className="flex items-center justify-center"
-                    style={{ display: "flex", justifyContent: "center" }}
-                  >
-                    {event.is_free && event.payment_link ? (
+                <td>
+                  {!event.is_free ? (
+                    <span>Renginys nemokamas</span>
+                  ) : (ticketsSold[event.id] || 0) >= event.seats_count ||
+                    !event.payment_link ? (
+                    <span style={{ color: "red" }}>Nebėra bilietų</span>
+                  ) : (
+                    event.payment_link && (
                       <button
                         className="bg-blue-500 text-white px-2 py-1 rounded hover:bg-blue-600"
                         onClick={() =>
@@ -278,14 +302,8 @@ const UserPage = () => {
                       >
                         Pirkti bilietą
                       </button>
-                    ) : (
-                      !event.is_free && (
-                        <span className="text-gray-500">
-                          Nemokamas renginys
-                        </span>
-                      )
-                    )}
-                  </div>
+                    )
+                  )}
                 </td>
               </tr>
             ))}
