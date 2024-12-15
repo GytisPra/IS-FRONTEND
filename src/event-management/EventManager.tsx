@@ -10,7 +10,7 @@ import {
 import EventModal from "./EventModal";
 import EventTable from "./EventsTable";
 import dayjs from "dayjs";
-import { ToastContainer } from "react-toastify";
+import { toast, ToastContainer } from "react-toastify";
 import "react-toastify/dist/ReactToastify.css";
 
 const EventManager: React.FC = () => {
@@ -217,6 +217,11 @@ const EventManager: React.FC = () => {
 
     if (error) setModalError(error);
     else {
+      if (isEditing) {
+        toast.success("Renginys sėkmingas atnaujintas!");
+      } else {
+        toast.success("Renginys sėkmingas sukurtas!");
+      }
       setEvents(updatedEvents);
       setShowModal(false);
     }
@@ -224,8 +229,13 @@ const EventManager: React.FC = () => {
 
   const handleDelete = async (id: number) => {
     const { updatedEvents, error } = await deleteEvent(id, events);
-    if (error) setError(error);
-    else setEvents(updatedEvents);
+    if (error) {
+      setError(error);
+      toast.error("Įvyko klaida bandant pašalinti renginį!");
+    } else {
+      toast.success("Rengninys pašalintas!");
+      setEvents(updatedEvents);
+    }
   };
 
   const resetForm = () => {
