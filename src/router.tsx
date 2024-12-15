@@ -8,6 +8,10 @@ import ProfileUpdatePage from "./User-subsystem/Profile";
 import EventManager from "./event-management/EventManager";
 import VolunteersPage from "./volunteers/VolunteerPage";
 import PaymentConfirmation from "./ticket-buying/PaymentConfirmation";
+import ProtectedRoute from "./components/common/protectedRoute/ProtectedRoute";
+import Unauthorized from "./components/common/protectedRoute/Unauthorized";
+import VolunteerStatisticsPage from "./volunteers/StatisticsPage";
+
 export const router = createBrowserRouter([
   {
     path: "/",
@@ -15,7 +19,11 @@ export const router = createBrowserRouter([
   },
   {
     path: "/event-management",
-    element: <EventManager />,
+    element: (
+      <ProtectedRoute requiredRole="admin">
+        <EventManager />
+      </ProtectedRoute>
+    ),
   },
   {
     path: "/organiser",
@@ -23,7 +31,19 @@ export const router = createBrowserRouter([
   },
   {
     path: "/volunteers/events",
-    element: <VolunteersPage />,
+    element: (
+      <ProtectedRoute requiredRole="volunteer">
+        <VolunteersPage />
+      </ProtectedRoute>
+    ),
+  },
+  {
+    path: "/volunteers/statistics",
+    element: (
+      <ProtectedRoute requiredRole="volunteer">
+        <VolunteerStatisticsPage />
+      </ProtectedRoute>
+    ),
   },
   {
     path: "/tickets",
@@ -40,5 +60,9 @@ export const router = createBrowserRouter([
   {
     path: "/payment-confirmation",
     element: <PaymentConfirmation />,
+  },
+  {
+    path: "/unauthorized",
+    element: <Unauthorized />,
   },
 ]);

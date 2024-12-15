@@ -7,15 +7,7 @@ import { AdapterDayjs } from "@mui/x-date-pickers/AdapterDayjs";
 import { TextField, Typography, Box } from "@mui/material";
 import "react-toastify/dist/ReactToastify.css";
 import { ToastContainer } from "react-toastify";
-
-const ViewEventLocation = ({
-  eventLocationId,
-}: {
-  eventLocationId: string;
-  disable: boolean;
-}) => {
-  return <span>Vietovės ID: {eventLocationId}</span>;
-};
+import ViewEventLocation from "../event-location/ViewEventLocation";
 
 interface Event {
   id: number;
@@ -27,6 +19,8 @@ interface Event {
   max_volunteer_count: number;
   event_location_id: string | null;
   payment_link: string | null;
+  // eslint-disable-next-line @typescript-eslint/no-explicit-any
+  [key: string]: any;
 }
 
 const UserPage = () => {
@@ -117,10 +111,8 @@ const UserPage = () => {
   const sortedEvents = [...filteredEvents];
   if (sortConfig !== null) {
     sortedEvents.sort((a, b) => {
-      // eslint-disable-next-line @typescript-eslint/no-explicit-any
-      const aValue = (a as any)[sortConfig.key];
-      // eslint-disable-next-line @typescript-eslint/no-explicit-any
-      const bValue = (b as any)[sortConfig.key];
+      const aValue = a[sortConfig.key];
+      const bValue = b[sortConfig.key];
 
       if (aValue < bValue) {
         return sortConfig.direction === "asc" ? -1 : 1;
@@ -208,7 +200,7 @@ const UserPage = () => {
             <TextField
               className="pr-2 border rounded"
               name="searchQuery"
-              label="Ieškoti renginio 🔍"
+              label="Ieškoti renginio &#x1F50E;&#xFE0E;"
               value={filter.searchQuery}
               onChange={(e) =>
                 handleFilterChange("searchQuery", e.target.value)
@@ -253,8 +245,13 @@ const UserPage = () => {
                 {sortConfig?.key === "is_free" &&
                   (sortConfig.direction === "asc" ? "↑" : "↓")}
               </th>
-              <th className="py-2 px-4 border hover:bg-gray-200 cursor-pointer">
-                Laisvų bilietų / vietų skaičius
+              <th
+                className="py-2 px-4 border hover:bg-gray-200 cursor-pointer"
+                onClick={() => handleSort("seats_count")}
+              >
+                Vietų Skaičius
+                {sortConfig?.key === "seats_count" &&
+                  (sortConfig.direction === "asc" ? "↑" : "↓")}
               </th>
 
               <th className="py-2 px-4 border">Veiksmai</th>

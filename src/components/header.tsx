@@ -14,10 +14,14 @@ import theme from "../theme";
 import { logout } from "../userService";
 import { user } from "../home/user";
 import { useEffect } from "react";
+import { getCurrentUser } from "../volunteers/services/volunteerActions";
+import { User } from "../volunteers/objects/types";
 
 export default function Header() {
   const [anchorEl, setAnchorEl] = useState<null | HTMLElement>(null);
   const [drawerOpen, setDrawerOpen] = useState(false);
+  const [currentUser, setUser] = useState<User | null>(null);
+  const [loadingRole, setLoadingUser] = useState<boolean>(true);
 
   useEffect(() => {
     const checkFirstTimeLogin = async () => {
@@ -25,13 +29,37 @@ export default function Header() {
         console.log("No user is currently signed in.");
         return;
       }
-
-      if (user.email) {
-        console.log(user);
-      }
     };
 
     checkFirstTimeLogin();
+  }, []);
+
+  useEffect(() => {
+    const fetchUser = async () => {
+      if (!user || !user.id) {
+        console.log("No user is currently signed in.");
+        setLoadingUser(false);
+        return;
+      }
+
+      try {
+        const { data, error } = await getCurrentUser(user.id);
+        if (error) {
+          setUser(null);
+        } else if (data) {
+          setUser(data);
+        } else {
+          setUser(null);
+        }
+      } catch (err: any) {
+        setUser(null);
+        console.error(err.message);
+      } finally {
+        setLoadingUser(false);
+      }
+    };
+
+    fetchUser();
   }, []);
 
   const toggleDrawer = (open: boolean) => () => {
@@ -45,6 +73,29 @@ export default function Header() {
   const handleClose = () => {
     setAnchorEl(null);
   };
+
+  const navigationItems = [
+    { text: "Mano profilis", href: "/update-profile" },
+    {
+      text: "Renginių naršyklė",
+      href: "/user",
+      roles: ["user", "volunteer", "admin"],
+    },
+    { text: "Ateinantys renginiai", href: "/my-events", roles: ["user"] },
+    { text: "Mano Bilietai", href: "/tickets", roles: ["user"] },
+    {
+      text: "Savanorystė",
+      href: "/volunteers/events",
+      roles: ["volunteer"],
+    },
+    {
+      text: "Savanorystės statistika",
+      href: "/volunteers/statistics",
+      roles: ["volunteer"],
+    },
+    { text: "Renginų tvarkyklė", href: "/event-management", roles: ["admin"] },
+    { text: "Ieškoti savanorių", href: "/organiser", roles: ["admin"] },
+  ];
 
   return (
     <>
@@ -116,32 +167,29 @@ export default function Header() {
             Navigacija :)
           </Typography>
           <List>
-            {[
-              { text: "Mano profilis", href: "/update-profile" },
-              { text: "Renginių naršyklė", href: "/user" },
-              { text: "Ateinantys renginiai", href: "/my-events" },
-              { text: "Mano Bilietai", href: "/tickets" },
-              { text: "Tapti savanoriu!", href: "/volunteers/events" },
-              { text: "Mano savanorystės", href: "/my-applications" },
-              { text: "Reinginių tvarkyklė", href: "/event-management" },
-              { text: "Ieškoti savanorių", href: "/organiser" },
-            ].map((item, index) => (
-              <ListItemButton
-                key={index}
-                onClick={() => (window.location.href = item.href)}
-                sx={{
-                  marginBottom: 1,
-                  "&:hover": {
-                    backgroundColor: theme.palette.primary.light,
-                  },
-                }}
-              >
-                <ListItemText
-                  primary={item.text}
-                  sx={{ textAlign: "center" }}
-                />
-              </ListItemButton>
-            ))}
+            {navigationItems
+              .filter(
+                (item) =>
+                  !item.roles ||
+                  (currentUser && item.roles.includes(currentUser.role))
+              )
+              .map((item, index) => (
+                <ListItemButton
+                  key={index}
+                  onClick={() => (window.location.href = item.href)}
+                  sx={{
+                    marginBottom: 1,
+                    "&:hover": {
+                      backgroundColor: theme.palette.primary.light,
+                    },
+                  }}
+                >
+                  <ListItemText
+                    primary={item.text}
+                    sx={{ textAlign: "center" }}
+                  />
+                </ListItemButton>
+              ))}
           </List>
         </Box>
       </Drawer>

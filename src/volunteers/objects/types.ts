@@ -52,4 +52,22 @@ export interface Event {
     status: 'priimta' | 'atmesta' | 'laukiama';
     form_url?: string;
   }
-  
+  export interface User {
+    id: string;
+    created_at: string;
+    role: 'admin' | 'volunteer' | 'user';
+    name: string;
+    email: string;
+    username: string;
+    age: number;
+    phone_number: string;
+    is_email_verified: boolean;
+  }
+
+  export interface VolunteerStatistics {
+    id: string;
+    rating: number;
+    minutes_worked: number;
+    event_count: number;
+    volunteer_id: string;
+  }
