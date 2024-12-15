@@ -352,7 +352,7 @@ const VolunteersPage: React.FC = () => {
                   <td className="py-2 px-4 border capitalize">{app.status}</td>
                   <td className="py-2 px-4 border">
                     {app.status === "laukiama" ? (
-                      <>
+                      <div className="flex justify-center">
                         <button
                           onClick={() => handleDecline(app.id)}
                           disabled={decliningApplicationId === app.id}
@@ -371,7 +371,7 @@ const VolunteersPage: React.FC = () => {
                             </Button>
                           </FormModal>
                         )}
-                      </>
+                      </ div>
                     ) : (
                       <span className="text-gray-500">Veiksmai neprieinami</span>
                     )}
