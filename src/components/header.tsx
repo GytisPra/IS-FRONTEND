@@ -139,14 +139,6 @@ export default function Header() {
                     "aria-labelledby": "basic-button",
                   }}
                 >
-                  <MenuItem
-                    onClick={() => (window.location.href = "/update-profile")}
-                  >
-                    Paskyra
-                  </MenuItem>
-                  <MenuItem onClick={() => (window.location.href = "/user")}>
-                    Renginiai
-                  </MenuItem>
                   <MenuItem onClick={logout}>Atsijungti</MenuItem>
                 </Menu>
               </div>
@@ -176,8 +168,10 @@ export default function Header() {
             {navigationItems
               .filter(
                 (item) =>
-                  !item.roles || 
-                  (currentUser && item.roles.includes(currentUser.role) && currentUser.is_email_verified)
+                  !item.roles ||
+                  (currentUser &&
+                    item.roles.includes(currentUser.role) &&
+                    currentUser.is_email_verified)
               )
               .map((item, index) => (
                 <ListItemButton
