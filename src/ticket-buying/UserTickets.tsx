@@ -168,7 +168,7 @@ const UserTickets = () => {
                       color="primary"
                       onClick={() => handleViewTicket(ticket)}
                     >
-                      Peržiūrėti
+                      Peržiūrėti Bilietą
                     </Button>
                   </TableCell>
                 </TableRow>
