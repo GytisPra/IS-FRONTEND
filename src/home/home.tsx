@@ -37,7 +37,7 @@ const App = () => {
       const queryParams = new URLSearchParams(location.search);
       const email = queryParams.get('email');
   
-      if (!email) return; // If no email param, no verification attempt
+      if (!email) return; 
   
       console.log(`Attempting to verify email: ${email}`);
       try {
@@ -45,7 +45,7 @@ const App = () => {
           .from('users')
           .update({ is_email_verified: true })
           .eq('email', email)
-          .select('*'); // Request updated data
+          .select('*'); 
   
         if (error) {
           console.error('Error updating is_email_verified:', error.message);
@@ -55,7 +55,7 @@ const App = () => {
           console.log('El. paštas patvirtintas sėkmingai:', data);
           setShowNotification(true);
   
-          // Remove query params from URL after successful verification
+          
           const newUrl = window.location.pathname;
           window.history.replaceState(null, '', newUrl);
         }

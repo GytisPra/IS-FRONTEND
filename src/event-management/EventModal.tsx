@@ -158,7 +158,7 @@ const EventModal: React.FC<EventModalProps> = ({
                   />
                 </LocalizationProvider>
               </div>
-              <div className="mb-4">
+              <div className="grid grid-cols-2 gap-4 mt-4">
                 <TextField
                   className="w-full p-2 border rounded"
                   type="number"
@@ -167,16 +167,7 @@ const EventModal: React.FC<EventModalProps> = ({
                   value={newEventForm.seats_count}
                   label="Vietų skaičius"
                   required
-                  slotProps={{
-                    input: {
-                      inputProps: {
-                        step: "1",
-                      },
-                    },
-                  }}
                 />
-              </div>
-              <div className="mb-4">
                 <TextField
                   className="w-full p-2 border rounded"
                   type="number"
@@ -185,13 +176,6 @@ const EventModal: React.FC<EventModalProps> = ({
                   value={newEventForm.max_volunteer_count}
                   label="Max Savanorių"
                   required
-                  slotProps={{
-                    input: {
-                      inputProps: {
-                        step: "1",
-                      },
-                    },
-                  }}
                 />
               </div>
               <div className="mb-4 flex items-center">
@@ -204,7 +188,7 @@ const EventModal: React.FC<EventModalProps> = ({
                 />
                 <label>Nemokamas</label>
               </div>
-              <div className="mt-10">
+              <div className="mt-4">
                 <TextField
                   className="w-full p-2 border rounded"
                   type="text"
@@ -213,13 +197,6 @@ const EventModal: React.FC<EventModalProps> = ({
                   value={newEventForm.form_url}
                   helperText="Google Forms nuoroda"
                   label="Savanorystės apklausos formos nuoroda"
-                  slotProps={{
-                    input: {
-                      inputProps: {
-                        step: "1",
-                      },
-                    },
-                  }}
                 />
               </div>
 
@@ -292,25 +269,7 @@ const EventModal: React.FC<EventModalProps> = ({
                         required
                       />
                     </div>
-                    <div className="mb-4">
-                      <TextField
-                        className="w-full p-2 border rounded"
-                        type="number"
-                        name="location.longitude"
-                        onChange={onFieldChange}
-                        value={newEventForm.location?.longitude || ""}
-                        label="Ilguma"
-                        required
-                        slotProps={{
-                          input: {
-                            inputProps: {
-                              step: "0.01",
-                            },
-                          },
-                        }}
-                      />
-                    </div>
-                    <div className="mb-4">
+                    <div className="grid grid-cols-2 gap-4 mt-4">
                       <TextField
                         className="w-full p-2 border rounded"
                         type="number"
@@ -318,14 +277,18 @@ const EventModal: React.FC<EventModalProps> = ({
                         onChange={onFieldChange}
                         value={newEventForm.location?.latitude || ""}
                         label="Platuma"
+                        helperText="(pvz., 54.6872)"
                         required
-                        slotProps={{
-                          input: {
-                            inputProps: {
-                              step: "0.01",
-                            },
-                          },
-                        }}
+                      />
+                      <TextField
+                        className="w-full p-2 border rounded"
+                        type="number"
+                        name="location.longitude"
+                        onChange={onFieldChange}
+                        value={newEventForm.location?.longitude || ""}
+                        label="Ilguma"
+                        helperText="(pvz., 25.2797)"
+                        required
                       />
                     </div>
                   </>
