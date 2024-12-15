@@ -121,7 +121,9 @@ const PaymentConfirmation: React.FC = () => {
 
       if (billError) throw new Error(billError.message);
 
-      setMessage("Your ticket has been successfully created!");
+      setMessage(
+        "Bilietas sėkmingai nupirktas! Jį galėsite rasti prie visų savo bilietų"
+      );
     } catch (err: any) {
       setError(err.message);
     } finally {
@@ -147,8 +149,6 @@ const PaymentConfirmation: React.FC = () => {
         textAlign: "center",
       }}
     >
-      <h1>🎟️ Your Event Ticket</h1>
-
       {message && <p style={{ color: "green" }}>{message}</p>}
       {error && <p style={{ color: "red" }}>{error}</p>}
       {isProcessing && <p>Processing your ticket...</p>}

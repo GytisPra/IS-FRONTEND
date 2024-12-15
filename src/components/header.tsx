@@ -12,30 +12,28 @@ import { Drawer, ListItemButton, ListItemText, List } from "@mui/material";
 import MenuIcon from "@mui/icons-material/Menu";
 import theme from "../theme";
 import { logout } from "../userService";
-import { user } from '../home/user';
-import {supabase } from '../../supabase';
-import { useEffect } from 'react';
+import { user } from "../home/user";
+import { supabase } from "../../supabase";
+import { useEffect } from "react";
 
 export default function Header() {
   const [anchorEl, setAnchorEl] = useState<null | HTMLElement>(null);
   const [drawerOpen, setDrawerOpen] = useState(false);
 
   useEffect(() => {
-      const checkFirstTimeLogin = async () => {
-  
-        if (!user) {
-          console.log('No user is currently signed in.');
-          return;
-        }
-  
-        if (user.email) {
-          console.log(user)
-       
-        }
-      };
-  
-      checkFirstTimeLogin();
-    }, []);
+    const checkFirstTimeLogin = async () => {
+      if (!user) {
+        console.log("No user is currently signed in.");
+        return;
+      }
+
+      if (user.email) {
+        console.log(user);
+      }
+    };
+
+    checkFirstTimeLogin();
+  }, []);
 
   const toggleDrawer = (open: boolean) => () => {
     setDrawerOpen(open);
@@ -123,7 +121,7 @@ export default function Header() {
               { text: "Mano profilis", href: "/update-profile" },
               { text: "Renginių naršyklė", href: "/user" },
               { text: "Ateinantys renginiai", href: "/my-events" },
-              { text: "Mano Bilietai", href: "/tickets" },
+              { text: "Saskaitos ir bilietai", href: "/tickets" },
               { text: "Tapti savanoriu!", href: "/volunteers/events" },
               { text: "Mano savanorystės", href: "/my-applications" },
               { text: "Reinginių tvarkyklė", href: "/event-management" },

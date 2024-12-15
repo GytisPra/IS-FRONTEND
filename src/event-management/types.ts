@@ -55,3 +55,9 @@ export interface User {
   phone_number: string;
   is_email_verified: boolean;
 }
+export interface Ticket {
+  id: number;
+  price: number;
+  event_id: string;
+  created_at: string;
+}

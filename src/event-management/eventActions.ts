@@ -210,7 +210,10 @@ export const submitEvent = async (
 
       if (eventError) throw new Error(eventError.message);
       if (newEventForm.is_free) {
-        const { url, productId } = await createProductLink(newEventForm);
+        const { url, productId } = await createProductLink(
+          newEventForm,
+          eventData[0].id
+        );
         console.log(url);
         addPaymentLink(eventData[0].id, url, productId);
       }
@@ -221,7 +224,10 @@ export const submitEvent = async (
     return { updatedEvents: events, error: err.message || "An error occurred" };
   }
 };
-const createProductLink = async (newEventForm: NewEventForm) => {
+const createProductLink = async (
+  newEventForm: NewEventForm,
+  eventId: string
+) => {
   // eslint-disable-next-line @typescript-eslint/no-require-imports
   const apiKey = import.meta.env.VITE_STRIPE_SECRET_KEY;
   const stripe = new Stripe(apiKey);
@@ -244,7 +250,7 @@ const createProductLink = async (newEventForm: NewEventForm) => {
     after_completion: {
       type: "redirect",
       redirect: {
-        url: "http://localhost:5173/payment-confirmation",
+        url: `http://localhost:5173/payment-confirmation?event_id=${eventId}`,
       },
     },
   });

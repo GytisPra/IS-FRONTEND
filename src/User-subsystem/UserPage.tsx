@@ -286,7 +286,7 @@ const UserPage = () => {
                   {event.is_free ? "Taip" : "Ne"}
                 </td>
                 <td className="py-2 px-4 border">{event.seats_count}</td>
-                <td>
+                <td className="py-2 px-4 border">
                   {!event.is_free ? (
                     <span>Renginys nemokamas</span>
                   ) : (ticketsSold[event.id] || 0) >= event.seats_count ||
