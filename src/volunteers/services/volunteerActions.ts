@@ -1,6 +1,10 @@
-
 import { supabase } from "../../userService";
-import { Event, VolunteerApplication, User, VolunteerStatistics } from "../objects/types";
+import {
+  Event,
+  VolunteerApplication,
+  User,
+  VolunteerStatistics,
+} from "../objects/types";
 
 /**
  * Fetches all events ordered by date ascending.
@@ -17,7 +21,6 @@ export const fetchEvents = async (): Promise<{
 
   return { data, error: error?.message || null };
 };
-
 
 export const fetchVolunteerApplications = async (
   volunteerId: string
@@ -72,22 +75,6 @@ export const submitVolunteerApplication = async (
     return {
       data,
       error: `Prašymas pateiktas, tačiau nepavyko gauti renginio duomenų: ${selectError.message}`,
-    };
-  }
-
-  const currentAvailableVolunteers = eventData.available_volunteers;
-
-  const newAvailableVolunteers = currentAvailableVolunteers - 1;
-
-  const { error: updateError } = await supabase
-    .from<Event>("event")
-    .update({ available_volunteers: newAvailableVolunteers })
-    .eq("id", eventId);
-
-  if (updateError) {
-    return {
-      data,
-      error: `Prašymas pateiktas, tačiau nepavyko atnaujinti renginio savanorių prieinamumo skaičių: ${updateError.message}`,
     };
   }
 
@@ -155,7 +142,7 @@ export const getCurrentUser = async (
     .from<User>("users")
     .select("*")
     .eq("id", userId)
-    .single()
+    .single();
 
   return { data, error: error?.message || null };
 };
@@ -174,7 +161,7 @@ export const fetchVolunteerStatistics = async (
   const { data, error } = await supabase
     .from<VolunteerStatistics>("volunteer_statistics")
     .select("*")
-    .eq("volunteer_id", volunteerId)
+    .eq("volunteer_id", volunteerId);
 
-    return { data, error: error?.message || null };
+  return { data, error: error?.message || null };
 };
