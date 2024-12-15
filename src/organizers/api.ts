@@ -24,7 +24,6 @@ export const getEvents = async () => {
 };
 
 export const getVolunteerApplications = async (eventId: string) => {
-    console.log(eventId);
     const { data, error } = await supabase.from('volunteer_application')
         .select('id, volunteer:volunteer_id(id, name), eventId:event_id, status')
         .eq('event_id', eventId)
@@ -33,9 +32,6 @@ export const getVolunteerApplications = async (eventId: string) => {
     if (error) {
         throw error;
     }
-
-    console.log(data);
-
     return data;
 }
 
@@ -64,3 +60,21 @@ export const getUser = async (userId: string) => {
 
     return data;
 }
+export const createVolunteerStatistics = async (stats: {
+    rating: number;
+    minutes_worked: number;
+    event_count: number;
+    volunteer_id: string;
+  }) => {
+    const { data, error } = await supabase
+      .from('volunteer_statistics')
+      .insert(stats)
+      .select()
+      .single();
+  
+    if (error) {
+      throw error;
+    }
+  
+    return data;
+  };
