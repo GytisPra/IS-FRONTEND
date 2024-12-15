@@ -42,13 +42,17 @@ const FormModal: React.FC<FormModalProps> = ({ children, formUrl }) => {
                 aria-describedby="modal-description"
             >
                 <Box sx={{ position: 'absolute', top: '50%', left: '50%', transform: 'translate(-50%, -50%)', width: 800, bgcolor: 'background.paper', border: '2px solid #000', boxShadow: 24, p: 4 }}>
-                    <Typography id="modal-title" variant="h6" component="h2">
+                    <Typography id="modal-title" variant="h6" component="h2" sx={{marginBottom: '10px'}}>
                         Google Form
+                    </Typography>
+                    <Typography id="modal-title" sx={{marginBottom: '50px'}} >
+                        Rekomenuodajama jei įmanoma, formoje pateikti el. paštą, kurį naudojote prisijungdami prie šios platformos,
+                        kad organizatoriai galėtų patogiau susisiekti su Jumis.
                     </Typography>
                     <iframe
                         src={`https://docs.google.com/forms/d/e/${urlId}/viewform?embedded=true`}
                         width="700"
-                        height="800"
+                        height="600"
                         margin-height="0"
                         margin-width="0">
                         Įkeliama…
