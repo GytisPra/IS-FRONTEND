@@ -75,6 +75,7 @@ export default function Header() {
   };
 
   const navigationItems = [
+    { text: "Pagrindinis langas", href: "/" },
     { text: "Mano profilis", href: "/update-profile" },
     {
       text: "Renginių naršyklė",
