@@ -225,8 +225,8 @@ const EventCard = ({ event }: { event: Event }) => {
 
   const handleAcceptApplication = async (applicationId: string) => {
     try {
-      await setApplicationStatus(applicationId, "priimta");
       await decrementEventVolunteerCount(event.id);
+      await setApplicationStatus(applicationId, "priimta");
       event.available_volunteers -= 1;
       const updatedRequests = volunteerRequests?.map((application) => {
         if (application.id === applicationId) {
