@@ -217,7 +217,11 @@ const EventManager: React.FC = () => {
 
     if (error) setModalError(error);
     else {
-      toast.success("Renginys sėkmingas sukurtas!");
+      if (isEditing) {
+        toast.success("Renginys sėkmingas atnaujintas!");
+      } else {
+        toast.success("Renginys sėkmingas sukurtas!");
+      }
       setEvents(updatedEvents);
       setShowModal(false);
     }
