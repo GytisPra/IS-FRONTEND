@@ -81,7 +81,7 @@ const EventModal: React.FC<EventModalProps> = ({
               <h3 className="text-lg font-semibold mb-2">
                 Renginio informacija
               </h3>
-              <div className="mb-4">
+              <div className="grid grid-cols-2 gap-4 mb-4">
                 <TextField
                   className="w-full p-2 border rounded"
                   name="name"
@@ -90,8 +90,6 @@ const EventModal: React.FC<EventModalProps> = ({
                   label="Pavadinimas"
                   required
                 />
-              </div>
-              <div className="mb-4">
                 <LocalizationProvider dateAdapter={AdapterDayjs}>
                   <DatePicker
                     className="w-full p-0"
@@ -114,6 +112,7 @@ const EventModal: React.FC<EventModalProps> = ({
                   />
                 </LocalizationProvider>
               </div>
+
               <div className="flex space-y-4 flex-col mb-4">
                 <LocalizationProvider dateAdapter={AdapterDayjs}>
                   <DateTimePicker
@@ -158,7 +157,7 @@ const EventModal: React.FC<EventModalProps> = ({
                   />
                 </LocalizationProvider>
               </div>
-              <div className="grid grid-cols-2 gap-4 mt-4">
+              <div className="grid grid-cols-2 gap-4 mt-4 mb-4">
                 <TextField
                   className="w-full p-2 border rounded"
                   type="number"
@@ -168,6 +167,18 @@ const EventModal: React.FC<EventModalProps> = ({
                   label="Vietų skaičius"
                   required
                 />
+
+                <TextField
+                  className="w-full p-2 border rounded"
+                  type="number"
+                  name="max_volunteer_count"
+                  onChange={onFieldChange}
+                  value={newEventForm.max_volunteer_count}
+                  label="Max Savanorių"
+                  required
+                />
+              </div>
+              <div className="mb-4">
                 <TextField
                   className="w-full p-2 border rounded"
                   type="number"
@@ -182,17 +193,6 @@ const EventModal: React.FC<EventModalProps> = ({
                       },
                     },
                   }}
-                />
-              </div>
-              <div className="mb-4">
-                <TextField
-                  className="w-full p-2 border rounded"
-                  type="number"
-                  name="max_volunteer_count"
-                  onChange={onFieldChange}
-                  value={newEventForm.max_volunteer_count}
-                  label="Max Savanorių"
-                  required
                 />
               </div>
               <div className="mb-4 flex items-center">
