@@ -14,7 +14,6 @@ interface EventTableProps {
 }
 
 const EventTable = ({ events, onEdit, onDelete }: EventTableProps) => {
-  const [eventss, setEvents] = useState<Event[]>([]);
   const [ticketsSold, setTicketsSold] = useState<Record<number, number>>({});
   const [sortConfig, setSortConfig] = useState<{
     key: string;
@@ -91,15 +90,6 @@ const EventTable = ({ events, onEdit, onDelete }: EventTableProps) => {
     setSortConfig({ key, direction });
   };
   useEffect(() => {
-    const fetchEvents = async () => {
-      const { data, error } = await supabase.from("event").select("*");
-      if (error) {
-        console.error("Error fetching events:", error.message);
-      } else {
-        setEvents(data as Event[]);
-      }
-    };
-
     const fetchTicketsSold = async () => {
       const { data, error } = await supabase
         .from("ticket") // Replace 'tickets' with your actual table name
@@ -120,8 +110,6 @@ const EventTable = ({ events, onEdit, onDelete }: EventTableProps) => {
 
       setTicketsSold(ticketCounts);
     };
-
-    fetchEvents();
     fetchTicketsSold();
   }, []);
   return (
