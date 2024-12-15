@@ -11,9 +11,10 @@ export interface IApplication {
     status: string;
 }
 
-export const getEvents = async () => {
+export const getEvents = async (userId: string) => {
     const { data, error } = await supabase.from('event')
         .select('*')
+        .eq('created_by', userId)
         .returns<Event[]>();
 
     if (error) {

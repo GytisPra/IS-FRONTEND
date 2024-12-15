@@ -172,6 +172,7 @@ export const submitEvent = async (
         ...newEventForm,
         event_location_id: locationId || null,
         created_by: publicUser.id,
+        available_volunteers: newEventForm.max_volunteer_count,
       };
 
       delete eventDataToUpdate.location;
