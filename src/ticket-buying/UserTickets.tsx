@@ -145,6 +145,7 @@ const UserTickets = () => {
   return (
     <Container>
       <Box sx={{ marginTop: "20px" }}>
+        <h1 className="text-2xl font-bold mb-4">Bilietai</h1>
         <TableContainer component={Paper}>
           <Table sx={{ minWidth: 650 }} aria-label="user tickets table">
             <TableHead>

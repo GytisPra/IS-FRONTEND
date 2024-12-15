@@ -121,7 +121,7 @@ export default function Header() {
               { text: "Mano profilis", href: "/update-profile" },
               { text: "Renginių naršyklė", href: "/user" },
               { text: "Ateinantys renginiai", href: "/my-events" },
-              { text: "Saskaitos ir bilietai", href: "/tickets" },
+              { text: "Mano Bilietai", href: "/tickets" },
               { text: "Tapti savanoriu!", href: "/volunteers/events" },
               { text: "Mano savanorystės", href: "/my-applications" },
               { text: "Reinginių tvarkyklė", href: "/event-management" },
