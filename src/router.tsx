@@ -27,7 +27,11 @@ export const router = createBrowserRouter([
   },
   {
     path: "/organiser",
-    element: <OrganiserPage />,
+    element: (
+    <ProtectedRoute requiredRole="admin">
+        <OrganiserPage />
+    </ProtectedRoute>
+    ),
   },
   {
     path: "/volunteers/events",
