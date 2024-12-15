@@ -47,11 +47,19 @@ export const router = createBrowserRouter([
   },
   {
     path: "/tickets",
-    element: <UserTickets />,
+    element: (
+      <ProtectedRoute requiredRole="user">
+        <UserTickets />
+      </ProtectedRoute>
+    ),
   },
   {
-    path: "/user",
-    element: <UserPage />,
+    path: "/event-list",
+    element: (
+      <ProtectedRoute requiredRole="user">
+        <UserPage />
+      </ProtectedRoute>
+    ),
   },
   {
     path: "/update-profile",
@@ -59,7 +67,11 @@ export const router = createBrowserRouter([
   },
   {
     path: "/payment-confirmation",
-    element: <PaymentConfirmation />,
+    element: (
+      <ProtectedRoute requiredRole="user">
+        <PaymentConfirmation />
+      </ProtectedRoute>
+    ),
   },
   {
     path: "/unauthorized",
