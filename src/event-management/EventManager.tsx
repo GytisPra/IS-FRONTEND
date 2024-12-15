@@ -145,6 +145,7 @@ const EventManager: React.FC = () => {
         end_time: event.end_time,
         is_free: event.is_free,
         seats_count: event.seats_count,
+        form_url: event.form_url,
         max_volunteer_count: event.max_volunteer_count,
         location: locationData
           ? {

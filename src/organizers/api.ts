@@ -78,3 +78,26 @@ export const createVolunteerStatistics = async (stats: {
   
     return data;
   };
+
+export const decrementEventVolunteerCount = async (eventId: string) => {
+
+    const { data } = await supabase.from('event')
+        .select('available_volunteers')
+        .eq('id', eventId)
+        .single();
+
+    if (data?.available_volunteers === 0) {
+        throw new Error('No available volunteers seats');
+    }
+
+    const { error } = await supabase.from('event')
+        .update({ available_volunteers: data?.available_volunteers - 1 })
+        .eq('id', eventId)
+        .single();
+
+    if (error) {
+        throw error;
+    }
+
+    return data?.available_volunteers - 1;
+}

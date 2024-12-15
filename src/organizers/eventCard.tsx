@@ -16,7 +16,7 @@ import { toast } from 'react-toastify';
 import 'react-toastify/dist/ReactToastify.css';
 import FormResponseBox from "./formResponseBox";
 import { Event } from "../volunteers/objects/types";
-import { getVolunteerApplications, IApplication, setApplicationStatus, createVolunteerStatistics } from "./api";
+import { getVolunteerApplications, IApplication, setApplicationStatus, createVolunteerStatistics, decrementEventVolunteerCount } from "./api";
 import { ToastContainer } from 'react-toastify';
 
 interface VolunteerStats {
@@ -226,6 +226,8 @@ const EventCard = ({ event }: { event: Event }) => {
   const handleAcceptApplication = async (applicationId: string) => {
     try {
       await setApplicationStatus(applicationId, "priimta");
+      await decrementEventVolunteerCount(event.id);
+      event.available_volunteers -= 1;
       const updatedRequests = volunteerRequests?.map((application) => {
         if (application.id === applicationId) {
           return { ...application, status: 'priimta' };
