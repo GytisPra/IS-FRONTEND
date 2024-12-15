@@ -251,14 +251,10 @@ const UserPage = () => {
                 {sortConfig?.key === "is_free" &&
                   (sortConfig.direction === "asc" ? "↑" : "↓")}
               </th>
-              <th
-                className="py-2 px-4 border hover:bg-gray-200 cursor-pointer"
-                onClick={() => handleSort("seats_count")}
-              >
-                Vietų Skaičius
-                {sortConfig?.key === "seats_count" &&
-                  (sortConfig.direction === "asc" ? "↑" : "↓")}
+              <th className="py-2 px-4 border hover:bg-gray-200 cursor-pointer">
+                Laisvų bilietų / vietų skaičius
               </th>
+
               <th className="py-2 px-4 border">Veiksmai</th>
             </tr>
           </thead>
@@ -285,7 +281,11 @@ const UserPage = () => {
                 <td className="py-2 px-4 border">
                   {event.is_free ? "Taip" : "Ne"}
                 </td>
-                <td className="py-2 px-4 border">{event.seats_count}</td>
+                <td className="py-2 px-4 border">
+                  {Number.isNaN(event.seats_count) || event.seats_count == null
+                    ? 0
+                    : event.seats_count - (ticketsSold[event.id] || 0)}
+                </td>
                 <td className="py-2 px-4 border">
                   {!event.is_free ? (
                     <span>Renginys nemokamas</span>
