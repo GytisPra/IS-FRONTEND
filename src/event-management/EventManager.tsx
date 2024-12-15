@@ -10,7 +10,7 @@ import {
 import EventModal from "./EventModal";
 import EventTable from "./EventsTable";
 import dayjs from "dayjs";
-import { ToastContainer } from "react-toastify";
+import { toast, ToastContainer } from "react-toastify";
 import "react-toastify/dist/ReactToastify.css";
 
 const EventManager: React.FC = () => {
@@ -216,6 +216,7 @@ const EventManager: React.FC = () => {
 
     if (error) setModalError(error);
     else {
+      toast.success("Renginys sėkmingas sukurtas!");
       setEvents(updatedEvents);
       setShowModal(false);
     }
