@@ -1,4 +1,5 @@
 import { type Session, UserResponse, createClient } from '@supabase/supabase-js';
+import { router } from './router';
 
 export const supabase = createClient(import.meta.env.VITE_SUPABASE_URL, import.meta.env.VITE_SUPABASE_ANON_KEY);
 
@@ -34,5 +35,6 @@ export const loginWithGoogle = async () => {
 
 export const logout = async () => {
     await supabase.auth.signOut();
+    router.navigate('/');
     window.location.reload();
 };
