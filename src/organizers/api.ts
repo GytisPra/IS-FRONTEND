@@ -101,4 +101,16 @@ export const decrementEventVolunteerCount = async (eventId: string) => {
     }
 
     return data?.available_volunteers - 1;
+};
+
+export const getAttendeeCount = async (eventId: string) => {
+    const { error, count } = await supabase.from('ticket')
+        .select('id')
+        .eq('event_id', eventId);
+
+    if (error) {
+        throw error;
+    }
+
+    return count;
 }
