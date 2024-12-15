@@ -37,6 +37,7 @@ const FormResponseBox: React.FC<FormResponseBoxProps> = ({
         width: 700,
         bgcolor: "background.paper",
         border: "2px solid #000",
+        overflow: "auto",
         boxShadow: 24,
         p: 4,
       }}
@@ -47,7 +48,7 @@ const FormResponseBox: React.FC<FormResponseBoxProps> = ({
       <Typography id="modal-description" sx={{ mt: 2 }}>
         Savanorio el. paštas: {user?.email}
         <br />
-        Atsakyma galite rasti: {formUrl}
+        Atsakyma galite rasti <a style={{ textDecoration: "underline"}} href={formUrl}>Google Forms puslapyje</a>
       </Typography>
       <Button onClick={onClose} sx={{ mt: 2 }}>
         Uždaryti
