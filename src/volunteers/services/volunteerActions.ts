@@ -1,8 +1,6 @@
-// volunteerActions.ts
 
 import { supabase } from "../../userService";
-import { Event, VolunteerApplication, User } from "../objects/types";
-import { user } from "../objects/user";
+import { Event, VolunteerApplication, User, VolunteerStatistics } from "../objects/types";
 
 /**
  * Fetches all events ordered by date ascending.
@@ -20,11 +18,7 @@ export const fetchEvents = async (): Promise<{
   return { data, error: error?.message || null };
 };
 
-/**
- * Fetches volunteer applications for a specific volunteer ordered by date descending.
- *
- * @param volunteerId - The ID of the volunteer.
- */
+
 export const fetchVolunteerApplications = async (
   volunteerId: string
 ): Promise<{
@@ -164,4 +158,23 @@ export const getCurrentUser = async (
     .single()
 
   return { data, error: error?.message || null };
+};
+
+/**
+ * Fetches volunteer statistics for a specific volunteer
+ *
+ * @param volunteerId - The ID of the volunteer
+ */
+export const fetchVolunteerStatistics = async (
+  volunteerId: string
+): Promise<{
+  data: VolunteerStatistics[] | null;
+  error: string | null;
+}> => {
+  const { data, error } = await supabase
+    .from<VolunteerStatistics>("volunteer_statistics")
+    .select("*")
+    .eq("volunteer_id", volunteerId)
+
+    return { data, error: error?.message || null };
 };

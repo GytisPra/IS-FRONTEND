@@ -1,5 +1,3 @@
-// src/pages/VolunteersPage.tsx
-
 import React, { useState, useEffect, useCallback } from "react";
 import { Event, VolunteerApplication } from "./objects/types";
 import {
@@ -25,11 +23,9 @@ const VolunteersPage: React.FC = () => {
   const [filters, setFilters] = useState({
     startDate: "",
     endDate: "",
-    hidePaidEvents: false,
-    searchTerm: "", // Added searchTerm to filters
+    searchTerm: "", 
   });
 
-  // Fetch Events and Applications Data
   const fetchData = useCallback(async () => {
     if (!user) return;
 
@@ -90,7 +86,6 @@ const VolunteersPage: React.FC = () => {
     }
   }, [user, fetchData]);
 
-  // Handle Applying to an Event
   const handleApply = async (eventId: string) => {
     if (!user) {
       toast.error("Jūs privalote būti prisijungęs, kad aplikuoti savanorystei.");
@@ -138,7 +133,6 @@ const VolunteersPage: React.FC = () => {
     }
   };
 
-  // Handle Declining an Application
   const handleDecline = async (applicationId: string) => {
     const applicationToDecline = applications.find((app) => app.id === applicationId);
 
@@ -186,39 +180,27 @@ const VolunteersPage: React.FC = () => {
     }
   };
 
-  // Get Application Status for an Event
   const getApplicationStatus = (eventId: string): string | null => {
     const application = applications.find((app) => app.event_id === eventId);
     return application ? application.status : null;
   };
 
-  // Handle Filter Changes
   const handleFilterChange = (e: React.ChangeEvent<HTMLInputElement>) => {
     const { name, value } = e.target;
     setFilters((prev) => ({ ...prev, [name]: value }));
   };
 
-  // Toggle Hide Paid Events
-  const toggleHidePaidEvents = () => {
-    setFilters((prev) => ({ ...prev, hidePaidEvents: !prev.hidePaidEvents }));
-  };
-
-  // Handle Search Term Change
   const handleSearchChange = (e: React.ChangeEvent<HTMLInputElement>) => {
     const { value } = e.target;
     setFilters((prev) => ({ ...prev, searchTerm: value }));
   };
 
-  // Filter Events Based on Filters State
   const filteredEvents = events.filter((event) => {
     const eventDate = new Date(event.date);
     const startDate = filters.startDate ? new Date(filters.startDate) : null;
     const endDate = filters.endDate ? new Date(filters.endDate) : null;
     const searchTerm = filters.searchTerm.trim().toLowerCase();
 
-    if (filters.hidePaidEvents && !event.is_free) {
-      return false;
-    }
     if (startDate && eventDate < startDate) {
       return false;
     }
@@ -247,9 +229,7 @@ const VolunteersPage: React.FC = () => {
 
       <h1 className="text-2xl font-bold mb-4">Savanorystės aplikacija</h1>
 
-      {/* Filter Controls */}
       <div className="flex flex-wrap space-x-4 mb-4">
-        {/* Existing Filters */}
         <div className="mb-2">
           <label htmlFor="startDate" className="block mb-1">
             Nuo datos
@@ -276,22 +256,7 @@ const VolunteersPage: React.FC = () => {
             className="w-full p-2 border rounded"
           />
         </div>
-        <div className="mb-2 flex flex-col">
-          <label htmlFor="hidePaidEvents" className="block mb-1">
-            Paslėpti mokamus?
-          </label>
-          <button
-            id="hidePaidEvents"
-            onClick={toggleHidePaidEvents}
-            className={`py-2 px-4 border rounded ${
-              filters.hidePaidEvents ? "bg-gray-100" : ""
-            }`}
-          >
-            {filters.hidePaidEvents ? "Ne" : "Taip"}
-          </button>
-        </div>
 
-        {/* New Search Filter */}
         <div className="mb-2 flex flex-col">
           <label htmlFor="searchTerm" className="block mb-1">
             Ieškoti pagal pavadinimą
@@ -308,7 +273,6 @@ const VolunteersPage: React.FC = () => {
         </div>
       </div>
 
-      {/* Events Section */}
       <h2 className="text-xl font-semibold mb-2">Renginiai</h2>
       {loadingEvents ? (
         <p>Renginiai kraunami...</p>
@@ -323,8 +287,6 @@ const VolunteersPage: React.FC = () => {
                 <th className="py-2 px-4 border">Data</th>
                 <th className="py-2 px-4 border">Pradžios laikas</th>
                 <th className="py-2 px-4 border">Pabaigos laikas</th>
-                <th className="py-2 px-4 border">Ar mokamas?</th>
-                <th className="py-2 px-4 border">Vietų skaičius</th>
                 <th className="py-2 px-4 border">Laisvos savanorystės vietos</th>
                 <th className="py-2 px-4 border">Veiksmai</th>
               </tr>
@@ -340,10 +302,6 @@ const VolunteersPage: React.FC = () => {
                     </td>
                     <td className="py-2 px-4 border">{event.start_time}</td>
                     <td className="py-2 px-4 border">{event.end_time}</td>
-                    <td className="py-2 px-4 border">
-                      {event.is_free ? "Taip" : "Ne"}
-                    </td>
-                    <td className="py-2 px-4 border">{event.seats_count}</td>
                     <td className="py-2 px-4 border">{event.available_volunteers}</td>
                     <td className="py-2 px-4 border">
                       {status === "priimta" ? (
@@ -370,7 +328,6 @@ const VolunteersPage: React.FC = () => {
         </div>
       )}
 
-      {/* Applications Section */}
       <h2 className="text-xl font-semibold mt-8 mb-2">Mano savanorystės</h2>
       {loadingApplications ? (
         <p>Jūsų savanorystės kraunamos...</p>

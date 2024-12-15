@@ -88,6 +88,11 @@ export default function Header() {
       href: "/volunteers/events",
       roles: ["volunteer"],
     },
+    {
+      text: "Savanorystės statistika",
+      href: "/volunteers/statistics",
+      roles: ["volunteer"],
+    },
     { text: "Renginų tvarkyklė", href: "/event-management", roles: ["admin"] },
     { text: "Ieškoti savanorių", href: "/organiser", roles: ["admin"] },
   ];

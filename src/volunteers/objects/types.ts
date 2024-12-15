@@ -63,3 +63,11 @@ export interface Event {
     phone_number: string;
     is_email_verified: boolean;
   }
+
+  export interface VolunteerStatistics {
+    id: string;
+    rating: number;
+    minutes_worked: number;
+    event_count: number;
+    volunteer_id: string;
+  }
