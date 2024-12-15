@@ -7,6 +7,7 @@ import UserPage from "./User-subsystem/UserPage";
 import ProfileUpdatePage from "./User-subsystem/Profile";
 import EventManager from "./event-management/EventManager";
 import VolunteersPage from "./volunteers/VolunteerPage";
+import PaymentConfirmation from "./ticket-buying/PaymentConfirmation";
 export const router = createBrowserRouter([
   {
     path: "/",
@@ -35,5 +36,9 @@ export const router = createBrowserRouter([
   {
     path: "/update-profile",
     element: <ProfileUpdatePage />,
+  },
+  {
+    path: "/payment-confirmation",
+    element: <PaymentConfirmation />,
   },
 ]);

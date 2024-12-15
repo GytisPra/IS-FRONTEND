@@ -47,6 +47,7 @@ const EventManager: React.FC = () => {
     };
 
     getEvents();
+    console.log("Suveike");
   }, []);
 
   const validateStartEndTimes = (startTime: string, endTime: string) => {

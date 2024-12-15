@@ -244,7 +244,7 @@ const createProductLink = async (newEventForm: NewEventForm) => {
     after_completion: {
       type: "redirect",
       redirect: {
-        url: "http://localhost:5173/",
+        url: "http://localhost:5173/payment-confirmation",
       },
     },
   });
@@ -320,7 +320,7 @@ export const updatePaymenLink = async (
       after_completion: {
         type: "redirect",
         redirect: {
-          url: "http://localhost:5173/",
+          url: `http://localhost:5173/payment-confirmation?event_id=${eventId}`,
         },
       },
     });
