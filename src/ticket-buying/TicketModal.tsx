@@ -1,17 +1,15 @@
 // EventModal.tsx
 import React from "react";
-import { Ticket, Event } from "./types";
+import { Ticket } from "./types";
 import ReactToPdf from "react-to-pdf";
 
 interface EventModalProps {
   ticket: Ticket;
-  eventData: Event;
   ticketRef: React.RefObject<HTMLDivElement>;
   onClose: () => void;
 }
 const TicketModal: React.FC<EventModalProps> = ({
   ticket,
-  eventData,
   ticketRef,
   onClose,
 }) => {

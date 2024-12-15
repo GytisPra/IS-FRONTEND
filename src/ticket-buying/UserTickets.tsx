@@ -27,12 +27,6 @@ interface Ticket {
   event_id: number;
 }
 
-interface Event {
-  id: number;
-  name: string;
-  start_time: Date;
-  end_time: Date;
-}
 const getUserByEmail = async (
   userEmail: string
 ): Promise<{
@@ -51,7 +45,6 @@ const UserTickets = () => {
   const [tickets, setTickets] = useState<Ticket[]>([]);
   const [showTicketModal, setShowTicketModal] = useState<boolean>(false);
   const [selectedTicket, setSelectedTicket] = useState<Ticket | null>(null); // State for selected ticket
-  const [selectedEvent, setSelectedEvent] = useState<Event | null>(null);
   // Fetch the user's tickets and related event details
   useEffect(() => {
     const fetchTickets = async () => {
@@ -79,6 +72,7 @@ const UserTickets = () => {
         return;
       }
       if (billData.length > 0) {
+        // eslint-disable-next-line @typescript-eslint/no-explicit-any
         const ticketIds = billData.map((bill: any) => bill.ticket_id);
         const { data: ticketData, error: ticketError } = await supabase
           .from("ticket")
@@ -93,6 +87,7 @@ const UserTickets = () => {
 
         if (ticketData) {
           // Get event details based on event_id from tickets
+          // eslint-disable-next-line @typescript-eslint/no-explicit-any
           const eventIds = ticketData.map((ticket: any) => ticket.event_id);
           const { data: eventData, error: eventError } = await supabase
             .from("event")
@@ -105,8 +100,10 @@ const UserTickets = () => {
           }
 
           // Combine ticket data with event data
+          // eslint-disable-next-line @typescript-eslint/no-explicit-any
           const ticketsWithEventInfo = ticketData.map((ticket: any) => {
             const event = eventData.find(
+              // eslint-disable-next-line @typescript-eslint/no-explicit-any
               (event: any) => event.id === ticket.event_id
             );
             return {
@@ -127,14 +124,7 @@ const UserTickets = () => {
 
   // Function to handle ticket view button click
   const handleViewTicket = (ticket: Ticket) => {
-    const event = tickets.find((t) => t.id === ticket.event_id); // Find event associated with this ticket
     setSelectedTicket(ticket); // Set selected ticket
-    setSelectedEvent({
-      id: ticket.event_id,
-      name: ticket.event_name,
-      start_time: ticket.start_time,
-      end_time: ticket.end_time,
-    });
     console.log(ticket);
     setShowTicketModal(!showTicketModal); // Show modal
   };
@@ -194,10 +184,9 @@ const UserTickets = () => {
           </Table>
         </TableContainer>
       </Box>
-      {showTicketModal && (
+      {showTicketModal && selectedTicket && (
         <TicketModal
           ticket={selectedTicket}
-          eventData={selectedEvent}
           ticketRef={React.createRef()} // Can be used if needed for the modal content
           onClose={onClose}
         />

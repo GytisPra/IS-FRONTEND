@@ -13,7 +13,6 @@ import MenuIcon from "@mui/icons-material/Menu";
 import theme from "../theme";
 import { logout } from "../userService";
 import { user } from "../home/user";
-import { supabase } from "../../supabase";
 import { useEffect } from "react";
 
 export default function Header() {

@@ -4,13 +4,12 @@ import { supabase } from "../../supabase";
 import dayjs from "dayjs";
 import { LocalizationProvider, DatePicker } from "@mui/x-date-pickers";
 import { AdapterDayjs } from "@mui/x-date-pickers/AdapterDayjs";
-import { TextField, Typography, Box, Button } from "@mui/material";
+import { TextField, Typography, Box } from "@mui/material";
 import "react-toastify/dist/ReactToastify.css";
 import { ToastContainer } from "react-toastify";
 
 const ViewEventLocation = ({
   eventLocationId,
-  disable,
 }: {
   eventLocationId: string;
   disable: boolean;
@@ -71,6 +70,7 @@ const UserPage = () => {
 
       // Process the data into a record { event_id: count }
       const ticketCounts: Record<number, number> = {};
+      // eslint-disable-next-line @typescript-eslint/no-explicit-any
       data.forEach((ticket: any) => {
         const eventId = ticket.event_id;
         ticketCounts[eventId] = (ticketCounts[eventId] || 0) + 1; // Count tickets per event
@@ -117,7 +117,9 @@ const UserPage = () => {
   const sortedEvents = [...filteredEvents];
   if (sortConfig !== null) {
     sortedEvents.sort((a, b) => {
+      // eslint-disable-next-line @typescript-eslint/no-explicit-any
       const aValue = (a as any)[sortConfig.key];
+      // eslint-disable-next-line @typescript-eslint/no-explicit-any
       const bValue = (b as any)[sortConfig.key];
 
       if (aValue < bValue) {

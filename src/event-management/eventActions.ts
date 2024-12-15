@@ -187,6 +187,9 @@ export const submitEvent = async (
         editingEventId,
         eventDataToUpdate.price
       );
+      if (!success && error) {
+        throw new Error(error);
+      }
       return {
         updatedEvents: events.map((evt) =>
           evt.id === editingEventId ? eventData[0] : evt
