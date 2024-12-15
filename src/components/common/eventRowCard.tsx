@@ -11,7 +11,7 @@ export interface Event {
   id: string;
   name: string;
   startTime: Date;
-  attendees: number;
+  attendees?: number;
   description: string;
 }
 
