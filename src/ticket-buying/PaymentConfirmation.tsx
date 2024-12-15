@@ -41,6 +41,7 @@ interface Event {
   event_location_id: string | null;
   max_volunteer_count: number;
   price: number;
+  // eslint-disable-next-line @typescript-eslint/no-explicit-any
   [key: string]: any;
 }
 
@@ -124,6 +125,7 @@ const PaymentConfirmation: React.FC = () => {
       setMessage(
         "Bilietas sėkmingai nupirktas! Jį galėsite rasti prie visų savo bilietų"
       );
+      // eslint-disable-next-line @typescript-eslint/no-explicit-any
     } catch (err: any) {
       setError(err.message);
     } finally {
@@ -296,20 +298,38 @@ const PaymentConfirmation: React.FC = () => {
           </p>
         </div>
       )}
-      <button
-        onClick={handleDownloadPdf}
-        style={{
-          padding: "0.5rem 1rem",
-          backgroundColor: "#007bff",
-          color: "white",
-          border: "none",
-          borderRadius: "5px",
-          cursor: "pointer",
-          marginTop: "1rem",
-        }}
-      >
-        Download PDF
-      </button>
+      <div className="justify-item: space-x-2">
+        <button
+          onClick={() =>
+            (window.location.href = "http://localhost:5173/tickets")
+          }
+          style={{
+            padding: "0.5rem 1rem",
+            backgroundColor: "#007bff",
+            color: "white",
+            border: "none",
+            borderRadius: "5px",
+            cursor: "pointer",
+            marginTop: "1rem",
+          }}
+        >
+          Peržiūrėti visus bilietus
+        </button>
+        <button
+          onClick={handleDownloadPdf}
+          style={{
+            padding: "0.5rem 1rem",
+            backgroundColor: "#007bff",
+            color: "white",
+            border: "none",
+            borderRadius: "5px",
+            cursor: "pointer",
+            marginTop: "1rem",
+          }}
+        >
+          Atsisiųsti PDF
+        </button>
+      </div>
     </div>
   );
 };
